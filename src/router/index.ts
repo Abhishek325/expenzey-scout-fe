@@ -55,7 +55,7 @@ router.beforeEach((to) => {
   const appStore = useAppStore();
   const isOnboarding = to.path.startsWith("/onboarding");
 
-  if (!appStore.connected && !isOnboarding) {
+  if (appStore.requiresOnboarding && !isOnboarding) {
     return { path: "/onboarding/welcome" };
   }
 

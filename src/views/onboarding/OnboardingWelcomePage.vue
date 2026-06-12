@@ -1,25 +1,31 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useAppStore } from "@/stores/appStore";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 
 const router = useRouter();
+const appStore = useAppStore();
+const busy = ref(false);
 
 const title = useLocalizedString("onboarding", "welcome.title");
 const subtitle = useLocalizedString("onboarding", "welcome.subtitle");
-const createAccount = useLocalizedString("onboarding", "welcome.createAccount");
-const login = useLocalizedString("onboarding", "welcome.login");
 const connectCta = useLocalizedString("onboarding", "connectCta");
+const skipForNow = useLocalizedString("onboarding", "skipForNow");
 
 function goConnect() {
   void router.push("/onboarding/connect");
 }
 
-function mockCreateAccount() {
-  /* mock */
-}
-
-function mockLogin() {
-  /* mock */
+async function skipToDashboard() {
+  busy.value = true;
+  try {
+    await appStore.completeConnection();
+  } catch {
+    appStore.setConnected(true);
+  }
+  await router.replace("/dashboard");
+  busy.value = false;
 }
 </script>
 
@@ -32,28 +38,23 @@ function mockLogin() {
     </div>
     <h1 class="text-3xl font-semibold text-gray-900">{{ title }}</h1>
     <p class="mt-3 text-base text-gray-600">{{ subtitle }}</p>
-    <div class="mt-8 flex w-full flex-col gap-3 sm:flex-row sm:justify-center">
+    <div class="mt-8 flex w-full flex-col gap-3">
       <button
         type="button"
-        class="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-500"
-        @click="mockCreateAccount"
+        class="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 disabled:opacity-60"
+        :disabled="busy"
+        @click="goConnect"
       >
-        {{ createAccount }}
+        {{ connectCta }}
       </button>
       <button
         type="button"
-        class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        @click="mockLogin"
+        class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+        :disabled="busy"
+        @click="skipToDashboard"
       >
-        {{ login }}
+        {{ skipForNow }}
       </button>
     </div>
-    <button
-      type="button"
-      class="mt-6 text-sm font-medium text-indigo-600 hover:text-indigo-500"
-      @click="goConnect"
-    >
-      {{ connectCta }} →
-    </button>
   </div>
 </template>

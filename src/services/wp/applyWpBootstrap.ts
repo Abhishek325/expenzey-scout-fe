@@ -2,6 +2,7 @@ import type { Pinia } from "pinia";
 import type { IStringService } from "@/services/stringService";
 import { useAppStore } from "@/stores/appStore";
 import type { ExpenzeyAiConfig } from "@/types/wp";
+import { parseDataSource, parseWpBoolean } from "@/services/wp/wpConfigUtils";
 
 export function getWpConfig(): ExpenzeyAiConfig | undefined {
   return window.expenzeyAi;
@@ -34,10 +35,11 @@ export async function applyWpBootstrap(
 
   const appStore = useAppStore(pinia);
   appStore.applyWpConfig({
-    connected: config.connected,
+    connected: parseWpBoolean(config.connected),
     siteUrl: config.siteUrl,
     installationId: config.installationId,
     lastSync: config.lastSync,
+    dataSource: parseDataSource(config.dataSource),
   });
 
   await applyLocale(stringService, config.locale);
