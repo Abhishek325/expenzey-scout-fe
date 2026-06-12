@@ -1,12 +1,16 @@
 import type { IChatService } from "@/services/chat/IChatService";
+import { wpRestFetch } from "@/services/wp/wpRestClient";
 import type { ChatMessage } from "@/types/chat";
 
 export class WpChatService implements IChatService {
   async getMessages(): Promise<ChatMessage[]> {
-    throw new Error("Not implemented");
+    return [];
   }
 
-  async sendMessage(_content: string): Promise<ChatMessage> {
-    throw new Error("Not implemented");
+  async sendMessage(content: string): Promise<ChatMessage> {
+    return wpRestFetch<ChatMessage>("/chat/message", {
+      method: "POST",
+      body: JSON.stringify({ message: content }),
+    });
   }
 }

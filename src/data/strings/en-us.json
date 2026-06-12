@@ -87,7 +87,13 @@
     "viewFullReport": "View Full Report",
     "revenuePeriodDaily": "Daily",
     "revenuePeriodWeekly": "Weekly",
-    "revenuePeriodMonthly": "Monthly"
+    "revenuePeriodMonthly": "Monthly",
+    "snapshot": {
+      "title": "Store Snapshot",
+      "bestPerforming": "Best Performing",
+      "needsAttention": "Needs Attention",
+      "growthOpportunity": "Growth Opportunity"
+    }
   },
   "aiSummary": {
     "topPerformer": {
@@ -151,7 +157,18 @@
       "lastSync": "Last sync",
       "installationId": "Installation ID",
       "connectedMessage": "Your WooCommerce store is connected and syncing.",
-      "disconnectedMessage": "Connect your store to enable dashboards and AI features."
+      "disconnectedMessage": "Connect your store to enable dashboards and AI features.",
+      "syncStatus": "Sync status",
+      "accountStatus": "Account status",
+      "disconnect": "Disconnect store",
+      "disconnectConfirm": "Are you sure you want to disconnect this store?",
+      "status": {
+        "idle": "Idle",
+        "queued": "Queued",
+        "syncing": "Syncing",
+        "completed": "Completed",
+        "error": "Error"
+      }
     },
     "usage": {
       "title": "Usage this period",
@@ -162,7 +179,13 @@
     "account": {
       "title": "Account",
       "plan": "Plan",
-      "billing": "Billing"
+      "billing": "Billing",
+      "status": {
+        "active": "Active",
+        "trial": "Trial",
+        "suspended": "Suspended",
+        "disconnected": "Disconnected"
+      }
     },
     "help": {
       "title": "Learn more & support",
@@ -177,7 +200,9 @@
       "login": "Log in"
     },
     "connect": {
-      "description": "Use this installation ID to link your WooCommerce store to Expenzey AI."
+      "description": "Use this installation ID to link your WooCommerce store to Expenzey AI.",
+      "syncing": "Syncing your store data…",
+      "syncComplete": "Initial sync complete!"
     },
     "steps": {
       "connect": "Connect store",

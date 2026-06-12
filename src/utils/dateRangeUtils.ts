@@ -1,8 +1,14 @@
 import dayjs from "dayjs";
+import type { Dayjs } from "dayjs";
 import type { DateRangePreset } from "@/types/metrics";
 
-/** Demo anchor — matches mock dashboard data (May 2024). */
-export const MOCK_TODAY = dayjs("2024-05-25");
+/** Calendar week containing `reference`: Sunday 00:00 through Saturday 23:59. */
+export function getCurrentWeekRange(reference: Dayjs = dayjs()): { start: Date; end: Date } {
+  const anchor = reference.startOf("day");
+  const start = anchor.day(0).startOf("day");
+  const end = anchor.day(6).endOf("day");
+  return { start: start.toDate(), end: end.toDate() };
+}
 
 export function presetToDays(preset: DateRangePreset): number {
   switch (preset) {
@@ -30,8 +36,11 @@ export function formatDashboardDateRangeLabel(start: Date, end: Date): string {
   return `${startPart} – ${endPart}`;
 }
 
-export function getRangeForPreset(preset: DateRangePreset): { start: Date; end: Date } {
-  const end = MOCK_TODAY.endOf("day");
+export function getRangeForPreset(
+  preset: DateRangePreset,
+  reference: Dayjs = dayjs()
+): { start: Date; end: Date } {
+  const end = reference.endOf("day");
   const days = presetToDays(preset);
   const start = end.subtract(days - 1, "day").startOf("day");
   return { start: start.toDate(), end: end.toDate() };

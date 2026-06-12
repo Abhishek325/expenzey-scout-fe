@@ -29,6 +29,19 @@ const visibleRows = computed(() => {
   const list = products.value;
   return expanded.value ? list : list.slice(0, 3);
 });
+
+function productImageUrl(row: Record<string, unknown>): string | null {
+  const url = row.imageUrl ?? row.image_url;
+  if (typeof url !== "string" || url.trim() === "") {
+    return null;
+  }
+  return url;
+}
+
+function productInitial(row: Record<string, unknown>): string {
+  const name = String(row.name ?? "?").trim();
+  return name.charAt(0).toUpperCase() || "?";
+}
 </script>
 
 <template>
@@ -53,10 +66,18 @@ const visibleRows = computed(() => {
       <template #cell-product="{ row }">
         <div class="flex items-center gap-2.5">
           <img
-            :src="String(row.imageUrl)"
+            v-if="productImageUrl(row)"
+            :src="productImageUrl(row)!"
             :alt="String(row.name)"
             class="h-8 w-8 shrink-0 rounded-md border border-slate-100 object-cover"
           />
+          <div
+            v-else
+            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-slate-100 bg-slate-100 text-xs font-semibold text-slate-500"
+            aria-hidden="true"
+          >
+            {{ productInitial(row) }}
+          </div>
           <span class="text-slate-800">{{ row.name }}</span>
         </div>
       </template>

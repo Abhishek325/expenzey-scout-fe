@@ -1,8 +1,9 @@
 import type { Pinia } from "pinia";
 import type { IStringService } from "@/services/stringService";
 import { useAppStore } from "@/stores/appStore";
+import type { WpConnectionConfig } from "@/stores/appStore";
 import type { ExpenzeyAiConfig } from "@/types/wp";
-import { parseDataSource, parseWpBoolean } from "@/services/wp/wpConfigUtils";
+import { parseWpBoolean } from "@/services/wp/wpConfigUtils";
 
 export function getWpConfig(): ExpenzeyAiConfig | undefined {
   return window.expenzeyAi;
@@ -39,7 +40,10 @@ export async function applyWpBootstrap(
     siteUrl: config.siteUrl,
     installationId: config.installationId,
     lastSync: config.lastSync,
-    dataSource: parseDataSource(config.dataSource),
+    accountStatus: (config.accountStatus as WpConnectionConfig["accountStatus"]) ?? "active",
+    syncStatus: (config.syncStatus as WpConnectionConfig["syncStatus"]) ?? "idle",
+    currency: config.currency ?? "USD",
+    locale: config.locale,
   });
 
   await applyLocale(stringService, config.locale);

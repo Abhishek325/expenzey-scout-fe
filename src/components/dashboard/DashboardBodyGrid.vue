@@ -4,6 +4,7 @@ import AISummaryCard from "@/components/dashboard/AISummaryCard.vue";
 import AIChatWidget from "@/components/dashboard/AIChatWidget.vue";
 import RecentOrdersTable from "@/components/dashboard/RecentOrdersTable.vue";
 import RevenueOverviewChart from "@/components/dashboard/RevenueOverviewChart.vue";
+import StoreSnapshotCard from "@/components/dashboard/StoreSnapshotCard.vue";
 import TopProductsTable from "@/components/dashboard/TopProductsTable.vue";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 import type { RevenueChartGranularity } from "@/types/metrics";
@@ -13,7 +14,7 @@ const periodDaily = useLocalizedString("dashboard", "revenuePeriodDaily");
 const periodWeekly = useLocalizedString("dashboard", "revenuePeriodWeekly");
 const periodMonthly = useLocalizedString("dashboard", "revenuePeriodMonthly");
 
-const chartGranularity = ref<RevenueChartGranularity>("weekly");
+const chartGranularity = ref<RevenueChartGranularity>("daily");
 </script>
 
 <template>
@@ -43,8 +44,9 @@ const chartGranularity = ref<RevenueChartGranularity>("weekly");
       </div>
     </div>
 
-    <!-- Right 1/3: AI summary + chat stacked -->
+    <!-- Right 1/3: snapshot + AI summary + chat stacked -->
     <div class="flex flex-col gap-4 lg:col-span-1">
+      <StoreSnapshotCard />
       <AISummaryCard />
       <AIChatWidget />
     </div>

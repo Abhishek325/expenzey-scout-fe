@@ -15,6 +15,7 @@ import { PRODUCTS_SERVICE_KEY } from "@/services/products/IProductsService";
 import { REPORTS_SERVICE_KEY } from "@/services/reports/IReportsService";
 import { CHAT_SERVICE_KEY } from "@/services/chat/IChatService";
 import { USAGE_SERVICE_KEY } from "@/services/usage/IUsageService";
+import { SNAPSHOT_SERVICE_KEY } from "@/services/snapshot/ISnapshotService";
 
 async function bootstrap() {
   const app = createApp(App);
@@ -31,6 +32,7 @@ async function bootstrap() {
   app.provide(REPORTS_SERVICE_KEY, services.reportsService);
   app.provide(CHAT_SERVICE_KEY, services.chatService);
   app.provide(USAGE_SERVICE_KEY, services.usageService);
+  app.provide(SNAPSHOT_SERVICE_KEY, services.snapshotService);
 
   await applyWpBootstrap(pinia, services.stringService);
 

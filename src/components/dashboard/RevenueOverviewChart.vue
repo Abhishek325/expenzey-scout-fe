@@ -13,6 +13,7 @@ import {
 import { nextTick, onBeforeUnmount, ref, toRef, watch } from "vue";
 import ChartSkeleton from "@/components/dashboard/ChartSkeleton.vue";
 import { useRevenueTrend } from "@/composables/dashboard/useRevenueTrend";
+import { useFormatCurrency } from "@/composables/useFormatCurrency";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 import type { RevenueChartGranularity } from "@/types/metrics";
 import { formatRevenueChartAxisLabel } from "@/utils/revenueTrendUtils";
@@ -38,6 +39,7 @@ Chart.register(
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const granularityRef = toRef(props, "granularity");
 const { loading, trend } = useRevenueTrend(granularityRef);
+const { formatCompactAxis } = useFormatCurrency();
 const datasetLabel = useLocalizedString("dashboard", "revenueTrendTitle");
 
 let chart: Chart | null = null;
@@ -47,13 +49,7 @@ function formatYAxisTick(value: number | string): string {
   if (Number.isNaN(n)) {
     return String(value);
   }
-  if (n === 0) {
-    return "$0";
-  }
-  if (n >= 1000) {
-    return `$${Math.round(n / 1000)}K`;
-  }
-  return `$${n}`;
+  return formatCompactAxis(n);
 }
 
 function renderChart() {

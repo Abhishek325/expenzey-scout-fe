@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import type { DateRangePreset, DateRangeSelection } from "@/types/metrics";
 import {
   formatDashboardDateRangeLabel,
+  getCurrentWeekRange,
   getRangeForPreset,
 } from "@/utils/dateRangeUtils";
 
@@ -13,13 +14,13 @@ export const DATE_RANGE_PRESETS: readonly DateRangePreset[] = [
   "12mo",
 ] as const;
 
-const defaultRange = getRangeForPreset("7d");
+const defaultRange = getCurrentWeekRange();
 
 export const useDateRangeStore = defineStore("dateRange", {
   state: () => ({
     start: defaultRange.start,
     end: defaultRange.end,
-    preset: "7d" as DateRangePreset | null,
+    preset: null as DateRangePreset | null,
     isCustom: false,
   }),
   getters: {

@@ -5,7 +5,7 @@ import { storeToRefs } from "pinia";
 import { DATE_RANGE_PRESETS, useDateRangeStore } from "@/stores/dateRange";
 import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
 import type { DateRangePreset } from "@/types/metrics";
-import { MOCK_TODAY } from "@/utils/dateRangeUtils";
+import dayjs from "dayjs";
 
 const emit = defineEmits<{
   change: [preset: DateRangePreset | null];
@@ -71,7 +71,7 @@ function onDocumentClick(event: MouseEvent) {
 onMounted(() => document.addEventListener("click", onDocumentClick));
 onBeforeUnmount(() => document.removeEventListener("click", onDocumentClick));
 
-const maxDate = computed(() => MOCK_TODAY.toDate());
+const maxDate = computed(() => dayjs().endOf("day").toDate());
 </script>
 
 <template>

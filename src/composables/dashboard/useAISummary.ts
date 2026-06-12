@@ -1,14 +1,9 @@
 import { inject, onMounted, ref } from "vue";
-import mockSummary from "@/data/dashboard/mock-ai-summary.json";
-function formatRevenueUsd(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
+import { useFormatCurrency } from "@/composables/useFormatCurrency";
 import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
+import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
 import { resolveStringKey } from "@/composables/dashboard/resolveStringKey";
+import type { AISummary } from "@/types/reports";
 
 export type InsightVariant = "success" | "danger" | "info";
 export type InsightIcon = "trophy" | "warning" | "lightbulb";
@@ -22,50 +17,65 @@ export interface AIInsightViewModel {
   icon?: InsightIcon;
 }
 
-function formatRevenueInsightLine(revenue: number, growthPercent: number): string {
-  const arrow = growthPercent >= 0 ? "↑" : "↓";
-  const magnitude = Math.abs(growthPercent);
-  return `${formatRevenueUsd(revenue)} revenue (${arrow} ${magnitude}%)`;
-}
-
 export function useAISummary() {
   const stringService = inject(STRING_SERVICE_KEY) as IStringService;
+  const reportsService = inject(REPORTS_SERVICE_KEY) as IReportsService;
+  const { formatCurrency } = useFormatCurrency();
   const insights = ref<AIInsightViewModel[]>([]);
   const loading = ref(true);
+  const error = ref<string | null>(null);
 
-  function buildInsights() {
-    const top = mockSummary.topPerformer;
-    const attention = mockSummary.needsAttention;
-    const items: AIInsightViewModel[] = [
+  function formatRevenueInsightLine(revenue: number, growthPercent: number): string {
+    const arrow = growthPercent >= 0 ? "↑" : "↓";
+    const magnitude = Math.abs(growthPercent);
+    return `${formatCurrency(revenue, { maximumFractionDigits: 0 })} revenue (${arrow} ${magnitude}%)`;
+  }
+
+  function buildInsights(summary: AISummary) {
+    const top = summary.topPerformer;
+    const attention = summary.needsAttention;
+    return [
       {
         id: "top-performer",
-        variant: "success",
-        icon: "trophy",
+        variant: "success" as const,
+        icon: "trophy" as const,
         title: resolveStringKey(stringService, "aiSummary.topPerformer.label"),
         productName: top.productName,
         detail: formatRevenueInsightLine(top.revenue, top.growthPercent),
       },
       {
         id: "needs-attention",
-        variant: "danger",
-        icon: "warning",
+        variant: "danger" as const,
+        icon: "warning" as const,
         title: resolveStringKey(stringService, "aiSummary.needsAttention.label"),
         productName: attention.productName,
         detail: formatRevenueInsightLine(attention.revenue, attention.growthPercent),
       },
       {
         id: "growth",
-        variant: "info",
-        icon: "lightbulb",
+        variant: "info" as const,
+        icon: "lightbulb" as const,
         title: resolveStringKey(stringService, "aiSummary.growthOpportunity.label"),
-        detail: resolveStringKey(stringService, mockSummary.growthOpportunity.textKey),
+        detail: resolveStringKey(stringService, summary.growthOpportunity.textKey),
       },
     ];
-    insights.value = items;
-    loading.value = false;
   }
 
-  onMounted(buildInsights);
+  async function load() {
+    loading.value = true;
+    error.value = null;
+    try {
+      const summary = await reportsService.getAISummary();
+      insights.value = buildInsights(summary);
+    } catch (e) {
+      error.value = e instanceof Error ? e.message : "Failed to load AI summary";
+      insights.value = [];
+    } finally {
+      loading.value = false;
+    }
+  }
 
-  return { insights, loading, refresh: buildInsights };
+  onMounted(load);
+
+  return { insights, loading, error, refresh: load };
 }

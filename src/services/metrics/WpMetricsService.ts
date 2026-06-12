@@ -1,4 +1,6 @@
 import type { IMetricsService } from "@/services/metrics/IMetricsService";
+import { wpRestFetch } from "@/services/wp/wpRestClient";
+import { withDateRange } from "@/services/wp/wpQueryUtils";
 import type {
   DashboardMetrics,
   DateRangeSelection,
@@ -7,14 +9,16 @@ import type {
 } from "@/types/metrics";
 
 export class WpMetricsService implements IMetricsService {
-  async getDashboardMetrics(_range: DateRangeSelection): Promise<DashboardMetrics> {
-    throw new Error("WpMetricsService not implemented");
+  async getDashboardMetrics(range: DateRangeSelection): Promise<DashboardMetrics> {
+    return wpRestFetch<DashboardMetrics>(withDateRange("/dashboard/metrics", range));
   }
 
   async getRevenueTrend(
-    _range: DateRangeSelection,
-    _granularity: RevenueChartGranularity = "daily"
+    range: DateRangeSelection,
+    granularity: RevenueChartGranularity = "daily"
   ): Promise<RevenueTrend> {
-    throw new Error("WpMetricsService not implemented");
+    const path = withDateRange("/dashboard/revenue", range);
+    const url = `${path}&granularity=${granularity}`;
+    return wpRestFetch<RevenueTrend>(url);
   }
 }

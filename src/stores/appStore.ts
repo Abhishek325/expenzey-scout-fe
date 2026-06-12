@@ -1,29 +1,43 @@
 import { defineStore } from "pinia";
-import mockConnection from "@/data/settings/mock-connection.json";
-import type { DataSource } from "@/services/createServices";
 import { isWpContext, wpRestFetch } from "@/services/wp/wpRestClient";
 import type { DateRangePreset } from "@/types/metrics";
+
+export type SyncStatus = "idle" | "queued" | "syncing" | "completed" | "error";
+export type AccountStatus = "active" | "trial" | "suspended" | "disconnected";
 
 export interface WpConnectionConfig {
   connected: boolean;
   siteUrl: string;
   installationId: string;
   lastSync: string;
-  dataSource?: DataSource;
+  currency?: string;
+  locale?: string;
+  accountStatus?: AccountStatus;
+  syncStatus?: SyncStatus;
+}
+
+export interface SyncStatusResponse {
+  status: SyncStatus;
+  lastSync: string | null;
+  entityCounts: Record<string, number>;
+  error: string | null;
 }
 
 export const useAppStore = defineStore("app", {
   state: () => ({
     dateRangePreset: "7d" as DateRangePreset,
-    connected: mockConnection.connected as boolean,
-    siteUrl: mockConnection.siteUrl as string,
-    installationId: mockConnection.installationId as string,
-    lastSync: mockConnection.lastSync as string,
-    dataSource: "mock" as DataSource,
+    connected: false,
+    siteUrl: "",
+    installationId: "",
+    lastSync: "",
+    currency: "USD",
+    locale: "en-us",
+    accountStatus: "active" as AccountStatus,
+    syncStatus: "idle" as SyncStatus,
   }),
   getters: {
     requiresOnboarding(state): boolean {
-      return state.dataSource === "api" && !state.connected;
+      return isWpContext() && !state.connected;
     },
   },
   actions: {
@@ -38,26 +52,62 @@ export const useAppStore = defineStore("app", {
       this.siteUrl = config.siteUrl;
       this.installationId = config.installationId;
       this.lastSync = config.lastSync;
-      if (config.dataSource) {
-        this.dataSource = config.dataSource;
+      if (config.accountStatus) {
+        this.accountStatus = config.accountStatus;
+      }
+      if (config.syncStatus) {
+        this.syncStatus = config.syncStatus;
+      }
+      if (config.currency) {
+        this.currency = config.currency;
+      }
+      if (config.locale) {
+        this.locale = config.locale;
       }
     },
     async completeConnection(): Promise<void> {
       if (isWpContext()) {
-        const result = await wpRestFetch<{ connected: boolean; lastSync: string }>(
-          "/connection/connect",
-          { method: "POST" }
-        );
+        const result = await wpRestFetch<{
+          connected: boolean;
+          lastSync: string;
+          accountStatus?: AccountStatus;
+          syncStatus?: SyncStatus;
+        }>("/connection/connect", { method: "POST" });
         this.applyWpConfig({
           connected: true,
           siteUrl: this.siteUrl,
           installationId: this.installationId,
           lastSync: result.lastSync,
+          accountStatus: result.accountStatus,
+          syncStatus: result.syncStatus,
         });
         return;
       }
 
       this.setConnected(true);
+    },
+    async disconnect(): Promise<void> {
+      if (isWpContext()) {
+        await wpRestFetch("/connection/disconnect", { method: "POST" });
+      }
+      this.applyWpConfig({
+        connected: false,
+        siteUrl: this.siteUrl,
+        installationId: this.installationId,
+        lastSync: this.lastSync,
+        accountStatus: "disconnected",
+        syncStatus: "idle",
+      });
+    },
+    async fetchSyncStatus(): Promise<SyncStatusResponse | null> {
+      if (!isWpContext()) {
+        return null;
+      }
+      try {
+        return await wpRestFetch<SyncStatusResponse>("/sync/status");
+      } catch {
+        return null;
+      }
     },
   },
 });

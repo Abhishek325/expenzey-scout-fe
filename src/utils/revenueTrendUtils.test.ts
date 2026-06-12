@@ -1,9 +1,8 @@
 import {
   aggregateRevenuePoints,
+  fillRevenueSeries,
   formatRevenueChartAxisLabel,
-  generateMockRevenueDailyPoints,
 } from "@/utils/revenueTrendUtils";
-import { MOCK_TODAY } from "@/utils/dateRangeUtils";
 
 describe("aggregateRevenuePoints", () => {
   const samplePoints = [
@@ -24,10 +23,10 @@ describe("aggregateRevenuePoints", () => {
     ]);
   });
 
-  it("sums revenue by ISO week", () => {
+  it("sums revenue by calendar week (Sunday start)", () => {
     expect(aggregateRevenuePoints(samplePoints, "weekly")).toEqual([
-      { date: "2024-05-20", revenue: 300 },
-      { date: "2024-05-27", revenue: 50 },
+      { date: "2024-05-19", revenue: 300 },
+      { date: "2024-05-26", revenue: 50 },
     ]);
   });
 
@@ -45,16 +44,39 @@ describe("aggregateRevenuePoints", () => {
   });
 });
 
-describe("generateMockRevenueDailyPoints", () => {
-  it("returns 365 deterministic daily points ending on MOCK_TODAY", () => {
-    const firstRun = generateMockRevenueDailyPoints();
-    const secondRun = generateMockRevenueDailyPoints();
+describe("fillRevenueSeries", () => {
+  it("fills every day in the range with zero for missing buckets", () => {
+    const start = new Date("2026-03-08T00:00:00");
+    const end = new Date("2026-03-14T23:59:59");
+    const sparse = [{ date: "2026-03-10", revenue: 500 }];
 
-    expect(firstRun).toHaveLength(365);
-    expect(firstRun[0]?.date).toBe(MOCK_TODAY.subtract(364, "day").format("YYYY-MM-DD"));
-    expect(firstRun[firstRun.length - 1]?.date).toBe(MOCK_TODAY.format("YYYY-MM-DD"));
-    expect(secondRun).toEqual(firstRun);
-    expect(firstRun.every((point) => point.revenue > 0)).toBe(true);
+    const filled = fillRevenueSeries(start, end, "daily", sparse);
+
+    expect(filled).toHaveLength(7);
+    expect(filled.map((point) => point.date)).toEqual([
+      "2026-03-08",
+      "2026-03-09",
+      "2026-03-10",
+      "2026-03-11",
+      "2026-03-12",
+      "2026-03-13",
+      "2026-03-14",
+    ]);
+    expect(filled.find((point) => point.date === "2026-03-10")?.revenue).toBe(500);
+    expect(filled.filter((point) => point.revenue === 0)).toHaveLength(6);
+  });
+
+  it("fills weekly buckets across a multi-week range", () => {
+    const start = new Date("2026-03-08T00:00:00");
+    const end = new Date("2026-03-21T23:59:59");
+    const sparse = [{ date: "2026-03-10", revenue: 900 }];
+
+    const filled = fillRevenueSeries(start, end, "weekly", sparse);
+
+    expect(filled).toEqual([
+      { date: "2026-03-08", revenue: 900 },
+      { date: "2026-03-15", revenue: 0 },
+    ]);
   });
 });
 

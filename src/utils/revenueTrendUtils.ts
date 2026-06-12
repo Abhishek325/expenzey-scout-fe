@@ -1,19 +1,30 @@
 import dayjs from "dayjs";
-import isoWeek from "dayjs/plugin/isoWeek";
+import type { Dayjs } from "dayjs";
 import type { RevenueChartGranularity, RevenueTrendPoint } from "@/types/metrics";
-import { MOCK_TODAY } from "@/utils/dateRangeUtils";
 
-dayjs.extend(isoWeek);
-
-function bucketKey(date: string, granularity: RevenueChartGranularity): string {
-  const d = dayjs(date.slice(0, 10));
-  if (granularity === "weekly") {
-    return d.startOf("isoWeek").format("YYYY-MM-DD");
-  }
+function bucketStart(date: Dayjs, granularity: RevenueChartGranularity): Dayjs {
+  const day = date.startOf("day");
   if (granularity === "monthly") {
-    return d.startOf("month").format("YYYY-MM-DD");
+    return day.startOf("month");
   }
-  return d.format("YYYY-MM-DD");
+  if (granularity === "weekly") {
+    return day.day(0);
+  }
+  return day;
+}
+
+function bucketKey(date: Dayjs, granularity: RevenueChartGranularity): string {
+  return bucketStart(date, granularity).format("YYYY-MM-DD");
+}
+
+function advanceBucket(date: Dayjs, granularity: RevenueChartGranularity): Dayjs {
+  if (granularity === "monthly") {
+    return date.add(1, "month").startOf("month");
+  }
+  if (granularity === "weekly") {
+    return date.add(7, "day");
+  }
+  return date.add(1, "day");
 }
 
 export function aggregateRevenuePoints(
@@ -26,7 +37,7 @@ export function aggregateRevenuePoints(
 
   const buckets = new Map<string, number>();
   for (const point of points) {
-    const key = bucketKey(point.date, granularity);
+    const key = bucketKey(dayjs(point.date.slice(0, 10)), granularity);
     buckets.set(key, (buckets.get(key) ?? 0) + point.revenue);
   }
 
@@ -35,30 +46,34 @@ export function aggregateRevenuePoints(
     .map(([date, revenue]) => ({ date, revenue }));
 }
 
-/** Deterministic mock daily revenue for demo charts (12 months ending MOCK_TODAY). */
-export function generateMockRevenueDailyPoints(): RevenueTrendPoint[] {
-  const end = MOCK_TODAY.startOf("day");
-  const start = end.subtract(364, "day");
-  const points: RevenueTrendPoint[] = [];
-  let current = start;
-  let index = 0;
-
-  while (!current.isAfter(end)) {
-    const seasonal = Math.sin(index / 14) * 700;
-    const weekly = Math.sin(index / 7) * 400;
-    const trend = index * 3.5;
-    const revenue = Math.round(1800 + seasonal + weekly + trend + ((index * 47) % 350));
-
-    points.push({
-      date: current.format("YYYY-MM-DD"),
-      revenue,
-    });
-
-    current = current.add(1, "day");
-    index += 1;
+/** Fill every bucket in [start, end] so daily charts show the full selected period. */
+export function fillRevenueSeries(
+  start: Date,
+  end: Date,
+  granularity: RevenueChartGranularity,
+  points: RevenueTrendPoint[]
+): RevenueTrendPoint[] {
+  const revenueByBucket = new Map<string, number>();
+  for (const point of points) {
+    const key = bucketKey(dayjs(point.date.slice(0, 10)), granularity);
+    revenueByBucket.set(key, (revenueByBucket.get(key) ?? 0) + point.revenue);
   }
 
-  return points;
+  const rangeStart = bucketStart(dayjs(start).startOf("day"), granularity);
+  const rangeEnd = dayjs(end).startOf("day");
+  const result: RevenueTrendPoint[] = [];
+
+  let cursor = rangeStart;
+  while (!cursor.isAfter(rangeEnd)) {
+    const key = bucketKey(cursor, granularity);
+    result.push({
+      date: key,
+      revenue: revenueByBucket.get(key) ?? 0,
+    });
+    cursor = advanceBucket(cursor, granularity);
+  }
+
+  return result;
 }
 
 export function formatRevenueChartAxisLabel(

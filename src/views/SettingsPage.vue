@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { inject } from "vue";
-import mockUsage from "@/data/settings/mock-usage.json";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
 import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
@@ -16,6 +15,9 @@ const connectionTitle = useLocalizedString("settings", "connection.title");
 const siteUrlLabel = useLocalizedString("settings", "connection.siteUrl");
 const installationIdLabel = useLocalizedString("settings", "connection.installationId");
 const lastSyncLabel = useLocalizedString("settings", "connection.lastSync");
+const syncStatusLabel = useLocalizedString("settings", "connection.syncStatus");
+const accountStatusLabel = useLocalizedString("settings", "connection.accountStatus");
+const disconnectLabel = useLocalizedString("settings", "connection.disconnect");
 const usageTitle = useLocalizedString("settings", "usage.title");
 const syncNowLabel = useLocalizedString("common", "syncNow");
 const helpOpen = ref(false);
@@ -26,6 +28,15 @@ const strings = useReactiveLocaleStringRecord("settings", [
   "usage.usedOfLimit",
   "help.title",
   "help.body",
+  "connection.status.idle",
+  "connection.status.queued",
+  "connection.status.syncing",
+  "connection.status.completed",
+  "connection.status.error",
+  "account.status.active",
+  "account.status.trial",
+  "account.status.suspended",
+  "account.status.disconnected",
 ] as const);
 
 const stringService = inject(STRING_SERVICE_KEY) as IStringService;
@@ -37,12 +48,16 @@ const connection = computed(() => ({
   siteUrl: appStore.siteUrl,
   installationId: appStore.installationId,
   lastSync: appStore.lastSync,
+  accountStatus: appStore.accountStatus,
+  syncStatus: appStore.syncStatus,
 }));
 const usage = ref<UsageQuota>({
-  reports: { ...mockUsage.reports },
-  chat: { ...mockUsage.chat },
+  reports: { used: 0, limit: 0, labelKey: "settings.usage.reports" },
+  chat: { used: 0, limit: 0, labelKey: "settings.usage.chat" },
 });
 const syncing = ref(false);
+const disconnecting = ref(false);
+const entityCounts = ref<Record<string, number>>({});
 
 function formatDate(iso: string): string {
   try {
@@ -59,40 +74,85 @@ function usageLabel(used: number, limit: number): string {
     .replace("{limit}", String(limit));
 }
 
-async function syncNow() {
-  syncing.value = true;
-  try {
-    if (isWpContext()) {
-      const result = await wpRestFetch<{ lastSync: string }>("/sync/trigger", {
-        method: "POST",
-      });
-      appStore.applyWpConfig({
-        connected: appStore.connected,
-        siteUrl: appStore.siteUrl,
-        installationId: appStore.installationId,
-        lastSync: result.lastSync,
-      });
+function statusLabel(prefix: string, value: string): string {
+  const key = `${prefix}.${value}` as keyof typeof strings.value;
+  return strings.value[key] ?? value;
+}
+
+async function refreshSyncStatus() {
+  const status = await appStore.fetchSyncStatus();
+  if (status) {
+    appStore.syncStatus = status.status;
+    entityCounts.value = status.entityCounts;
+    if (status.lastSync) {
+      appStore.lastSync = status.lastSync;
+    }
+  }
+}
+
+async function pollSyncUntilSettled(maxAttempts = 30): Promise<void> {
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await refreshSyncStatus();
+    if (appStore.syncStatus === "completed" || appStore.syncStatus === "error") {
       return;
     }
+  }
+}
 
-    await new Promise((resolve) => setTimeout(resolve, 600));
+async function syncNow() {
+  if (!isWpContext()) {
+    return;
+  }
+
+  syncing.value = true;
+  try {
+    const result = await wpRestFetch<{ lastSync: string; syncStatus?: string }>("/sync/trigger", {
+      method: "POST",
+    });
     appStore.applyWpConfig({
       connected: appStore.connected,
       siteUrl: appStore.siteUrl,
       installationId: appStore.installationId,
-      lastSync: new Date().toISOString(),
+      lastSync: result.lastSync,
+      syncStatus: (result.syncStatus as typeof appStore.syncStatus) ?? "queued",
     });
+    await refreshSyncStatus();
+
+    if (appStore.syncStatus === "queued" || appStore.syncStatus === "syncing") {
+      await pollSyncUntilSettled();
+    }
   } finally {
     syncing.value = false;
   }
 }
 
+async function disconnectStore() {
+  if (!window.confirm(stringService.getStrings("settings", "connection.disconnectConfirm"))) {
+    return;
+  }
+  disconnecting.value = true;
+  try {
+    await appStore.disconnect();
+  } finally {
+    disconnecting.value = false;
+  }
+}
+
+let pollTimer: ReturnType<typeof setInterval> | undefined;
+
 onMounted(async () => {
   try {
     usage.value = await usageService.getUsage();
   } catch {
-    /* keep mock */
+    /* usage stays at zero defaults */
   }
+  await refreshSyncStatus();
+  pollTimer = setInterval(refreshSyncStatus, 10000);
+});
+
+onUnmounted(() => {
+  if (pollTimer) clearInterval(pollTimer);
 });
 </script>
 
@@ -115,18 +175,44 @@ onMounted(async () => {
           <dd class="mt-1 font-mono text-sm text-gray-900">{{ connection.installationId }}</dd>
         </div>
         <div>
+          <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ syncStatusLabel }}</dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ statusLabel("connection.status", connection.syncStatus) }}
+            <span v-if="Object.keys(entityCounts).length" class="text-gray-500">
+              ({{ Object.entries(entityCounts).map(([k, v]) => `${k}: ${v}`).join(", ") }})
+            </span>
+          </dd>
+        </div>
+        <div>
           <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ lastSyncLabel }}</dt>
           <dd class="mt-1 text-sm text-gray-900">{{ formatDate(connection.lastSync) }}</dd>
         </div>
+        <div>
+          <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ accountStatusLabel }}</dt>
+          <dd class="mt-1 text-sm capitalize text-gray-900">
+            {{ statusLabel("account.status", connection.accountStatus) }}
+          </dd>
+        </div>
       </dl>
-      <button
-        type="button"
-        class="mt-5 inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 disabled:opacity-60"
-        :disabled="syncing"
-        @click="syncNow"
-      >
-        {{ syncNowLabel }}
-      </button>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <button
+          type="button"
+          class="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 disabled:opacity-60"
+          :disabled="syncing"
+          @click="syncNow"
+        >
+          {{ syncNowLabel }}
+        </button>
+        <button
+          v-if="connection.connected"
+          type="button"
+          class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-60"
+          :disabled="disconnecting"
+          @click="disconnectStore"
+        >
+          {{ disconnectLabel }}
+        </button>
+      </div>
     </section>
 
     <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">

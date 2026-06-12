@@ -1,13 +1,15 @@
 import dayjs from "dayjs";
 import {
-  MOCK_TODAY,
   comparisonPeriodLabel,
   dayCountInRange,
   formatDashboardDateRangeLabel,
   getRangeForPreset,
+  getCurrentWeekRange,
   isDateInRange,
   presetToDays,
 } from "@/utils/dateRangeUtils";
+
+const MOCK_TODAY = dayjs("2024-05-25");
 
 describe("presetToDays", () => {
   it.each([
@@ -34,16 +36,27 @@ describe("formatDashboardDateRangeLabel", () => {
 });
 
 describe("getRangeForPreset", () => {
-  it("returns an inclusive range ending on MOCK_TODAY", () => {
-    const { start, end } = getRangeForPreset("7d");
+  it("returns an inclusive range ending on the reference day", () => {
+    const { start, end } = getRangeForPreset("7d", MOCK_TODAY);
 
     expect(dayjs(end).format("YYYY-MM-DD")).toBe(MOCK_TODAY.format("YYYY-MM-DD"));
     expect(dayCountInRange(start, end)).toBe(7);
   });
 
   it("spans 30 days for the 30d preset", () => {
-    const { start, end } = getRangeForPreset("30d");
+    const { start, end } = getRangeForPreset("30d", MOCK_TODAY);
     expect(dayCountInRange(start, end)).toBe(30);
+  });
+});
+
+describe("getCurrentWeekRange", () => {
+  it("returns Sunday through Saturday for the reference week", () => {
+    // 2024-05-22 is a Wednesday
+    const reference = dayjs("2024-05-22");
+    const { start, end } = getCurrentWeekRange(reference);
+
+    expect(dayjs(start).format("YYYY-MM-DD")).toBe("2024-05-19"); // Sunday
+    expect(dayjs(end).format("YYYY-MM-DD")).toBe("2024-05-25"); // Saturday
   });
 });
 

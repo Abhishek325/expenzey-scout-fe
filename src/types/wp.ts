@@ -1,5 +1,3 @@
-import type { DataSource } from "@/services/createServices";
-
 export interface ExpenzeyAiConfig {
   restUrl: string;
   nonce: string;
@@ -7,8 +5,10 @@ export interface ExpenzeyAiConfig {
   siteUrl: string;
   installationId: string;
   lastSync: string;
+  accountStatus?: string;
+  syncStatus?: string;
   locale: string;
-  dataSource: DataSource;
+  currency: string;
   pluginVersion: string;
   isAdmin: boolean;
 }
