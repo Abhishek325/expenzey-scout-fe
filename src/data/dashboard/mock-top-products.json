@@ -1,0 +1,44 @@
+{
+  "products": [
+    {
+      "id": "prod-001",
+      "name": "Protein Powder",
+      "revenue": 8420,
+      "orders": 124,
+      "growthPercent": 18.4,
+      "imageUrl": "https://placehold.co/80x80/png?text=Protein"
+    },
+    {
+      "id": "prod-002",
+      "name": "Yoga Mat",
+      "revenue": 5210,
+      "orders": 98,
+      "growthPercent": -3.2,
+      "imageUrl": "https://placehold.co/80x80/png?text=Yoga"
+    },
+    {
+      "id": "prod-003",
+      "name": "Resistance Bands",
+      "revenue": 4680,
+      "orders": 156,
+      "growthPercent": 11.7,
+      "imageUrl": "https://placehold.co/80x80/png?text=Bands"
+    },
+    {
+      "id": "prod-004",
+      "name": "Whey Isolate",
+      "revenue": 6120,
+      "orders": 87,
+      "growthPercent": 9.5,
+      "imageUrl": "https://placehold.co/80x80/png?text=Whey"
+    },
+    {
+      "id": "prod-005",
+      "name": "Gym Bag",
+      "revenue": 3890,
+      "orders": 72,
+      "growthPercent": 6.1,
+      "imageUrl": "https://placehold.co/80x80/png?text=Bag"
+    }
+  ]
+}

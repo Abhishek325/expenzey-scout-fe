@@ -1,0 +1,15 @@
+{
+  "topPerformer": {
+    "productName": "Protein Powder",
+    "revenue": 4812,
+    "growthPercent": 18.4
+  },
+  "needsAttention": {
+    "productName": "Yoga Mat",
+    "revenue": 1128,
+    "growthPercent": -23.7
+  },
+  "growthOpportunity": {
+    "textKey": "aiSummary.growthOpportunity.detail"
+  }
+}

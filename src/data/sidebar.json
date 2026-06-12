@@ -1,0 +1,26 @@
+[
+  {
+    "id": "dashboard",
+    "route": "/dashboard",
+    "icon": "📊",
+    "labelKey": "nav.dashboard"
+  },
+  {
+    "id": "reports",
+    "route": "/reports",
+    "icon": "📄",
+    "labelKey": "nav.reports"
+  },
+  {
+    "id": "chat",
+    "route": "/chat",
+    "icon": "💬",
+    "labelKey": "nav.chat"
+  },
+  {
+    "id": "settings",
+    "route": "/settings",
+    "icon": "⚙️",
+    "labelKey": "nav.settings"
+  }
+]

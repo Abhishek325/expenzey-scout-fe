@@ -1,0 +1,7 @@
+{
+  "messages": [],
+  "defaultGreeting": {
+    "role": "assistant",
+    "contentKey": "chat.greeting.default"
+  }
+}

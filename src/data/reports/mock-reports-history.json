@@ -1,0 +1,24 @@
+{
+  "reports": [
+    {
+      "id": "report-2024-w20",
+      "title": "Weekly Report — May 13–19, 2024",
+      "periodStart": "2024-05-13",
+      "periodEnd": "2024-05-19",
+      "generatedAt": "2024-05-20T08:00:00Z",
+      "status": "completed",
+      "summaryKey": "reports.history.week20Summary",
+      "downloadUrl": "/reports/report-2024-w20.pdf"
+    },
+    {
+      "id": "report-2024-w19",
+      "title": "Weekly Report — May 6–12, 2024",
+      "periodStart": "2024-05-06",
+      "periodEnd": "2024-05-12",
+      "generatedAt": "2024-05-13T08:00:00Z",
+      "status": "completed",
+      "summaryKey": "reports.history.week19Summary",
+      "downloadUrl": "/reports/report-2024-w19.pdf"
+    }
+  ]
+}

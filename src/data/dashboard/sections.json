@@ -1,0 +1,18 @@
+[
+  {
+    "id": "revenue",
+    "anchor": "revenue"
+  },
+  {
+    "id": "products",
+    "anchor": "products"
+  },
+  {
+    "id": "customers",
+    "anchor": "customers"
+  },
+  {
+    "id": "reviews",
+    "anchor": "reviews"
+  }
+]

@@ -1,0 +1,4 @@
+{
+  "reports": { "used": 1, "limit": 2, "labelKey": "settings.usage.reports" },
+  "chat": { "used": 0, "limit": 10, "labelKey": "settings.usage.chat" }
+}

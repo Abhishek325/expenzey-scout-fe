@@ -1,0 +1,37 @@
+{
+  "comparisonPeriod": "May 12 – May 18, 2024",
+  "kpis": [
+    {
+      "id": "total-revenue",
+      "labelKey": "dashboard.metrics.totalRevenue",
+      "value": 28540,
+      "formattedValue": "$28,540",
+      "changePercent": 12.5,
+      "changeDirection": "up"
+    },
+    {
+      "id": "orders",
+      "labelKey": "dashboard.metrics.orders",
+      "value": 412,
+      "formattedValue": "412",
+      "changePercent": 8.1,
+      "changeDirection": "up"
+    },
+    {
+      "id": "customers",
+      "labelKey": "dashboard.metrics.customers",
+      "value": 368,
+      "formattedValue": "368",
+      "changePercent": 10.3,
+      "changeDirection": "up"
+    },
+    {
+      "id": "aov",
+      "labelKey": "dashboard.metrics.aov",
+      "value": 69.27,
+      "formattedValue": "$69.27",
+      "changePercent": 4.2,
+      "changeDirection": "up"
+    }
+  ]
+}
