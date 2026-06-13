@@ -1,60 +1,48 @@
 <script setup lang="ts">
 import FaIcon from "@/components/icons/FaIcon.vue";
 import GenerateReportButton from "@/components/dashboard/GenerateReportButton.vue";
+import { useWeeklyReport } from "@/composables/dashboard/useWeeklyReport";
+import { useLocalizedString } from "@/composables/useLocalizedString";
 
-const reportPeriod = "Week of Jun 7 – Jun 13, 2026";
+const {
+  loading,
+  generating,
+  error,
+  reportPeriod,
+  sections,
+  recommendedAction,
+  hasContent,
+  reload,
+  generate,
+} = useWeeklyReport();
 
-const sections = [
-  {
-    label: "Revenue",
-    value: "₹432",
-    trend: "↑ 12% vs last week",
-    trendClass: "text-emerald-600",
-    icon: "fa-arrows-rotate",
-    iconClass: "bg-sky-100 text-sky-600",
-  },
-  {
-    label: "Top Product",
-    value: "Brand Buttons",
-    detail: "₹89.91 (20.8% of revenue)",
-    icon: "fa-calendar-days",
-    iconClass: "bg-violet-100 text-violet-600",
-  },
-  {
-    label: "Customer Trend",
-    value: "Returning customers",
-    trend: "↑ 8% vs last week",
-    trendClass: "text-emerald-600",
-    icon: "fa-user-group",
-    iconClass: "bg-emerald-100 text-emerald-600",
-  },
-  {
-    label: "Main Risk",
-    value: "Mens Divi Hoodie sales declined",
-    trend: "↓ 10% vs last week",
-    trendClass: "text-rose-600",
-    icon: "fa-triangle-exclamation",
-    iconClass: "bg-rose-100 text-rose-600",
-  },
-] as const;
-
-const recommendedAction =
-  "Create a bundle with Brand Buttons & Divi Tee. Potential impact: +₹3,500.";
+const loadingLabel = useLocalizedString("common", "loading");
+const errorLabel = useLocalizedString("common", "error");
+const retryLabel = useLocalizedString("common", "retry");
+const emptyLabel = useLocalizedString("dashboard", "aiInsights.weeklyReportEmpty");
+const viewFullReport = useLocalizedString("dashboard", "viewFullReport");
 </script>
 
 <template>
-  <section class="flex h-full min-h-0 flex-col rounded-xl border border-slate-200 bg-white shadow-sm">
+  <section class="flex min-h-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
     <div class="shrink-0 border-b border-slate-100 px-4 py-3">
       <div class="flex items-center gap-2">
         <FaIcon icon="fa-calendar-days" size="sm" icon-class="text-slate-400" />
         <div>
           <h3 class="text-sm font-semibold text-slate-900">Weekly AI Report</h3>
-          <p class="mt-0.5 text-xs text-slate-500">{{ reportPeriod }}</p>
+          <p class="mt-0.5 text-xs text-slate-500">{{ reportPeriod || "—" }}</p>
         </div>
       </div>
     </div>
+
     <div class="min-h-0 flex-1 overflow-y-auto p-4">
-      <div class="flex flex-col gap-3">
+      <p v-if="loading" class="text-sm text-slate-500">{{ loadingLabel }}</p>
+      <div v-else-if="error" class="flex items-center gap-3 text-sm text-rose-600">
+        <span>{{ errorLabel }}</span>
+        <button type="button" class="font-medium underline" @click="reload">{{ retryLabel }}</button>
+      </div>
+      <p v-else-if="!hasContent" class="text-sm text-slate-500">{{ emptyLabel }}</p>
+      <div v-else class="flex flex-col gap-3">
         <div
           v-for="section in sections"
           :key="section.label"
@@ -70,11 +58,9 @@ const recommendedAction =
           <div class="min-w-0 flex-1">
             <p class="text-xs font-medium uppercase tracking-wide text-slate-400">{{ section.label }}</p>
             <p class="mt-0.5 text-sm font-semibold text-slate-900">{{ section.value }}</p>
-            <p v-if="'detail' in section && section.detail" class="text-xs text-slate-600">
-              {{ section.detail }}
-            </p>
+            <p v-if="section.detail" class="text-xs text-slate-600">{{ section.detail }}</p>
             <p
-              v-if="'trend' in section && section.trend"
+              v-if="section.trend"
               class="mt-0.5 text-xs font-medium"
               :class="section.trendClass"
             >
@@ -82,7 +68,10 @@ const recommendedAction =
             </p>
           </div>
         </div>
-        <div class="flex gap-3 rounded-lg border border-indigo-100 bg-indigo-50/50 px-3 py-2.5">
+        <div
+          v-if="recommendedAction"
+          class="flex gap-3 rounded-lg border border-indigo-100 bg-indigo-50/50 px-3 py-2.5"
+        >
           <span
             class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-600"
             aria-hidden="true"
@@ -96,14 +85,16 @@ const recommendedAction =
         </div>
       </div>
     </div>
-    <div class="flex shrink-0 flex-col gap-2 border-t border-slate-100 p-4">
+
+    <div class="flex shrink-0 gap-2 border-t border-slate-100 p-3">
       <RouterLink
         to="/reports"
-        class="inline-flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+        class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
       >
-        View Full Report
+        {{ viewFullReport }}
+        <FaIcon icon="fa-arrow-right" size="xs" />
       </RouterLink>
-      <GenerateReportButton />
+      <GenerateReportButton class="flex-1" compact :disabled="generating" @generate="generate" />
     </div>
   </section>
 </template>

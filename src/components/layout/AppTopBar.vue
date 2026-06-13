@@ -5,7 +5,6 @@ import ExpenzeyIcon from "@/components/icons/ExpenzeyIcon.vue";
 const copy = useReactiveLocaleStringRecord("layout", [
   "brandName",
   "tagline",
-  "storeSwitcher",
   "proPlan",
   "notifications",
 ] as const);
@@ -30,25 +29,6 @@ const copy = useReactiveLocaleStringRecord("layout", [
           <p class="text-xs text-slate-500">{{ copy.tagline }}</p>
         </div>
       </div>
-      <button
-        type="button"
-        class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
-      >
-        {{ copy.storeSwitcher }}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          class="h-4 w-4 text-slate-400"
-          aria-hidden="true"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </button>
     </div>
     <div class="flex shrink-0 items-center gap-3">
       <button

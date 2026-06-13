@@ -1,40 +1,17 @@
 <script setup lang="ts">
 import FaIcon from "@/components/icons/FaIcon.vue";
+import { useBusinessSummary } from "@/composables/dashboard/useBusinessSummary";
+import { useLocalizedString } from "@/composables/useLocalizedString";
 
-const highlights = [
-  {
-    id: "revenue",
-    label: "Revenue increased",
-    detail: "12% vs last week",
-    icon: "fa-arrow-trend-up",
-    iconClass: "bg-emerald-100 text-emerald-600",
-  },
-  {
-    id: "top-performer",
-    label: "Top Performer",
-    detail: "Brand Buttons | ₹89.91 ↑ 12.5%",
-    icon: "fa-trophy",
-    iconClass: "bg-amber-100 text-amber-600",
-  },
-  {
-    id: "needs-attention",
-    label: "Needs Attention",
-    detail: "Mens Divi Hoodie | Sales ↓ 10%",
-    icon: "fa-triangle-exclamation",
-    iconClass: "bg-rose-100 text-rose-600",
-  },
-  {
-    id: "opportunity",
-    label: "Top Opportunity",
-    detail: "Bundle with top products | Potential revenue +₹3,500",
-    icon: "fa-lightbulb",
-    iconClass: "bg-sky-100 text-sky-600",
-  },
-] as const;
+const { loading, error, highlights, reload } = useBusinessSummary();
+const loadingLabel = useLocalizedString("common", "loading");
+const errorLabel = useLocalizedString("common", "error");
+const retryLabel = useLocalizedString("common", "retry");
+const viewFullReport = useLocalizedString("dashboard", "viewFullReport");
 </script>
 
 <template>
-  <section class="rounded-xl border border-indigo-100 bg-gradient-to-r from-indigo-50/80 to-violet-50/60 p-5 shadow-sm">
+  <section class="rounded-xl border border-indigo-100 bg-violet-50/70 p-5 shadow-sm">
     <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-2.5">
         <span
@@ -43,21 +20,27 @@ const highlights = [
         >
           <FaIcon icon="fa-robot" size="base" />
         </span>
-        <h2 class="text-sm font-semibold text-slate-900">AI Business Summary</h2>
+        <h2 class="text-sm font-semibold text-expenzey-700">AI Business Summary</h2>
       </div>
       <RouterLink
         to="/reports"
-        class="inline-flex items-center gap-1.5 text-sm font-medium text-expenzey-600 hover:text-expenzey-700"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-expenzey-200 bg-white/80 px-3 py-1.5 text-xs font-medium text-expenzey-600 transition hover:bg-white hover:text-expenzey-700"
       >
-        View Full Report
+        {{ viewFullReport }}
         <FaIcon icon="fa-arrow-right" size="xs" />
       </RouterLink>
     </div>
-    <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+
+    <p v-if="loading" class="text-sm text-slate-500">{{ loadingLabel }}</p>
+    <div v-else-if="error" class="flex items-center gap-3 text-sm text-rose-600">
+      <span>{{ errorLabel }}</span>
+      <button type="button" class="font-medium underline" @click="reload">{{ retryLabel }}</button>
+    </div>
+    <div v-else class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <article
         v-for="item in highlights"
         :key="item.id"
-        class="flex items-start gap-3 rounded-lg border border-white/80 bg-white/70 px-4 py-3 backdrop-blur-sm"
+        class="flex items-start gap-3"
       >
         <span
           class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"

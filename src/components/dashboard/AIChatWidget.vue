@@ -18,7 +18,6 @@ const emit = defineEmits<{ close: [] }>();
 const { messages, prompts, usage, send } = useAIChat({ limitMessages: 4 });
 const widgetTitle = useLocalizedString("dashboard", "chatWidgetTitle");
 const greeting = useLocalizedString("chat", "greetingDefault");
-const viewHistory = useLocalizedString("dashboard", "viewHistory");
 const closeLabel = useLocalizedString("chat", "closeChat");
 
 const stringService = inject(STRING_SERVICE_KEY) as IStringService;
@@ -42,21 +41,13 @@ async function onSend(text: string) {
   >
     <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-4 py-3">
       <h3 class="text-sm font-semibold text-slate-900">{{ widgetTitle }}</h3>
-      <div class="flex items-center gap-2">
-        <RouterLink
-          to="/chat"
-          class="text-sm font-medium text-expenzey-600 hover:text-expenzey-700"
-          @click="emit('close')"
-        >
-          {{ viewHistory }}
-        </RouterLink>
-        <button
-          v-if="floating"
-          type="button"
-          class="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
-          :aria-label="closeLabel"
-          @click="emit('close')"
-        >
+      <button
+        v-if="floating"
+        type="button"
+        class="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+        :aria-label="closeLabel"
+        @click="emit('close')"
+      >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -72,7 +63,6 @@ async function onSend(text: string) {
             <path d="m6 6 12 12" />
           </svg>
         </button>
-      </div>
     </div>
     <div class="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4">
       <div class="rounded-xl bg-slate-100 p-3 text-sm text-slate-600">

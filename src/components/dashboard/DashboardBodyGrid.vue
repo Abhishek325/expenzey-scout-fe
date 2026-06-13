@@ -6,6 +6,7 @@ import ReviewIntelligenceCard from "@/components/dashboard/ReviewIntelligenceCar
 import RevenueOverviewChart from "@/components/dashboard/RevenueOverviewChart.vue";
 import TopProductsTable from "@/components/dashboard/TopProductsTable.vue";
 import WeeklyAIReportCard from "@/components/dashboard/WeeklyAIReportCard.vue";
+import { INSIGHTS_ROW_HEIGHT, WEEKLY_REPORT_HEIGHT } from "@/constants/dashboardRowHeights";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 import type { RevenueChartGranularity } from "@/types/metrics";
 
@@ -19,11 +20,11 @@ const chartGranularity = ref<RevenueChartGranularity>("daily");
 
 <template>
   <div class="flex flex-col gap-3">
-    <!-- Left 2/3: chart + products/opportunities · Right 1/3: weekly report + review intel -->
-    <div class="grid gap-3 lg:grid-cols-3 lg:items-stretch">
+    <!-- Left column stacks chart → tables; right column stacks weekly → review (independent heights) -->
+    <div class="grid gap-3 lg:grid-cols-3 lg:items-start">
       <div class="flex flex-col gap-3 lg:col-span-2">
-        <section class="shrink-0 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+        <section class="flex min-h-0 flex-col rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-4 py-3">
             <h3 class="text-sm font-semibold text-slate-900">{{ revenueTitle }}</h3>
             <select
               v-model="chartGranularity"
@@ -34,20 +35,20 @@ const chartGranularity = ref<RevenueChartGranularity>("daily");
               <option value="monthly">{{ periodMonthly }}</option>
             </select>
           </div>
-          <div class="px-4 pb-3 pt-2">
+          <div class="min-h-0 flex-1 px-4 pb-3 pt-2">
             <RevenueOverviewChart :granularity="chartGranularity" />
           </div>
         </section>
 
-        <div class="grid min-h-0 flex-1 gap-3 md:grid-cols-2 lg:items-stretch">
-          <TopProductsTable class="h-full" />
-          <AIOpportunitiesSection class="h-full" />
+        <div class="grid min-h-0 gap-3 lg:grid-cols-2" :class="INSIGHTS_ROW_HEIGHT">
+          <TopProductsTable class="min-h-0 h-full" />
+          <AIOpportunitiesSection class="min-h-0 h-full" />
         </div>
       </div>
 
-      <div class="flex min-h-0 flex-col gap-3 lg:col-span-1">
-        <WeeklyAIReportCard class="min-h-0 flex-[1.15] basis-0" />
-        <ReviewIntelligenceCard class="min-h-0 flex-1 basis-0" />
+      <div class="flex flex-col gap-3 lg:col-span-1">
+        <WeeklyAIReportCard class="min-h-0" :class="WEEKLY_REPORT_HEIGHT" />
+        <ReviewIntelligenceCard class="h-auto shrink-0" />
       </div>
     </div>
 

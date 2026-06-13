@@ -2,7 +2,6 @@
 import { computed, ref } from "vue";
 import DataTable, { type DataTableColumn } from "@/components/shared/DataTable.vue";
 import TrendBadge from "@/components/shared/TrendBadge.vue";
-import { INSIGHTS_ROW_HEIGHT } from "@/constants/dashboardRowHeights";
 import { useTopProducts } from "@/composables/dashboard/useTopProducts";
 import { useFormatCurrency } from "@/composables/useFormatCurrency";
 import { useLocalizedString } from "@/composables/useLocalizedString";
@@ -48,15 +47,12 @@ function productInitial(row: Record<string, unknown>): string {
 </script>
 
 <template>
-  <div
-    class="flex h-full flex-col rounded-xl border border-slate-200 bg-white shadow-sm"
-    :class="INSIGHTS_ROW_HEIGHT"
-  >
+  <div class="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
     <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-4 py-2.5">
       <h3 class="text-sm font-semibold text-slate-900">{{ sectionTitle }}</h3>
       <button
         type="button"
-        class="rounded-md bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-600 hover:bg-indigo-100"
+        class="card-header-action"
         @click="expanded = !expanded"
       >
         {{ viewAll }}

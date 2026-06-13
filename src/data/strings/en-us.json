@@ -2,7 +2,6 @@
   "nav": {
     "dashboard": "Dashboard",
     "reports": "AI Reports",
-    "chat": "AI Chat",
     "settings": "Settings"
   },
   "common": {
@@ -13,6 +12,8 @@
     "cancel": "Cancel",
     "close": "Close",
     "viewAll": "View All",
+    "viewAllReports": "View All Reports",
+    "viewDetails": "View Details",
     "learnMore": "Learn more",
     "vs": "vs",
     "vsPreviousPeriod": "vs previous period",
@@ -68,8 +69,13 @@
       "title": "AI Summary"
     },
     "greeting": "Welcome back! Here's what's happening with your store.",
-    "generateAiReport": "Generate New AI Report",
-    "viewHistory": "View History",
+    "generateAiReport": "Generate New Report",
+    "aiInsights": {
+      "weeklyReportEmpty": "No weekly report yet. Generate one to see AI insights.",
+      "opportunitiesEmpty": "No opportunities detected for this period.",
+      "reviewsEmpty": "No reviews in the selected period.",
+      "reportsEmpty": "No AI reports generated yet."
+    },
     "chatWidgetTitle": "Ask Expenzey AI",
     "aiInsightsTitle": "AI Summary",
     "revenueTrendTitle": "Revenue Overview",
@@ -110,21 +116,10 @@
     }
   },
   "chat": {
-    "title": "Ask Expenzey AI",
-    "subtitle": "Ask questions about your store data",
-    "greeting": {
-      "default": "Hi! I'm your store assistant. Ask me about sales, products, customers, or reports."
-    },
+    "greetingDefault": "Hi! I'm your AI assistant. Ask me anything about your store.",
     "inputPlaceholder": "Ask anything about your store...",
     "openChat": "Open Ask Expenzey AI",
-    "closeChat": "Close chat",
-    "send": "Send",
-    "suggestedPrompts": {
-      "title": "Suggested prompts"
-    },
-    "emptyState": "Start a conversation by typing a message or choosing a prompt below.",
-    "greetingDefault": "Hi! I'm your AI assistant. Ask me anything about your store.",
-    "suggestedPromptsTitle": "Suggested prompts"
+    "closeChat": "Close chat"
   },
   "reports": {
     "title": "Reports",
@@ -221,7 +216,6 @@
   "layout": {
     "brandName": "expenzey ai",
     "tagline": "Insights for WooCommerce",
-    "storeSwitcher": "All Store Views",
     "proPlan": "Pro Plan",
     "notifications": "Notifications"
   },

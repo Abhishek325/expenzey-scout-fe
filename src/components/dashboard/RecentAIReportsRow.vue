@@ -1,47 +1,32 @@
 <script setup lang="ts">
 import FaIcon from "@/components/icons/FaIcon.vue";
+import { useRecentReports } from "@/composables/dashboard/useRecentReports";
+import { useLocalizedString } from "@/composables/useLocalizedString";
 
-const reports = [
-  {
-    id: "weekly-summary",
-    title: "Weekly Summary",
-    generatedAt: "Jun 13, 2026 • 09:30 AM",
-    icon: "fa-calendar-days",
-    iconClass: "text-sky-600",
-  },
-  {
-    id: "revenue-analysis",
-    title: "Revenue Analysis",
-    generatedAt: "Jun 11, 2026 • 09:15 AM",
-    icon: "fa-chart-column",
-    iconClass: "text-violet-600",
-  },
-  {
-    id: "review-intelligence",
-    title: "Review Intelligence",
-    generatedAt: "Jun 10, 2026 • 10:45 AM",
-    icon: "fa-comment-dots",
-    iconClass: "text-rose-500",
-  },
-  {
-    id: "product-performance",
-    title: "Product Performance",
-    generatedAt: "Jun 8, 2026 • 09:20 AM",
-    icon: "fa-box",
-    iconClass: "text-indigo-600",
-  },
-] as const;
+const { loading, error, reports, reload } = useRecentReports();
+const loadingLabel = useLocalizedString("common", "loading");
+const errorLabel = useLocalizedString("common", "error");
+const retryLabel = useLocalizedString("common", "retry");
+const emptyLabel = useLocalizedString("dashboard", "aiInsights.reportsEmpty");
+const viewAllReports = useLocalizedString("common", "viewAllReports");
 </script>
 
 <template>
   <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
     <div class="mb-4 flex items-center justify-between gap-2">
       <h3 class="text-sm font-semibold text-slate-900">Recent AI Reports</h3>
-      <RouterLink to="/reports" class="text-sm font-medium text-expenzey-600 hover:text-expenzey-700">
-        View All Reports
+      <RouterLink to="/reports" class="card-header-action">
+        {{ viewAllReports }}
       </RouterLink>
     </div>
-    <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+
+    <p v-if="loading" class="text-sm text-slate-500">{{ loadingLabel }}</p>
+    <div v-else-if="error" class="flex items-center gap-3 text-sm text-rose-600">
+      <span>{{ errorLabel }}</span>
+      <button type="button" class="font-medium underline" @click="reload">{{ retryLabel }}</button>
+    </div>
+    <p v-else-if="reports.length === 0" class="text-sm text-slate-500">{{ emptyLabel }}</p>
+    <div v-else class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <article
         v-for="report in reports"
         :key="report.id"
@@ -60,7 +45,7 @@ const reports = [
           <span
             class="mt-2 inline-block rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700"
           >
-            Completed
+            {{ report.status }}
           </span>
         </div>
       </article>

@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .card-header-action {
+    @apply inline-flex shrink-0 items-center rounded-md bg-expenzey-50 px-2.5 py-1 text-xs font-medium text-expenzey-600 transition hover:bg-expenzey-100;
+  }
+}
+
 .expenzey-ai-app {
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans,
@@ -29,7 +35,7 @@
   font: inherit;
 }
 
-.expenzey-ai-app a {
+.expenzey-ai-app a:not(.card-header-action) {
   color: inherit;
   text-decoration: none;
 }

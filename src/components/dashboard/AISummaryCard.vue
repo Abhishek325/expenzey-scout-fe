@@ -15,7 +15,7 @@ const emit = defineEmits<{ generate: [] }>();
   <section class="flex flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
     <div class="mb-4 flex items-center justify-between gap-2">
       <h3 class="text-sm font-semibold text-slate-900">{{ title }}</h3>
-      <RouterLink to="/reports" class="text-sm font-medium text-expenzey-600 hover:text-expenzey-700">
+      <RouterLink to="/reports" class="card-header-action">
         {{ viewFullReport }}
       </RouterLink>
     </div>

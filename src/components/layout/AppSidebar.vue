@@ -14,13 +14,11 @@ const items = sidebarItems as SidebarItem[];
 
 const navDashboard = useLocalizedString("nav", "dashboard");
 const navReports = useLocalizedString("nav", "reports");
-const navChat = useLocalizedString("nav", "chat");
 const navSettings = useLocalizedString("nav", "settings");
 
 const labels = computed(() => ({
   "nav.dashboard": navDashboard.value,
   "nav.reports": navReports.value,
-  "nav.chat": navChat.value,
   "nav.settings": navSettings.value,
 }));
 

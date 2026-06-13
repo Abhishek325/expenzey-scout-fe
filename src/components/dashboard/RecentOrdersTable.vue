@@ -43,7 +43,7 @@ function formatOrderDate(date: string): string {
       <h3 class="text-sm font-semibold text-slate-900">{{ sectionTitle }}</h3>
       <button
         type="button"
-        class="rounded-md bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-600 hover:bg-indigo-100"
+        class="card-header-action"
         @click="expanded = !expanded"
       >
         {{ viewAll }}
