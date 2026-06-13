@@ -29,7 +29,8 @@ const columns = computed<DataTableColumn[]>(() => [
 
 const visibleRows = computed(() => {
   const list = products.value;
-  return expanded.value ? list : list.slice(0, DEFAULT_VISIBLE_ROWS);
+  const rows = expanded.value ? list : list.slice(0, DEFAULT_VISIBLE_ROWS);
+  return rows as unknown as Record<string, unknown>[];
 });
 
 function productImageUrl(row: Record<string, unknown>): string | null {

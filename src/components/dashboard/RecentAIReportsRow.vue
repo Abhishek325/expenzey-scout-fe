@@ -9,12 +9,13 @@ const errorLabel = useLocalizedString("common", "error");
 const retryLabel = useLocalizedString("common", "retry");
 const emptyLabel = useLocalizedString("dashboard", "aiInsights.reportsEmpty");
 const viewAllReports = useLocalizedString("common", "viewAllReports");
+const title = useLocalizedString("dashboard", "aiInsights.recentReportsTitle");
 </script>
 
 <template>
   <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
     <div class="mb-4 flex items-center justify-between gap-2">
-      <h3 class="text-sm font-semibold text-slate-900">Recent AI Reports</h3>
+      <h3 class="text-sm font-semibold text-slate-900">{{ title }}</h3>
       <RouterLink to="/reports" class="card-header-action">
         {{ viewAllReports }}
       </RouterLink>

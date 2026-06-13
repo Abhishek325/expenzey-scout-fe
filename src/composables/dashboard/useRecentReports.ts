@@ -2,7 +2,7 @@ import { inject, onMounted, ref } from "vue";
 import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
 import type { WeeklyReport } from "@/types/reports";
 
-export interface RecentReportCard {
+interface RecentReportCard {
   id: string;
   title: string;
   generatedAt: string;

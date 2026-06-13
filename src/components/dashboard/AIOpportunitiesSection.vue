@@ -9,12 +9,14 @@ const errorLabel = useLocalizedString("common", "error");
 const retryLabel = useLocalizedString("common", "retry");
 const emptyLabel = useLocalizedString("dashboard", "aiInsights.opportunitiesEmpty");
 const viewAll = useLocalizedString("common", "viewAll");
+const title = useLocalizedString("dashboard", "aiInsights.opportunitiesTitle");
+const recommendationLabel = useLocalizedString("dashboard", "aiInsights.recommendation");
 </script>
 
 <template>
   <section class="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
     <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-4 py-2.5">
-      <h3 class="text-sm font-semibold text-slate-900">AI Opportunities</h3>
+      <h3 class="text-sm font-semibold text-slate-900">{{ title }}</h3>
       <RouterLink to="/reports" class="card-header-action">
         {{ viewAll }}
       </RouterLink>
@@ -40,7 +42,7 @@ const viewAll = useLocalizedString("common", "viewAll");
             </p>
             <p class="mt-2 text-sm leading-snug text-slate-800">{{ item.title }}</p>
             <p class="mt-1.5 text-sm leading-snug text-slate-700">
-              <span class="font-semibold text-slate-900">Recommendation:</span>
+              <span class="font-semibold text-slate-900">{{ recommendationLabel }}</span>
               {{ item.recommendation }}
             </p>
             <p v-if="item.impact" class="mt-1.5 text-xs font-semibold" :class="item.impactClass">

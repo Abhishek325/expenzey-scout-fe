@@ -1,24 +1,24 @@
 import { computed, inject, ref, watch } from "vue";
 import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
+import { resolveStringKey } from "@/composables/dashboard/resolveStringKey";
 import { useDateRangeStore } from "@/stores/dateRange";
+import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
 
-const THEME_LABELS: Record<string, string> = {
-  delivery: "Fast delivery",
-  quality: "Product quality",
-  price: "Good value",
-  support: "Great customer service",
-  value: "Good value",
-};
-
-const COMPLAINT_LABELS: Record<string, string> = {
-  delivery: "Delivery delays",
-  quality: "Packaging damage",
-  price: "Pricing concerns",
-  support: "Support issues",
-};
+function mapThemeLabels(
+  themes: string[],
+  stringService: IStringService,
+  prefix: "dashboard.aiInsights.reviewIntelligence.themes.positive" | "dashboard.aiInsights.reviewIntelligence.themes.complaint",
+): string[] {
+  return themes.map((theme) => {
+    const key = `${prefix}.${theme}`;
+    const resolved = resolveStringKey(stringService, key);
+    return resolved === key ? theme : resolved;
+  });
+}
 
 export function useReviewIntelligence() {
   const reportsService = inject(REPORTS_SERVICE_KEY) as IReportsService;
+  const stringService = inject(STRING_SERVICE_KEY) as IStringService;
   const dateRange = useDateRangeStore();
   const loading = ref(true);
   const error = ref<string | null>(null);
@@ -34,8 +34,16 @@ export function useReviewIntelligence() {
       const data = await reportsService.getReviewIntelligence(dateRange.selection);
       positivePercent.value = data.sentiment.positive;
       reviewCount.value = data.totalReviews;
-      positiveMentions.value = data.positiveMentions.map((t) => THEME_LABELS[t] ?? t);
-      complaints.value = data.complaintThemes.map((t) => COMPLAINT_LABELS[t] ?? t);
+      positiveMentions.value = mapThemeLabels(
+        data.positiveMentions,
+        stringService,
+        "dashboard.aiInsights.reviewIntelligence.themes.positive",
+      );
+      complaints.value = mapThemeLabels(
+        data.complaintThemes,
+        stringService,
+        "dashboard.aiInsights.reviewIntelligence.themes.complaint",
+      );
     } catch (e) {
       error.value = e instanceof Error ? e.message : "error";
     } finally {

@@ -21,6 +21,8 @@ const errorLabel = useLocalizedString("common", "error");
 const retryLabel = useLocalizedString("common", "retry");
 const emptyLabel = useLocalizedString("dashboard", "aiInsights.weeklyReportEmpty");
 const viewFullReport = useLocalizedString("dashboard", "viewFullReport");
+const title = useLocalizedString("dashboard", "aiInsights.weeklyReport.title");
+const recommendedActionLabel = useLocalizedString("dashboard", "aiInsights.weeklyReport.recommendedAction");
 </script>
 
 <template>
@@ -29,7 +31,7 @@ const viewFullReport = useLocalizedString("dashboard", "viewFullReport");
       <div class="flex items-center gap-2">
         <FaIcon icon="fa-calendar-days" size="sm" icon-class="text-slate-400" />
         <div>
-          <h3 class="text-sm font-semibold text-slate-900">Weekly AI Report</h3>
+          <h3 class="text-sm font-semibold text-slate-900">{{ title }}</h3>
           <p class="mt-0.5 text-xs text-slate-500">{{ reportPeriod || "—" }}</p>
         </div>
       </div>
@@ -58,14 +60,6 @@ const viewFullReport = useLocalizedString("dashboard", "viewFullReport");
           <div class="min-w-0 flex-1">
             <p class="text-xs font-medium uppercase tracking-wide text-slate-400">{{ section.label }}</p>
             <p class="mt-0.5 text-sm font-semibold text-slate-900">{{ section.value }}</p>
-            <p v-if="section.detail" class="text-xs text-slate-600">{{ section.detail }}</p>
-            <p
-              v-if="section.trend"
-              class="mt-0.5 text-xs font-medium"
-              :class="section.trendClass"
-            >
-              {{ section.trend }}
-            </p>
           </div>
         </div>
         <div
@@ -79,7 +73,7 @@ const viewFullReport = useLocalizedString("dashboard", "viewFullReport");
             <FaIcon icon="fa-magnifying-glass" size="sm" />
           </span>
           <div class="min-w-0 flex-1">
-            <p class="text-xs font-medium uppercase tracking-wide text-indigo-400">Recommended Action</p>
+            <p class="text-xs font-medium uppercase tracking-wide text-indigo-400">{{ recommendedActionLabel }}</p>
             <p class="mt-1 text-sm leading-relaxed text-slate-700">{{ recommendedAction }}</p>
           </div>
         </div>

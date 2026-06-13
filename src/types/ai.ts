@@ -59,11 +59,3 @@ export interface ReviewIntelligence {
     date: string;
   }>;
 }
-
-export interface BusinessSummaryHighlight {
-  id: string;
-  label: string;
-  detail: string;
-  icon: string;
-  iconClass: string;
-}

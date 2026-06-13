@@ -71,10 +71,55 @@
     "greeting": "Welcome back! Here's what's happening with your store.",
     "generateAiReport": "Generate New Report",
     "aiInsights": {
+      "businessSummaryTitle": "AI Business Summary",
+      "opportunitiesTitle": "AI Opportunities",
+      "recentReportsTitle": "Recent AI Reports",
+      "reviewIntelligenceTitle": "Review Intelligence",
+      "recommendation": "Recommendation:",
       "weeklyReportEmpty": "No weekly report yet. Generate one to see AI insights.",
       "opportunitiesEmpty": "No opportunities detected for this period.",
       "reviewsEmpty": "No reviews in the selected period.",
-      "reportsEmpty": "No AI reports generated yet."
+      "reportsEmpty": "No AI reports generated yet.",
+      "businessSummary": {
+        "overview": "Overview",
+        "topPerformer": "Top Performer",
+        "needsAttention": "Needs Attention",
+        "opportunity": "Top Opportunity"
+      },
+      "weeklyReport": {
+        "title": "Weekly AI Report",
+        "recommendedAction": "Recommended Action",
+        "recentPeriod": "Recent period",
+        "sections": {
+          "overview": "Overview",
+          "revenue": "Revenue",
+          "customers": "Customers",
+          "products": "Products",
+          "mainRisk": "Main Risk"
+        }
+      },
+      "reviewIntelligence": {
+        "overallSentiment": "Overall Sentiment",
+        "positive": "Positive",
+        "reviewsAnalyzed": "reviews analyzed",
+        "topPositiveMentions": "Top Positive Mentions",
+        "topComplaints": "Top Complaints",
+        "themes": {
+          "positive": {
+            "delivery": "Fast delivery",
+            "quality": "Product quality",
+            "price": "Good value",
+            "support": "Great customer service",
+            "value": "Good value"
+          },
+          "complaint": {
+            "delivery": "Delivery delays",
+            "quality": "Packaging damage",
+            "price": "Pricing concerns",
+            "support": "Support issues"
+          }
+        }
+      }
     },
     "chatWidgetTitle": "Ask Expenzey AI",
     "aiInsightsTitle": "AI Summary",

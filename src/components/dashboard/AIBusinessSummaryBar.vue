@@ -7,6 +7,7 @@ const { loading, error, highlights, reload } = useBusinessSummary();
 const loadingLabel = useLocalizedString("common", "loading");
 const errorLabel = useLocalizedString("common", "error");
 const retryLabel = useLocalizedString("common", "retry");
+const title = useLocalizedString("dashboard", "aiInsights.businessSummaryTitle");
 const viewFullReport = useLocalizedString("dashboard", "viewFullReport");
 </script>
 
@@ -20,7 +21,7 @@ const viewFullReport = useLocalizedString("dashboard", "viewFullReport");
         >
           <FaIcon icon="fa-robot" size="base" />
         </span>
-        <h2 class="text-sm font-semibold text-expenzey-700">AI Business Summary</h2>
+        <h2 class="text-sm font-semibold text-expenzey-700">{{ title }}</h2>
       </div>
       <RouterLink
         to="/reports"

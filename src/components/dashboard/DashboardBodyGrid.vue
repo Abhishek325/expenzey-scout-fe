@@ -6,9 +6,12 @@ import ReviewIntelligenceCard from "@/components/dashboard/ReviewIntelligenceCar
 import RevenueOverviewChart from "@/components/dashboard/RevenueOverviewChart.vue";
 import TopProductsTable from "@/components/dashboard/TopProductsTable.vue";
 import WeeklyAIReportCard from "@/components/dashboard/WeeklyAIReportCard.vue";
+import { provideTopProducts } from "@/composables/dashboard/useTopProducts";
 import { INSIGHTS_ROW_HEIGHT, WEEKLY_REPORT_HEIGHT } from "@/constants/dashboardRowHeights";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 import type { RevenueChartGranularity } from "@/types/metrics";
+
+provideTopProducts();
 
 const revenueTitle = useLocalizedString("dashboard", "revenueTrendTitle");
 const periodDaily = useLocalizedString("dashboard", "revenuePeriodDaily");

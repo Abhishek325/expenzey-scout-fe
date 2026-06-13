@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
 import FaIcon from "@/components/icons/FaIcon.vue";
-import type { InsightIcon, InsightVariant } from "@/composables/dashboard/useAISummary";
 import { resolveStringKey } from "@/composables/dashboard/resolveStringKey";
 import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
+
+type InsightVariant = "success" | "danger" | "info";
+type InsightIcon = "trophy" | "warning" | "lightbulb";
 
 const props = defineProps<{
   variant: InsightVariant;

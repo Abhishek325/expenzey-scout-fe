@@ -1,6 +1,6 @@
 import { computed, inject, ref, watch } from "vue";
-import { PRODUCTS_SERVICE_KEY, type IProductsService } from "@/services/products/IProductsService";
 import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
+import { useTopProducts } from "@/composables/dashboard/useTopProducts";
 import { useDateRangeStore } from "@/stores/dateRange";
 import type { AIOpportunity } from "@/types/ai";
 
@@ -53,7 +53,7 @@ const BADGE_STYLES: Record<
   },
 };
 
-export interface OpportunityViewModel extends AIOpportunity {
+interface OpportunityViewModel extends AIOpportunity {
   cardClass: string;
   labelClass: string;
   impactClass: string;
@@ -61,15 +61,6 @@ export interface OpportunityViewModel extends AIOpportunity {
   thumbClass: string;
   impact: string;
   productInitial: string;
-}
-
-function buildImageLookup(products: Array<{ name: string; imageUrl: string }>): Map<string, string> {
-  const lookup = new Map<string, string>();
-  for (const product of products) {
-    const url = product.imageUrl?.trim();
-    if (url) lookup.set(product.name.toLowerCase(), url);
-  }
-  return lookup;
 }
 
 function resolveProductImageUrl(
@@ -87,23 +78,17 @@ function resolveProductImageUrl(
 
 export function useOpportunities() {
   const reportsService = inject(REPORTS_SERVICE_KEY) as IReportsService;
-  const productsService = inject(PRODUCTS_SERVICE_KEY) as IProductsService;
+  const { productImagesByName } = useTopProducts();
   const dateRange = useDateRangeStore();
   const loading = ref(true);
   const error = ref<string | null>(null);
   const opportunities = ref<AIOpportunity[]>([]);
-  const productImagesByName = ref<Map<string, string>>(new Map());
 
   async function load() {
     loading.value = true;
     error.value = null;
     try {
-      const [opportunityRows, topProducts] = await Promise.all([
-        reportsService.getOpportunities(dateRange.selection),
-        productsService.getTopProducts(dateRange.selection),
-      ]);
-      opportunities.value = opportunityRows;
-      productImagesByName.value = buildImageLookup(topProducts);
+      opportunities.value = await reportsService.getOpportunities(dateRange.selection);
     } catch (e) {
       error.value = e instanceof Error ? e.message : "error";
     } finally {

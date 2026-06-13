@@ -10,12 +10,18 @@ const errorLabel = useLocalizedString("common", "error");
 const retryLabel = useLocalizedString("common", "retry");
 const emptyLabel = useLocalizedString("dashboard", "aiInsights.reviewsEmpty");
 const viewDetails = useLocalizedString("common", "viewDetails");
+const title = useLocalizedString("dashboard", "aiInsights.reviewIntelligenceTitle");
+const overallSentiment = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.overallSentiment");
+const positiveLabel = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.positive");
+const reviewsAnalyzed = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.reviewsAnalyzed");
+const topPositiveMentions = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.topPositiveMentions");
+const topComplaints = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.topComplaints");
 </script>
 
 <template>
   <section class="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
     <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-4 py-2.5">
-      <h3 class="text-sm font-semibold text-slate-900">Review Intelligence</h3>
+      <h3 class="text-sm font-semibold text-slate-900">{{ title }}</h3>
       <RouterLink to="/reports" class="card-header-action">
         {{ viewDetails }}
       </RouterLink>
@@ -30,7 +36,7 @@ const viewDetails = useLocalizedString("common", "viewDetails");
       <p v-else-if="!hasData" class="text-sm text-slate-500">{{ emptyLabel }}</p>
       <div v-else class="grid gap-3 sm:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
         <div class="flex flex-col rounded-lg border border-emerald-100 bg-emerald-50/60 p-3">
-          <p class="text-xs font-medium text-slate-600">Overall Sentiment</p>
+          <p class="text-xs font-medium text-slate-600">{{ overallSentiment }}</p>
           <div class="mt-2 flex items-center gap-2.5">
             <div class="relative h-14 w-14 shrink-0">
               <svg viewBox="0 0 36 36" class="h-full w-full -rotate-90" aria-hidden="true">
@@ -55,15 +61,15 @@ const viewDetails = useLocalizedString("common", "viewDetails");
             </div>
             <div>
               <p class="text-xl font-bold leading-none text-emerald-600">{{ positivePercent }}%</p>
-              <p class="mt-0.5 text-xs font-medium text-emerald-600">Positive</p>
+              <p class="mt-0.5 text-xs font-medium text-emerald-600">{{ positiveLabel }}</p>
             </div>
           </div>
-          <p class="mt-2 text-[11px] text-slate-500">{{ reviewCount }} reviews analyzed</p>
+          <p class="mt-2 text-[11px] text-slate-500">{{ reviewCount }} {{ reviewsAnalyzed }}</p>
         </div>
 
         <div class="flex flex-col justify-center gap-3">
           <div v-if="positiveMentions.length > 0">
-            <p class="text-[11px] font-semibold uppercase tracking-wide text-emerald-600">Top Positive Mentions</p>
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-emerald-600">{{ topPositiveMentions }}</p>
             <ul class="mt-1.5 space-y-1.5">
               <li
                 v-for="mention in positiveMentions.slice(0, 3)"
@@ -82,7 +88,7 @@ const viewDetails = useLocalizedString("common", "viewDetails");
           </div>
 
           <div v-if="complaints.length > 0">
-            <p class="text-[11px] font-semibold uppercase tracking-wide text-rose-500">Top Complaints</p>
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-rose-500">{{ topComplaints }}</p>
             <ul class="mt-1.5 space-y-1.5">
               <li
                 v-for="complaint in complaints.slice(0, 3)"
