@@ -42,7 +42,7 @@ export async function applyWpBootstrap(
     lastSync: config.lastSync,
     accountStatus: (config.accountStatus as WpConnectionConfig["accountStatus"]) ?? "active",
     syncStatus: (config.syncStatus as WpConnectionConfig["syncStatus"]) ?? "idle",
-    currency: config.currency ?? "USD",
+    currency: config.currency ?? "",
     locale: config.locale,
   });
 

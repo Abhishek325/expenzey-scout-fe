@@ -30,7 +30,7 @@ export const useAppStore = defineStore("app", {
     siteUrl: "",
     installationId: "",
     lastSync: "",
-    currency: "USD",
+    currency: "",
     locale: "en-us",
     accountStatus: "active" as AccountStatus,
     syncStatus: "idle" as SyncStatus,
@@ -58,7 +58,7 @@ export const useAppStore = defineStore("app", {
       if (config.syncStatus) {
         this.syncStatus = config.syncStatus;
       }
-      if (config.currency) {
+      if (config.currency !== undefined) {
         this.currency = config.currency;
       }
       if (config.locale) {

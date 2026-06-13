@@ -12,9 +12,15 @@ export function formatCurrencyAmount(
   locale = "en-US",
   maximumFractionDigits?: number
 ): string {
+  const code = currency.trim().toUpperCase();
+  if (!code) {
+    return amount.toLocaleString(locale, {
+      ...(maximumFractionDigits !== undefined ? { maximumFractionDigits } : {}),
+    });
+  }
   return new Intl.NumberFormat(locale, {
     style: "currency",
-    currency,
+    currency: code,
     ...(maximumFractionDigits !== undefined ? { maximumFractionDigits } : {}),
   }).format(amount);
 }
@@ -24,13 +30,18 @@ export function formatCompactCurrencyAxis(
   currency: string,
   locale = "en-US"
 ): string {
+  const code = currency.trim().toUpperCase();
+  if (!code) {
+    return amount >= 1000 ? `${Math.round(amount / 1000)}K` : String(Math.round(amount));
+  }
+
   if (amount === 0) {
     return formatCurrencyAmount(0, currency, locale, 0);
   }
 
   const parts = new Intl.NumberFormat(locale, {
     style: "currency",
-    currency,
+    currency: code,
     maximumFractionDigits: 0,
   }).formatToParts(amount >= 1000 ? 1000 : amount);
 
