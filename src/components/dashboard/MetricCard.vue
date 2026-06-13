@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import FaIcon from "@/components/icons/FaIcon.vue";
 import type { LocalizedMetricCard } from "@/composables/dashboard/useDashboardMetrics";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 
@@ -15,7 +16,6 @@ const vsLabel = useLocalizedString("common", "vs");
 const isUp = computed(() => props.metric.changeDirection === "up");
 const isDown = computed(() => props.metric.changeDirection === "down");
 const displayPercent = computed(() => Math.abs(props.metric.changePercent).toFixed(1));
-const trendArrow = computed(() => (isUp.value ? "↑" : isDown.value ? "↓" : "→"));
 </script>
 
 <template>
@@ -28,15 +28,15 @@ const trendArrow = computed(() => (isUp.value ? "↑" : isDown.value ? "↓" : "
         </p>
       </div>
       <div
-        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-lg"
+        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
         :class="iconClass"
       >
-        <span aria-hidden="true">{{ icon }}</span>
+        <FaIcon :icon="icon" size="lg" />
       </div>
     </div>
     <div class="mt-4 flex flex-wrap items-baseline gap-x-1.5 gap-y-1">
       <span
-        class="text-xs font-semibold"
+        class="inline-flex items-center gap-0.5 text-xs font-semibold"
         :class="
           isUp
             ? 'text-emerald-600'
@@ -45,7 +45,11 @@ const trendArrow = computed(() => (isUp.value ? "↑" : isDown.value ? "↓" : "
               : 'text-slate-600'
         "
       >
-        {{ trendArrow }} {{ displayPercent }}%
+        <FaIcon
+          :icon="isUp ? 'fa-arrow-trend-up' : isDown ? 'fa-arrow-trend-down' : 'fa-minus'"
+          size="xs"
+        />
+        {{ displayPercent }}%
       </span>
       <span class="text-xs text-slate-400">{{ vsLabel }} {{ comparisonPeriod }}</span>
     </div>

@@ -10,6 +10,8 @@ const { orders, loading } = useRecentOrders();
 const { formatCurrency } = useFormatCurrency();
 const expanded = ref(false);
 
+const DEFAULT_VISIBLE_ROWS = 5;
+
 const sectionTitle = useLocalizedString("dashboard", "recentOrdersTitle");
 const viewAll = useLocalizedString("common", "viewAll");
 const colOrder = useLocalizedString("dashboard", "recentOrdersColumnOrder");
@@ -27,7 +29,7 @@ const columns = computed<DataTableColumn[]>(() => [
 
 const visibleRows = computed(() => {
   const list = orders.value;
-  return expanded.value ? list : list.slice(0, 3);
+  return expanded.value ? list : list.slice(0, DEFAULT_VISIBLE_ROWS);
 });
 
 function formatOrderDate(date: string): string {
@@ -47,13 +49,13 @@ function formatOrderDate(date: string): string {
         {{ viewAll }}
       </button>
     </div>
-    <div v-if="loading" class="p-4 text-xs text-slate-500">{{ loadingLabel }}</div>
-    <DataTable
-      v-else
-      :columns="columns"
-      :rows="visibleRows"
-      row-key="orderId"
-    >
+    <div v-if="loading" class="min-h-[24rem] p-4 text-xs text-slate-500">{{ loadingLabel }}</div>
+    <div v-else class="min-h-[24rem]">
+      <DataTable
+        :columns="columns"
+        :rows="visibleRows"
+        row-key="orderId"
+      >
       <template #cell-orderId="{ row }">
         <span class="font-medium text-indigo-600">{{ row.orderId }}</span>
       </template>
@@ -63,6 +65,7 @@ function formatOrderDate(date: string): string {
       <template #cell-date="{ row }">
         {{ formatOrderDate(String(row.date)) }}
       </template>
-    </DataTable>
+      </DataTable>
+    </div>
   </div>
 </template>

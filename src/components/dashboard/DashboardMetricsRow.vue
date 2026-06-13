@@ -7,10 +7,10 @@ const { kpis, loading, comparisonPeriod } = useDashboardMetrics();
 const loadingLabel = useLocalizedString("common", "loading");
 
 const iconMap: Record<string, { icon: string; iconClass: string }> = {
-  "total-revenue": { icon: "💰", iconClass: "bg-violet-100 text-violet-600" },
-  orders: { icon: "📦", iconClass: "bg-indigo-100 text-indigo-600" },
-  customers: { icon: "👥", iconClass: "bg-sky-100 text-sky-600" },
-  aov: { icon: "📈", iconClass: "bg-emerald-100 text-emerald-600" },
+  "total-revenue": { icon: "fa-sack-dollar", iconClass: "bg-violet-100 text-violet-600" },
+  orders: { icon: "fa-box", iconClass: "bg-indigo-100 text-indigo-600" },
+  customers: { icon: "fa-users", iconClass: "bg-sky-100 text-sky-600" },
+  aov: { icon: "fa-chart-line", iconClass: "bg-emerald-100 text-emerald-600" },
 };
 </script>
 
@@ -29,7 +29,7 @@ const iconMap: Record<string, { icon: string; iconClass: string }> = {
       :key="metric.id"
       :metric="metric"
       :comparison-period="comparisonPeriod"
-      v-bind="iconMap[metric.id] ?? { icon: '✨', iconClass: 'bg-expenzey-100 text-expenzey-600' }"
+      v-bind="iconMap[metric.id] ?? { icon: 'fa-chart-line', iconClass: 'bg-expenzey-100 text-expenzey-600' }"
     />
   </div>
 </template>

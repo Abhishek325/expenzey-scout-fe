@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
+import ExpenzeyIcon from "@/components/icons/ExpenzeyIcon.vue";
 
 const copy = useReactiveLocaleStringRecord("layout", [
   "brandName",
@@ -20,19 +21,7 @@ const copy = useReactiveLocaleStringRecord("layout", [
           class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-expenzey-600 text-white shadow-sm"
           aria-hidden="true"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="h-5 w-5"
-          >
-            <path d="M3 3v18h18" />
-            <path d="M7 16l4-8 4 5 5-7" />
-          </svg>
+          <ExpenzeyIcon />
         </div>
         <div class="min-w-0">
           <p class="text-sm font-semibold lowercase tracking-tight text-slate-900">

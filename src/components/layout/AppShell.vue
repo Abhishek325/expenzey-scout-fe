@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AppNav from "@/components/layout/AppNav.vue";
 import AppTopBar from "@/components/layout/AppTopBar.vue";
+import FloatingChat from "@/components/chat/FloatingChat.vue";
 </script>
 
 <template>
@@ -10,5 +11,6 @@ import AppTopBar from "@/components/layout/AppTopBar.vue";
     <main class="mx-auto min-h-screen max-w-7xl bg-slate-50 p-6">
       <RouterView />
     </main>
+    <FloatingChat />
   </div>
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
+import FaIcon from "@/components/icons/FaIcon.vue";
 import type { InsightIcon, InsightVariant } from "@/composables/dashboard/useAISummary";
 import { resolveStringKey } from "@/composables/dashboard/resolveStringKey";
 import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
@@ -38,11 +39,11 @@ const resolvedDetail = computed(() => {
   return "";
 });
 
-const iconEmoji = computed(() => {
+const iconName = computed(() => {
   const map: Record<InsightIcon, string> = {
-    trophy: "🏆",
-    warning: "⚠️",
-    lightbulb: "💡",
+    trophy: "fa-trophy",
+    warning: "fa-triangle-exclamation",
+    lightbulb: "fa-lightbulb",
   };
   return props.icon ? map[props.icon] : "";
 });
@@ -57,7 +58,7 @@ const variantClass: Record<InsightVariant, string> = {
 <template>
   <article class="rounded-xl border p-4" :class="variantClass[variant]">
     <div class="flex gap-3">
-      <span v-if="iconEmoji" class="text-lg leading-none" aria-hidden="true">{{ iconEmoji }}</span>
+      <FaIcon v-if="iconName" :icon="iconName" size="lg" icon-class="shrink-0 text-slate-600" />
       <div class="min-w-0 flex-1">
         <p v-if="resolvedTitle" class="text-xs font-medium uppercase tracking-wide text-slate-500">
           {{ resolvedTitle }}

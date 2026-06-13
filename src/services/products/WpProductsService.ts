@@ -6,6 +6,6 @@ import type { ProductRow } from "@/types/products";
 
 export class WpProductsService implements IProductsService {
   async getTopProducts(range: DateRangeSelection): Promise<ProductRow[]> {
-    return wpRestFetch<ProductRow[]>(withDateRange("/products/top", range));
+    return wpRestFetch<ProductRow[]>(`${withDateRange("/products/top", range)}&limit=20`);
   }
 }

@@ -70,7 +70,7 @@
     "greeting": "Welcome back! Here's what's happening with your store.",
     "generateAiReport": "Generate New AI Report",
     "viewHistory": "View History",
-    "chatWidgetTitle": "AI Chat",
+    "chatWidgetTitle": "Ask Expenzey AI",
     "aiInsightsTitle": "AI Summary",
     "revenueTrendTitle": "Revenue Overview",
     "revenueTrendSubtitle": "Daily revenue for the selected week",
@@ -110,12 +110,14 @@
     }
   },
   "chat": {
-    "title": "Chat",
+    "title": "Ask Expenzey AI",
     "subtitle": "Ask questions about your store data",
     "greeting": {
       "default": "Hi! I'm your store assistant. Ask me about sales, products, customers, or reports."
     },
     "inputPlaceholder": "Ask anything about your store...",
+    "openChat": "Open Ask Expenzey AI",
+    "closeChat": "Close chat",
     "send": "Send",
     "suggestedPrompts": {
       "title": "Suggested prompts"

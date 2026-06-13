@@ -9,10 +9,17 @@ import { useLocalizedString } from "@/composables/useLocalizedString";
 import { resolveStringKey } from "@/composables/dashboard/resolveStringKey";
 import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
 
+const { floating = false } = defineProps<{
+  floating?: boolean;
+}>();
+
+const emit = defineEmits<{ close: [] }>();
+
 const { messages, prompts, usage, send } = useAIChat({ limitMessages: 4 });
 const widgetTitle = useLocalizedString("dashboard", "chatWidgetTitle");
 const greeting = useLocalizedString("chat", "greetingDefault");
 const viewHistory = useLocalizedString("dashboard", "viewHistory");
+const closeLabel = useLocalizedString("chat", "closeChat");
 
 const stringService = inject(STRING_SERVICE_KEY) as IStringService;
 
@@ -29,16 +36,49 @@ async function onSend(text: string) {
 </script>
 
 <template>
-  <section class="flex h-full min-h-0 flex-col rounded-xl border border-slate-200 bg-white shadow-sm">
-    <div class="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+  <section
+    class="flex min-h-0 flex-col bg-white"
+    :class="floating ? 'h-full' : 'h-full rounded-xl border border-slate-200 shadow-sm'"
+  >
+    <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-4 py-3">
       <h3 class="text-sm font-semibold text-slate-900">{{ widgetTitle }}</h3>
-      <RouterLink to="/chat" class="text-sm font-medium text-expenzey-600 hover:text-expenzey-700">{{ viewHistory }}</RouterLink>
+      <div class="flex items-center gap-2">
+        <RouterLink
+          to="/chat"
+          class="text-sm font-medium text-expenzey-600 hover:text-expenzey-700"
+          @click="emit('close')"
+        >
+          {{ viewHistory }}
+        </RouterLink>
+        <button
+          v-if="floating"
+          type="button"
+          class="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+          :aria-label="closeLabel"
+          @click="emit('close')"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-4 w-4"
+            aria-hidden="true"
+          >
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
     </div>
-    <div class="flex flex-1 flex-col gap-3 overflow-y-auto p-4">
+    <div class="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4">
       <div class="rounded-xl bg-slate-100 p-3 text-sm text-slate-600">
         {{ greeting }}
       </div>
-      <SuggestedPromptChips :prompts="prompts.slice(0, 4)" @select="onSend" />
+      <SuggestedPromptChips :prompts="prompts" @select="onSend" />
       <ChatMessage
         v-for="msg in displayMessages"
         :key="msg.id"
@@ -46,7 +86,7 @@ async function onSend(text: string) {
         :content="msg.text"
       />
     </div>
-    <div class="border-t border-slate-100 p-4">
+    <div class="shrink-0 border-t border-slate-100 p-4">
       <ChatInput @send="onSend" />
       <UsageQuotaFooter
         v-if="usage"
