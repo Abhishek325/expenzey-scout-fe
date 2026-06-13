@@ -1,5 +1,7 @@
-import { inject, onMounted, ref } from "vue";
+import { computed, inject, type ComputedRef } from "vue";
+import { useDashboardWidget } from "@/composables/dashboard/useDashboardWidget";
 import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
+import type { DashboardWidgetState } from "@/types/dashboardWidget";
 import type { WeeklyReport } from "@/types/reports";
 
 interface RecentReportCard {
@@ -41,28 +43,32 @@ function toCard(report: WeeklyReport, index: number): RecentReportCard {
   };
 }
 
-export function useRecentReports() {
+interface RecentReportsState extends DashboardWidgetState {
+  reports: ComputedRef<RecentReportCard[]>;
+}
+
+export function useRecentReports(): RecentReportsState {
   const reportsService = inject(REPORTS_SERVICE_KEY) as IReportsService;
-  const loading = ref(true);
-  const error = ref<string | null>(null);
-  const reports = ref<RecentReportCard[]>([]);
 
-  async function load() {
-    loading.value = true;
-    error.value = null;
-    try {
+  const widget = useDashboardWidget(
+    async () => {
       const list = await reportsService.listWeeklyReports();
-      reports.value = list.slice(0, 4).map(toCard);
-    } catch (e) {
-      error.value = e instanceof Error ? e.message : "error";
-    } finally {
-      loading.value = false;
+      return list.slice(0, 4).map(toCard);
+    },
+    {
+      hasData: (data) => (data?.length ?? 0) > 0,
+      watchOnMount: true,
+      watchDateRange: false,
     }
-  }
+  );
 
-  onMounted(() => {
-    void load();
-  });
+  const reports = computed(() => widget.data.value ?? []);
 
-  return { loading, error, reports, reload: load };
+  return {
+    loading: widget.loading,
+    error: widget.error,
+    hasData: widget.hasData,
+    reload: widget.reload,
+    reports,
+  };
 }

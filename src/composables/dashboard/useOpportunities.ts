@@ -1,8 +1,10 @@
-import { computed, inject, ref, watch } from "vue";
-import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
+import { computed, inject, type ComputedRef } from "vue";
+import { useDashboardWidget } from "@/composables/dashboard/useDashboardWidget";
 import { useTopProducts } from "@/composables/dashboard/useTopProducts";
+import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
 import { useDateRangeStore } from "@/stores/dateRange";
 import type { AIOpportunity } from "@/types/ai";
+import type { DashboardWidgetState } from "@/types/dashboardWidget";
 
 const MAX_OPPORTUNITIES = 5;
 
@@ -76,28 +78,22 @@ function resolveProductImageUrl(
   return imageByName.get(name);
 }
 
-export function useOpportunities() {
+interface OpportunitiesState extends DashboardWidgetState {
+  opportunities: ComputedRef<OpportunityViewModel[]>;
+}
+
+export function useOpportunities(): OpportunitiesState {
   const reportsService = inject(REPORTS_SERVICE_KEY) as IReportsService;
   const { productImagesByName } = useTopProducts();
   const dateRange = useDateRangeStore();
-  const loading = ref(true);
-  const error = ref<string | null>(null);
-  const opportunities = ref<AIOpportunity[]>([]);
 
-  async function load() {
-    loading.value = true;
-    error.value = null;
-    try {
-      opportunities.value = await reportsService.getOpportunities(dateRange.selection);
-    } catch (e) {
-      error.value = e instanceof Error ? e.message : "error";
-    } finally {
-      loading.value = false;
-    }
-  }
+  const widget = useDashboardWidget(
+    () => reportsService.getOpportunities(dateRange.selection),
+    { hasData: (data) => (data?.length ?? 0) > 0 }
+  );
 
-  const items = computed<OpportunityViewModel[]>(() =>
-    opportunities.value.slice(0, MAX_OPPORTUNITIES).map((o) => {
+  const opportunities = computed<OpportunityViewModel[]>(() =>
+    (widget.data.value ?? []).slice(0, MAX_OPPORTUNITIES).map((o) => {
       const style = BADGE_STYLES[o.badge] ?? BADGE_STYLES["Quick Win"];
       const name = (o.productName ?? o.badge).trim();
       const productImageUrl = resolveProductImageUrl(o, productImagesByName.value);
@@ -108,10 +104,14 @@ export function useOpportunities() {
         impact: o.estimatedImpact ?? "",
         productInitial: name.charAt(0).toUpperCase() || "?",
       };
-    }),
+    })
   );
 
-  watch(() => dateRange.rangeKey, load, { immediate: true });
-
-  return { loading, error, opportunities: items, reload: load };
+  return {
+    loading: widget.loading,
+    error: widget.error,
+    hasData: widget.hasData,
+    reload: widget.reload,
+    opportunities,
+  };
 }

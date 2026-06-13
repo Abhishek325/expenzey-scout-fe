@@ -6,6 +6,11 @@
   .card-header-action {
     @apply inline-flex shrink-0 items-center rounded-md bg-expenzey-50 px-2.5 py-1 text-xs font-medium text-expenzey-600 transition hover:bg-expenzey-100;
   }
+
+  .card-header-action:disabled,
+  .card-header-action--disabled {
+    @apply cursor-not-allowed bg-slate-100 text-slate-400 opacity-60 hover:bg-slate-100;
+  }
 }
 
 .expenzey-ai-app {

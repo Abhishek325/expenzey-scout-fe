@@ -11,7 +11,6 @@ import { createServices } from "@/services/createServices";
 import { applyWpBootstrap } from "@/services/wp/applyWpBootstrap";
 import { STRING_SERVICE_KEY } from "@/services/stringService";
 import { METRICS_SERVICE_KEY } from "@/services/metrics/IMetricsService";
-import { ORDERS_SERVICE_KEY } from "@/services/orders/IOrdersService";
 import { PRODUCTS_SERVICE_KEY } from "@/services/products/IProductsService";
 import { REPORTS_SERVICE_KEY } from "@/services/reports/IReportsService";
 import { CHAT_SERVICE_KEY } from "@/services/chat/IChatService";
@@ -28,7 +27,6 @@ async function bootstrap() {
 
   app.provide(STRING_SERVICE_KEY, services.stringService);
   app.provide(METRICS_SERVICE_KEY, services.metricsService);
-  app.provide(ORDERS_SERVICE_KEY, services.ordersService);
   app.provide(PRODUCTS_SERVICE_KEY, services.productsService);
   app.provide(REPORTS_SERVICE_KEY, services.reportsService);
   app.provide(CHAT_SERVICE_KEY, services.chatService);

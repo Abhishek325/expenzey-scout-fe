@@ -1,6 +1,8 @@
-import { computed, inject, provide, ref, watch, type ComputedRef, type InjectionKey, type Ref } from "vue";
+import { computed, inject, provide, type ComputedRef, type InjectionKey } from "vue";
+import { useDashboardWidget } from "@/composables/dashboard/useDashboardWidget";
 import { PRODUCTS_SERVICE_KEY, type IProductsService } from "@/services/products/IProductsService";
 import { useDateRangeStore } from "@/stores/dateRange";
+import type { DashboardWidgetState } from "@/types/dashboardWidget";
 import type { ProductRow } from "@/types/products";
 
 function buildProductImageLookup(products: ProductRow[]): Map<string, string> {
@@ -12,11 +14,9 @@ function buildProductImageLookup(products: ProductRow[]): Map<string, string> {
   return lookup;
 }
 
-interface TopProductsState {
-  loading: Ref<boolean>;
-  products: Ref<ProductRow[]>;
+interface TopProductsState extends DashboardWidgetState {
+  products: ComputedRef<ProductRow[]>;
   productImagesByName: ComputedRef<Map<string, string>>;
-  reload: () => Promise<void>;
 }
 
 const TOP_PRODUCTS_KEY: InjectionKey<TopProductsState> = Symbol("topProducts");
@@ -24,23 +24,23 @@ const TOP_PRODUCTS_KEY: InjectionKey<TopProductsState> = Symbol("topProducts");
 function createTopProductsState(): TopProductsState {
   const productsService = inject(PRODUCTS_SERVICE_KEY) as IProductsService;
   const dateRange = useDateRangeStore();
-  const loading = ref(true);
-  const products = ref<ProductRow[]>([]);
 
-  async function load() {
-    loading.value = true;
-    try {
-      products.value = await productsService.getTopProducts(dateRange.selection);
-    } finally {
-      loading.value = false;
-    }
-  }
+  const widget = useDashboardWidget(
+    () => productsService.getTopProducts(dateRange.selection),
+    { hasData: (data) => (data?.length ?? 0) > 0 }
+  );
 
+  const products = computed(() => widget.data.value ?? []);
   const productImagesByName = computed(() => buildProductImageLookup(products.value));
 
-  watch(() => dateRange.rangeKey, load, { immediate: true });
-
-  return { loading, products, productImagesByName, reload: load };
+  return {
+    loading: widget.loading,
+    error: widget.error,
+    hasData: widget.hasData,
+    reload: widget.reload,
+    products,
+    productImagesByName,
+  };
 }
 
 export function provideTopProducts(): TopProductsState {

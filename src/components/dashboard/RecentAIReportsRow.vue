@@ -1,33 +1,35 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import FaIcon from "@/components/icons/FaIcon.vue";
+import DashboardCard from "@/components/shared/DashboardCard.vue";
 import { useRecentReports } from "@/composables/dashboard/useRecentReports";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 
-const { loading, error, reports, reload } = useRecentReports();
-const loadingLabel = useLocalizedString("common", "loading");
-const errorLabel = useLocalizedString("common", "error");
-const retryLabel = useLocalizedString("common", "retry");
+const { loading, error, hasData, reports, reload } = useRecentReports();
 const emptyLabel = useLocalizedString("dashboard", "aiInsights.reportsEmpty");
 const viewAllReports = useLocalizedString("common", "viewAllReports");
 const title = useLocalizedString("dashboard", "aiInsights.recentReportsTitle");
+
+const viewAllAction = computed(() => ({
+  kind: "link" as const,
+  to: "/reports",
+  label: viewAllReports.value,
+}));
 </script>
 
 <template>
-  <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-    <div class="mb-4 flex items-center justify-between gap-2">
-      <h3 class="text-sm font-semibold text-slate-900">{{ title }}</h3>
-      <RouterLink to="/reports" class="card-header-action">
-        {{ viewAllReports }}
-      </RouterLink>
-    </div>
-
-    <p v-if="loading" class="text-sm text-slate-500">{{ loadingLabel }}</p>
-    <div v-else-if="error" class="flex items-center gap-3 text-sm text-rose-600">
-      <span>{{ errorLabel }}</span>
-      <button type="button" class="font-medium underline" @click="reload">{{ retryLabel }}</button>
-    </div>
-    <p v-else-if="reports.length === 0" class="text-sm text-slate-500">{{ emptyLabel }}</p>
-    <div v-else class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+  <DashboardCard
+    :title="title"
+    :loading="loading"
+    :error="error"
+    :has-data="hasData"
+    :empty-label="emptyLabel"
+    :action="viewAllAction"
+    section-padding
+    body-class="!p-0"
+    @retry="reload"
+  >
+    <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <article
         v-for="report in reports"
         :key="report.id"
@@ -51,5 +53,5 @@ const title = useLocalizedString("dashboard", "aiInsights.recentReportsTitle");
         </div>
       </article>
     </div>
-  </section>
+  </DashboardCard>
 </template>

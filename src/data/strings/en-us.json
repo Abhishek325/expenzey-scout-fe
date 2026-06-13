@@ -56,15 +56,6 @@
         "growth": "Growth"
       }
     },
-    "recentOrders": {
-      "title": "Recent Orders",
-      "columns": {
-        "orderId": "Order",
-        "customer": "Customer",
-        "total": "Total",
-        "date": "Date"
-      }
-    },
     "aiSummary": {
       "title": "AI Summary"
     },
@@ -104,6 +95,11 @@
         "reviewsAnalyzed": "reviews analyzed",
         "topPositiveMentions": "Top Positive Mentions",
         "topComplaints": "Top Complaints",
+        "empty": {
+          "title": "No reviews yet in this period",
+          "description": "We'll analyze your product reviews to show sentiment, top themes, and actionable insights.",
+          "footer": "Once you get reviews, we'll update this section with AI-powered insights."
+        },
         "themes": {
           "positive": {
             "delivery": "Fast delivery",
@@ -130,11 +126,6 @@
     "topProductsColumnRevenue": "Revenue",
     "topProductsColumnOrders": "Orders",
     "topProductsColumnGrowth": "Growth",
-    "recentOrdersTitle": "Recent Orders",
-    "recentOrdersColumnOrder": "Order",
-    "recentOrdersColumnCustomer": "Customer",
-    "recentOrdersColumnTotal": "Total",
-    "recentOrdersColumnDate": "Date",
     "viewFullReport": "View Full Report",
     "revenuePeriodDaily": "Daily",
     "revenuePeriodWeekly": "Weekly",
