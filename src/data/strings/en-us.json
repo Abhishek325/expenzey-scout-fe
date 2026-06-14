@@ -75,7 +75,13 @@
         "overview": "Overview",
         "topPerformer": "Top Performer",
         "needsAttention": "Needs Attention",
-        "opportunity": "Top Opportunity"
+        "opportunity": "Top Opportunity",
+        "revenueIncreased": "Revenue increased",
+        "revenueDecreased": "Revenue decreased",
+        "vsLastPeriod": "vs last week",
+        "salesDown": "Sales ↓ {percent}%",
+        "bundleHeadline": "Bundle with top products",
+        "coPurchaseRate": "{percent}% co-purchase rate"
       },
       "weeklyReport": {
         "title": "Weekly AI Report",
@@ -250,7 +256,7 @@
     }
   },
   "layout": {
-    "brandName": "expenzey ai",
+    "brandName": "Expenzey AI",
     "tagline": "Insights for WooCommerce",
     "proPlan": "Pro Plan",
     "notifications": "Notifications"

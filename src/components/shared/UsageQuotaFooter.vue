@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, ref } from "vue";
 import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
+import { formatLocaleTemplate } from "@/utils/formatLocaleTemplate";
 import { USAGE_SERVICE_KEY, type IUsageService } from "@/services/usage/IUsageService";
 import type { UsageQuota } from "@/types/usage";
 
@@ -46,9 +47,10 @@ const remainingCount = computed(() =>
 );
 
 const remainingText = computed(() =>
-  copy.value.remaining
-    .replace("{remaining}", String(remainingCount.value))
-    .replace("{limit}", String(resolvedLimit.value))
+  formatLocaleTemplate(copy.value.remaining, {
+    remaining: remainingCount.value,
+    limit: resolvedLimit.value,
+  })
 );
 </script>
 

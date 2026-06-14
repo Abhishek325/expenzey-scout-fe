@@ -1,6 +1,20 @@
 <script setup lang="ts">
-import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
+import { computed } from "vue";
 import ExpenzeyIcon from "@/components/icons/ExpenzeyIcon.vue";
+import sidebarItems from "@/data/sidebar.json";
+import {
+  useLocalizedString,
+  useReactiveLocaleStringRecord,
+} from "@/composables/useLocalizedString";
+
+interface NavItem {
+  id: string;
+  route: string;
+  icon: string;
+  labelKey: string;
+}
+
+const items = sidebarItems as NavItem[];
 
 const copy = useReactiveLocaleStringRecord("layout", [
   "brandName",
@@ -8,14 +22,28 @@ const copy = useReactiveLocaleStringRecord("layout", [
   "proPlan",
   "notifications",
 ] as const);
+
+const navDashboard = useLocalizedString("nav", "dashboard");
+const navReports = useLocalizedString("nav", "reports");
+const navSettings = useLocalizedString("nav", "settings");
+
+const labels = computed(() => ({
+  "nav.dashboard": navDashboard.value,
+  "nav.reports": navReports.value,
+  "nav.settings": navSettings.value,
+}));
+
+function labelFor(key: string) {
+  return labels.value[key as keyof typeof labels.value] ?? key;
+}
 </script>
 
 <template>
   <header
-    class="flex w-full items-center justify-between border-b border-slate-200 bg-white px-6 py-3"
+    class="flex w-full items-stretch justify-between border-b border-slate-200 bg-white px-6"
   >
-    <div class="flex min-w-0 flex-1 items-center gap-8">
-      <div class="flex items-center gap-3">
+    <div class="flex min-w-0 flex-1 items-stretch gap-8">
+      <div class="flex items-center gap-3 py-3">
         <div
           class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-expenzey-600 text-white shadow-sm"
           aria-hidden="true"
@@ -29,8 +57,21 @@ const copy = useReactiveLocaleStringRecord("layout", [
           <p class="text-xs text-slate-500">{{ copy.tagline }}</p>
         </div>
       </div>
+
+      <nav class="flex gap-8" aria-label="Main navigation">
+        <RouterLink
+          v-for="item in items"
+          :key="item.id"
+          :to="item.route"
+          class="relative flex items-center border-b-2 border-transparent text-sm font-medium text-slate-600 transition hover:text-expenzey-600"
+          active-class="!border-expenzey-600 !text-expenzey-600"
+        >
+          {{ labelFor(item.labelKey) }}
+        </RouterLink>
+      </nav>
     </div>
-    <div class="flex shrink-0 items-center gap-3">
+
+    <div class="flex shrink-0 items-center gap-3 py-3">
       <button
         type="button"
         class="inline-flex items-center gap-1.5 rounded-lg bg-amber-400 px-3 py-1.5 text-sm font-semibold text-amber-950 shadow-sm transition hover:bg-amber-500"

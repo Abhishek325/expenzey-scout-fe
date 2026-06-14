@@ -79,6 +79,9 @@ export default class StringService implements IStringService {
     if (typeof v === "number" || typeof v === "boolean") {
       return String(v);
     }
+    if (Array.isArray(v)) {
+      return v.map((item) => (typeof item === "string" ? item : String(item))).join(", ");
+    }
     return `${context}/${key}`;
   }
 

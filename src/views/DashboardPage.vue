@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import AIBusinessSummaryBar from "@/components/dashboard/AIBusinessSummaryBar.vue";
 import DashboardBodyGrid from "@/components/dashboard/DashboardBodyGrid.vue";
 import DashboardHeader from "@/components/dashboard/DashboardHeader.vue";
 import DashboardMetricsRow from "@/components/dashboard/DashboardMetricsRow.vue";
@@ -11,7 +10,6 @@ import DashboardMetricsRow from "@/components/dashboard/DashboardMetricsRow.vue"
       <DashboardHeader />
       <DashboardMetricsRow />
     </div>
-    <AIBusinessSummaryBar />
     <DashboardBodyGrid />
   </div>
 </template>

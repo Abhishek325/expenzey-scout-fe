@@ -1,15 +1,25 @@
 import { computed, inject, ref, watch } from "vue";
+import { useLocalizedString } from "@/composables/useLocalizedString";
 import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
-import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
 import { useDateRangeStore } from "@/stores/dateRange";
 import type { BusinessSummary } from "@/types/ai";
+import { ensureLocaleString } from "@/utils/formatLocaleTemplate";
+import {
+  parseNeedsAttention,
+  parseOpportunity,
+  parseOverview,
+  parseTopPerformer,
+} from "@/utils/parseBusinessSummary";
 
-interface BusinessSummaryHighlight {
+export interface BusinessSummaryHighlight {
   id: string;
   label: string;
-  detail: string;
+  headline: string;
+  subtext: string;
+  headlineLarge?: boolean;
   icon: string;
   iconClass: string;
+  iconBgClass: string;
 }
 
 export function useBusinessSummary() {
@@ -18,12 +28,29 @@ export function useBusinessSummary() {
   const loading = ref(true);
   const error = ref<string | null>(null);
   const summary = ref<BusinessSummary | null>(null);
-  const labels = useReactiveLocaleStringRecord("dashboard", [
-    "aiInsights.businessSummary.overview",
-    "aiInsights.businessSummary.topPerformer",
-    "aiInsights.businessSummary.needsAttention",
-    "aiInsights.businessSummary.opportunity",
-  ] as const);
+
+  const overviewLabel = useLocalizedString("dashboard", "aiInsights.businessSummary.overview");
+  const topPerformerLabel = useLocalizedString("dashboard", "aiInsights.businessSummary.topPerformer");
+  const needsAttentionLabel = useLocalizedString("dashboard", "aiInsights.businessSummary.needsAttention");
+  const opportunityLabel = useLocalizedString("dashboard", "aiInsights.businessSummary.opportunity");
+  const revenueIncreasedLabel = useLocalizedString(
+    "dashboard",
+    "aiInsights.businessSummary.revenueIncreased"
+  );
+  const revenueDecreasedLabel = useLocalizedString(
+    "dashboard",
+    "aiInsights.businessSummary.revenueDecreased"
+  );
+  const vsLastPeriodLabel = useLocalizedString("dashboard", "aiInsights.businessSummary.vsLastPeriod");
+  const salesDownLabel = useLocalizedString("dashboard", "aiInsights.businessSummary.salesDown");
+  const bundleHeadlineLabel = useLocalizedString(
+    "dashboard",
+    "aiInsights.businessSummary.bundleHeadline"
+  );
+  const coPurchaseRateLabel = useLocalizedString(
+    "dashboard",
+    "aiInsights.businessSummary.coPurchaseRate"
+  );
 
   async function load() {
     loading.value = true;
@@ -40,35 +67,52 @@ export function useBusinessSummary() {
   const highlights = computed<BusinessSummaryHighlight[]>(() => {
     if (!summary.value) return [];
     const s = summary.value;
-    const l = labels.value;
+    const summaryLabels = {
+      overview: ensureLocaleString(overviewLabel.value),
+      topPerformer: ensureLocaleString(topPerformerLabel.value),
+      needsAttention: ensureLocaleString(needsAttentionLabel.value),
+      opportunity: ensureLocaleString(opportunityLabel.value),
+      revenueIncreased: ensureLocaleString(revenueIncreasedLabel.value),
+      revenueDecreased: ensureLocaleString(revenueDecreasedLabel.value),
+      vsLastPeriod: ensureLocaleString(vsLastPeriodLabel.value),
+      salesDown: ensureLocaleString(salesDownLabel.value),
+      bundleHeadline: ensureLocaleString(bundleHeadlineLabel.value),
+      coPurchaseRate: ensureLocaleString(coPurchaseRateLabel.value),
+    };
+
+    const overview = parseOverview(s.overview, summaryLabels);
+    const topPerformer = parseTopPerformer(s.topPerformer, summaryLabels);
+    const needsAttention = parseNeedsAttention(s.needsAttention, summaryLabels);
+    const opportunity = parseOpportunity(s.opportunity, summaryLabels);
+
     return [
       {
         id: "overview",
-        label: l["aiInsights.businessSummary.overview"],
-        detail: s.overview,
+        ...overview,
         icon: "fa-arrow-trend-up",
-        iconClass: "bg-emerald-100 text-emerald-600",
+        iconClass: "text-emerald-600",
+        iconBgClass: "bg-emerald-100",
       },
       {
         id: "top-performer",
-        label: l["aiInsights.businessSummary.topPerformer"],
-        detail: s.topPerformer,
+        ...topPerformer,
         icon: "fa-trophy",
-        iconClass: "bg-amber-100 text-amber-600",
+        iconClass: "text-amber-600",
+        iconBgClass: "bg-amber-100",
       },
       {
         id: "needs-attention",
-        label: l["aiInsights.businessSummary.needsAttention"],
-        detail: s.needsAttention,
+        ...needsAttention,
         icon: "fa-triangle-exclamation",
-        iconClass: "bg-rose-100 text-rose-600",
+        iconClass: "text-rose-600",
+        iconBgClass: "bg-rose-100",
       },
       {
         id: "opportunity",
-        label: l["aiInsights.businessSummary.opportunity"],
-        detail: s.opportunity,
+        ...opportunity,
         icon: "fa-lightbulb",
-        iconClass: "bg-yellow-100 text-yellow-600",
+        iconClass: "text-yellow-600",
+        iconBgClass: "bg-yellow-100",
       },
     ];
   });
