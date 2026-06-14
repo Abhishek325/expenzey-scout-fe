@@ -44,3 +44,16 @@
   color: inherit;
   text-decoration: none;
 }
+
+/* Teleported overlays must clear the WP admin bar (z-index 99999, 32px tall). */
+body.admin-bar .opportunity-drawer {
+  top: 32px;
+  height: calc(100vh - 32px);
+}
+
+@media screen and (max-width: 782px) {
+  body.admin-bar .opportunity-drawer {
+    top: 46px;
+    height: calc(100vh - 46px);
+  }
+}

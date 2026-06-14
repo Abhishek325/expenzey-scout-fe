@@ -6,6 +6,12 @@
     "labelKey": "nav.dashboard"
   },
   {
+    "id": "opportunities",
+    "route": "/opportunities",
+    "icon": "💡",
+    "labelKey": "nav.opportunities"
+  },
+  {
     "id": "reports",
     "route": "/reports",
     "icon": "📄",

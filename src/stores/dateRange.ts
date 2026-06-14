@@ -13,15 +13,16 @@ export const DATE_RANGE_PRESETS: readonly DateRangePreset[] = [
   "12mo",
 ] as const;
 
-const defaultRange = getRangeForPreset("7d");
-
 export const useDateRangeStore = defineStore("dateRange", {
-  state: () => ({
-    start: defaultRange.start,
-    end: defaultRange.end,
-    preset: "7d" as DateRangePreset | null,
-    isCustom: false,
-  }),
+  state: () => {
+    const defaultRange = getRangeForPreset("7d");
+    return {
+      start: defaultRange.start,
+      end: defaultRange.end,
+      preset: "7d" as DateRangePreset | null,
+      isCustom: false,
+    };
+  },
   getters: {
     label: (state) => formatDashboardDateRangeLabel(state.start, state.end),
     rangeKey: (state) =>

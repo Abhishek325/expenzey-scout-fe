@@ -9,8 +9,9 @@ import { useLocalizedString } from "@/composables/useLocalizedString";
 import { resolveStringKey } from "@/composables/dashboard/resolveStringKey";
 import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
 
-const { floating = false } = defineProps<{
+const { floating = false, initialPrompt = null } = defineProps<{
   floating?: boolean;
+  initialPrompt?: string | null;
 }>();
 
 const emit = defineEmits<{ close: [] }>();
@@ -77,7 +78,7 @@ async function onSend(text: string) {
       />
     </div>
     <div class="shrink-0 border-t border-slate-100 p-4">
-      <ChatInput @send="onSend" />
+      <ChatInput :initial-prompt="initialPrompt" @send="onSend" />
       <UsageQuotaFooter
         v-if="usage"
         class="mt-3"

@@ -1,59 +1,14 @@
-import { computed, inject, type ComputedRef } from "vue";
-import { useDashboardWidget } from "@/composables/dashboard/useDashboardWidget";
+import { computed, inject, onMounted, watch, type ComputedRef } from "vue";
+import { storeToRefs } from "pinia";
 import { useTopProducts } from "@/composables/dashboard/useTopProducts";
 import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
 import { useDateRangeStore } from "@/stores/dateRange";
+import { useOpportunitiesStore } from "@/stores/opportunitiesStore";
 import type { AIOpportunity } from "@/types/ai";
 import type { DashboardWidgetState } from "@/types/dashboardWidget";
+import { badgeStyle, resolveProductImageUrl } from "@/utils/opportunityStyles";
 
 const MAX_OPPORTUNITIES = 5;
-
-const BADGE_STYLES: Record<
-  string,
-  {
-    cardClass: string;
-    labelClass: string;
-    impactClass: string;
-    badgeIcon: string;
-    thumbClass: string;
-  }
-> = {
-  "High Impact": {
-    cardClass: "border-emerald-200 bg-emerald-50/50",
-    labelClass: "text-emerald-700",
-    impactClass: "text-emerald-700",
-    badgeIcon: "fa-fire",
-    thumbClass: "bg-emerald-100 text-emerald-700",
-  },
-  "Needs Attention": {
-    cardClass: "border-rose-200 bg-rose-50/50",
-    labelClass: "text-rose-700",
-    impactClass: "text-rose-700",
-    badgeIcon: "fa-triangle-exclamation",
-    thumbClass: "bg-rose-100 text-rose-700",
-  },
-  "Quick Win": {
-    cardClass: "border-orange-200 bg-orange-50/50",
-    labelClass: "text-orange-700",
-    impactClass: "text-orange-700",
-    badgeIcon: "fa-bolt",
-    thumbClass: "bg-orange-100 text-orange-700",
-  },
-  "Growth Opportunity": {
-    cardClass: "border-sky-200 bg-sky-50/50",
-    labelClass: "text-sky-700",
-    impactClass: "text-sky-700",
-    badgeIcon: "fa-arrow-trend-up",
-    thumbClass: "bg-sky-100 text-sky-700",
-  },
-  Risk: {
-    cardClass: "border-amber-200 bg-amber-50/50",
-    labelClass: "text-amber-700",
-    impactClass: "text-amber-700",
-    badgeIcon: "fa-shield-halved",
-    thumbClass: "bg-amber-100 text-amber-700",
-  },
-};
 
 interface OpportunityViewModel extends AIOpportunity {
   cardClass: string;
@@ -65,53 +20,57 @@ interface OpportunityViewModel extends AIOpportunity {
   productInitial: string;
 }
 
-function resolveProductImageUrl(
-  opportunity: AIOpportunity,
-  imageByName: Map<string, string>,
-): string | undefined {
-  const direct = opportunity.productImageUrl?.trim();
-  if (direct) return direct;
-
-  const name = opportunity.productName?.trim().toLowerCase();
-  if (!name) return undefined;
-
-  return imageByName.get(name);
-}
-
 interface OpportunitiesState extends DashboardWidgetState {
   opportunities: ComputedRef<OpportunityViewModel[]>;
 }
 
 export function useOpportunities(): OpportunitiesState {
   const reportsService = inject(REPORTS_SERVICE_KEY) as IReportsService;
-  const { productImagesByName } = useTopProducts();
+  const store = useOpportunitiesStore();
   const dateRange = useDateRangeStore();
+  const { productImagesByName } = useTopProducts();
+  const { items, loading, error } = storeToRefs(store);
 
-  const widget = useDashboardWidget(
-    () => reportsService.getOpportunities(dateRange.selection),
-    { hasData: (data) => (data?.length ?? 0) > 0 }
+  onMounted(() => {
+    void store.ensureLoaded(reportsService);
+  });
+
+  watch(
+    () => dateRange.rangeKey,
+    () => {
+      void store.ensureLoaded(reportsService, true);
+    },
   );
 
+  const hasData = computed(() => items.value.length > 0);
+
   const opportunities = computed<OpportunityViewModel[]>(() =>
-    (widget.data.value ?? []).slice(0, MAX_OPPORTUNITIES).map((o) => {
-      const style = BADGE_STYLES[o.badge] ?? BADGE_STYLES["Quick Win"];
+    items.value.slice(0, MAX_OPPORTUNITIES).map((o) => {
+      const style = badgeStyle(o.badge);
       const name = (o.productName ?? o.badge).trim();
       const productImageUrl = resolveProductImageUrl(o, productImagesByName.value);
       return {
-        ...o,
+        id: o.id,
+        type: o.type,
+        badge: o.badge,
+        priority: o.priority,
+        title: o.title,
+        description: o.description,
+        recommendation: o.recommendation,
+        productName: o.productName,
         ...style,
         productImageUrl,
-        impact: o.estimatedImpact ?? "",
+        impact: o.estimatedImpact ?? o.impact?.displayText ?? "",
         productInitial: name.charAt(0).toUpperCase() || "?",
       };
-    })
+    }),
   );
 
   return {
-    loading: widget.loading,
-    error: widget.error,
-    hasData: widget.hasData,
-    reload: widget.reload,
+    loading,
+    error,
+    hasData,
+    reload: () => store.reload(reportsService),
     opportunities,
   };
 }

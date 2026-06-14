@@ -2,6 +2,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "reports": "AI Reports",
+    "opportunities": "AI Opportunities",
     "settings": "Settings"
   },
   "common": {
@@ -269,6 +270,111 @@
   },
   "export": {
     "label": "Export"
+  },
+  "opportunities": {
+    "title": "AI Opportunities",
+    "subtitle": "Data-driven recommendations for your store",
+    "empty": "No opportunities match this filter for the selected period.",
+    "sortBy": "Sort by:",
+    "sortImpact": "Impact",
+    "sortPriority": "Priority",
+    "showing": "Showing",
+    "of": "of",
+    "opportunities": "opportunities",
+    "summary": {
+      "total": "Total Opportunities",
+      "totalFooter": "Across all categories",
+      "highImpact": "High Impact",
+      "highImpactFooter": "High potential impact",
+      "quickWins": "Quick Wins",
+      "quickWinsFooter": "Easy to implement",
+      "needsAttention": "Needs Attention",
+      "needsAttentionFooter": "Risks to monitor",
+      "estimatedImpact": "Est. Potential Impact",
+      "additionalRevenue": "Additional revenue"
+    },
+    "tabs": {
+      "all": "All",
+      "highImpact": "High Impact",
+      "quickWins": "Quick Wins",
+      "needsAttention": "Needs Attention",
+      "growth": "Growth Opportunities"
+    },
+    "columns": {
+      "opportunity": "Opportunity",
+      "impact": "Impact",
+      "dataReason": "Data / Reason",
+      "recommendation": "Recommendation",
+      "action": "Action"
+    },
+    "types": {
+      "risingProduct": "Growth Opportunity",
+      "decliningProduct": "Declining Product",
+      "bundleOpportunity": "Bundle Opportunity",
+      "customerRetention": "Customer Retention",
+      "reviewComplaint": "Review Intelligence"
+    },
+    "drawer": {
+      "whyDetected": "Why we detected this",
+      "evidence": "Supporting data",
+      "evidenceEmpty": "No supporting metrics available for this period.",
+      "impact": "Estimated Impact",
+      "actions": "Recommended Actions",
+      "related": "Related Opportunities",
+      "detectedAgo": "Detected",
+      "detectedToday": "Detected today at {time}",
+      "detectedOn": "Detected {date} at {time}",
+      "currentPeriod": "Current period",
+      "currentRevenue": "Current revenue",
+      "previousPeriod": "Previous period",
+      "previousRevenue": "Previous revenue",
+      "growth": "Growth",
+      "revenueShare": "Revenue share",
+      "revenueShareOfTotal": "of total revenue",
+      "coPurchaseRate": "Co-purchase rate",
+      "smallerProductRevenue": "Smaller product revenue",
+      "combinedOrders": "Combined orders",
+      "estimatedRange": "Estimated range",
+      "defaultActionTitle": "Recommended action",
+      "insightBannerRevenueShare": "This product's revenue share is {percent}% of your total store revenue.",
+      "actionPlanIntro": "Create an action plan for this opportunity:",
+      "actionPlanOutro": "Provide a prioritized step-by-step plan with expected outcomes.",
+      "impactRangePerMonth": "{range}/month",
+      "promptContext": {
+        "opportunity": "Opportunity",
+        "type": "Type",
+        "product": "Product",
+        "detection": "Detection",
+        "growth": "Growth",
+        "impact": "Impact",
+        "supportingData": "Supporting data",
+        "recommendedActions": "Recommended actions"
+      },
+      "impactSubtitle": {
+        "revenue": "Potential additional monthly revenue",
+        "retention": "Potential retention uplift",
+        "risk": "Potential revenue at risk"
+      },
+      "createActionPlan": "Create Action Plan",
+      "copyId": "Copy ID",
+      "copiedId": "Copied",
+      "opportunityId": "Opportunity ID",
+      "markCompleted": "Mark as completed",
+      "markCompletedSoon": "Coming soon",
+      "confidenceLabel": "Confidence: {level}",
+      "typeFocus": {
+        "risingProduct": "Capitalize on this product's growth momentum with inventory and merchandising.",
+        "bundleOpportunity": "Pair these products to increase average order value through bundling.",
+        "decliningProduct": "Act early to reduce revenue risk from declining product performance.",
+        "customerRetention": "Strengthen retention momentum with targeted loyalty and win-back tactics.",
+        "reviewComplaint": "Address rising complaint themes to protect customer satisfaction."
+      },
+      "confidence": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      }
+    }
   },
   "usage": {
     "remaining": "{remaining} / {limit} queries left this month",

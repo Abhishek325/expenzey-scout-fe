@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, watch } from "vue";
+import { storeToRefs } from "pinia";
 import AIChatWidget from "@/components/dashboard/AIChatWidget.vue";
 import ExpenzeyIcon from "@/components/icons/ExpenzeyIcon.vue";
 import { useLocalizedString } from "@/composables/useLocalizedString";
+import { useChatOverlayStore } from "@/stores/chatOverlay";
 
-const open = ref(false);
+const chatOverlay = useChatOverlayStore();
+const { isOpen, pendingPrompt } = storeToRefs(chatOverlay);
 
 const openLabel = useLocalizedString("chat", "openChat");
 const closeLabel = useLocalizedString("chat", "closeChat");
@@ -17,12 +20,22 @@ const panelBottomClass = computed(() =>
   import.meta.env.DEV ? "bottom-[5.5rem]" : "bottom-24"
 );
 
+watch(isOpen, (value) => {
+  if (!value) {
+    chatOverlay.clearPending();
+  }
+});
+
 function toggle() {
-  open.value = !open.value;
+  if (isOpen.value) {
+    chatOverlay.close();
+  } else {
+    chatOverlay.open();
+  }
 }
 
 function close() {
-  open.value = false;
+  chatOverlay.close();
 }
 </script>
 
@@ -37,12 +50,12 @@ function close() {
       leave-to-class="opacity-0 translate-y-3 scale-95"
     >
       <div
-        v-if="open"
+        v-if="isOpen"
         class="pointer-events-auto fixed right-6 z-[10001] flex w-[min(100vw-3rem,24rem)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
         :class="panelBottomClass"
         style="height: min(32rem, calc(100vh - 7rem))"
       >
-        <AIChatWidget floating @close="close" />
+        <AIChatWidget floating :initial-prompt="pendingPrompt" @close="close" />
       </div>
     </Transition>
 
@@ -50,11 +63,11 @@ function close() {
       type="button"
       class="pointer-events-auto fixed right-6 z-[10002] flex h-14 w-14 items-center justify-center rounded-full bg-expenzey-600 text-white shadow-lg transition hover:bg-expenzey-700 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-expenzey-400 focus:ring-offset-2"
       :class="fabBottomClass"
-      :aria-label="open ? closeLabel : openLabel"
-      :aria-expanded="open"
+      :aria-label="isOpen ? closeLabel : openLabel"
+      :aria-expanded="isOpen"
       @click="toggle"
     >
-      <ExpenzeyIcon v-if="!open" icon-class="h-6 w-6" />
+      <ExpenzeyIcon v-if="!isOpen" icon-class="h-6 w-6" />
       <svg
         v-else
         xmlns="http://www.w3.org/2000/svg"

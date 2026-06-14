@@ -2,8 +2,8 @@ import type { IReportsService } from "@/services/reports/IReportsService";
 import { wpRestFetch } from "@/services/wp/wpRestClient";
 import { withDateRange } from "@/services/wp/wpQueryUtils";
 import type {
-  AIOpportunity,
   BusinessSummary,
+  OpportunityDetail,
   ReviewIntelligence,
   WeeklyReportDetail,
 } from "@/types/ai";
@@ -36,8 +36,8 @@ export class WpReportsService implements IReportsService {
     return wpRestFetch<BusinessSummary>(withDateRange("/ai/business-summary", range));
   }
 
-  async getOpportunities(range: DateRangeSelection): Promise<AIOpportunity[]> {
-    return wpRestFetch<AIOpportunity[]>(withDateRange("/ai/opportunities", range));
+  async getOpportunities(range: DateRangeSelection): Promise<OpportunityDetail[]> {
+    return wpRestFetch<OpportunityDetail[]>(withDateRange("/ai/opportunities", range));
   }
 
   async getWeeklyReportDetail(id?: string): Promise<WeeklyReportDetail> {

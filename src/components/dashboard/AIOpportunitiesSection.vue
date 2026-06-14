@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useRouter } from "vue-router";
 import FaIcon from "@/components/icons/FaIcon.vue";
 import DashboardCard from "@/components/shared/DashboardCard.vue";
 import { INSIGHTS_CARD_BODY_HEIGHT } from "@/constants/dashboardRowHeights";
 import { useOpportunities } from "@/composables/dashboard/useOpportunities";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 
+const router = useRouter();
 const { loading, error, hasData, opportunities, reload } = useOpportunities();
 const emptyLabel = useLocalizedString("dashboard", "aiInsights.opportunitiesEmpty");
 const viewAll = useLocalizedString("common", "viewAll");
@@ -14,9 +16,13 @@ const recommendationLabel = useLocalizedString("dashboard", "aiInsights.recommen
 
 const viewAllAction = computed(() => ({
   kind: "link" as const,
-  to: "/reports",
+  to: "/opportunities",
   label: viewAll.value,
 }));
+
+function openOpportunity(id: string) {
+  void router.push({ path: "/opportunities", query: { id } });
+}
 </script>
 
 <template>
@@ -34,8 +40,12 @@ const viewAllAction = computed(() => ({
       <article
         v-for="item in opportunities"
         :key="item.id"
-        class="flex gap-3 rounded-xl border p-3.5"
+        class="flex cursor-pointer gap-3 rounded-xl border p-3.5 transition hover:shadow-sm"
         :class="item.cardClass"
+        role="button"
+        tabindex="0"
+        @click="openOpportunity(item.id)"
+        @keydown.enter="openOpportunity(item.id)"
       >
         <div class="min-w-0 flex-1">
           <p class="flex items-center gap-1.5 text-xs font-semibold" :class="item.labelClass">

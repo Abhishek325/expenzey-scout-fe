@@ -5,6 +5,10 @@ import { useDateRangeStore } from "@/stores/dateRange";
 import type { DashboardWidgetState } from "@/types/dashboardWidget";
 import type { ProductRow } from "@/types/products";
 
+function isSoldProduct(product: ProductRow): boolean {
+  return product.orders > 0 && product.revenue > 0;
+}
+
 function buildProductImageLookup(products: ProductRow[]): Map<string, string> {
   const lookup = new Map<string, string>();
   for (const product of products) {
@@ -27,10 +31,10 @@ function createTopProductsState(): TopProductsState {
 
   const widget = useDashboardWidget(
     () => productsService.getTopProducts(dateRange.selection),
-    { hasData: (data) => (data?.length ?? 0) > 0 }
+    { hasData: (data) => (data?.some(isSoldProduct) ?? false) }
   );
 
-  const products = computed(() => widget.data.value ?? []);
+  const products = computed(() => (widget.data.value ?? []).filter(isSoldProduct));
   const productImagesByName = computed(() => buildProductImageLookup(products.value));
 
   return {

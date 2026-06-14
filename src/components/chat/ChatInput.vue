@@ -1,15 +1,26 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 
-defineProps<{
+const props = defineProps<{
   disabled?: boolean;
+  initialPrompt?: string | null;
 }>();
 
 const emit = defineEmits<{ send: [message: string] }>();
 
 const draft = ref("");
 const placeholder = useLocalizedString("chat", "inputPlaceholder");
+
+watch(
+  () => props.initialPrompt,
+  (value) => {
+    if (value) {
+      draft.value = value;
+    }
+  },
+  { immediate: true },
+);
 
 function submit() {
   if (!draft.value.trim()) {

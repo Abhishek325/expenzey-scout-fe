@@ -3,6 +3,9 @@ import { createPinia } from "pinia";
 import { setupCalendar } from "v-calendar";
 import App from "@/App.vue";
 import router from "@/router";
+// Register Pinia stores in the entry bundle before lazy route chunks load.
+import "@/stores/dateRange";
+import "@/stores/opportunitiesStore";
 import "@/style.css";
 import "v-calendar/style.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";

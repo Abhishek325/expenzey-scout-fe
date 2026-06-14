@@ -41,6 +41,54 @@ export interface AIOpportunity {
   productImageUrl?: string;
 }
 
+export interface OpportunityDetection {
+  summary: string;
+  currentValue?: number | string;
+  previousValue?: number | string;
+  growthPercent?: number;
+  metricLabel?: string;
+  revenueSharePercent?: number;
+}
+
+export interface OpportunityEvidenceItem {
+  label: string;
+  value: string | number;
+  trend?: string;
+  trendDirection?: "up" | "down" | "neutral";
+}
+
+export interface OpportunityImpact {
+  impactType: "revenue" | "retention" | "risk";
+  estimatedValue?: number;
+  estimatedRange?: { min: number; max: number };
+  displayText: string;
+  confidence: "high" | "medium" | "low";
+}
+
+export interface OpportunityAction {
+  title: string;
+  description: string;
+}
+
+export interface OpportunityListMetric {
+  label: string;
+  value: string;
+  trendText?: string;
+  trendDirection?: "up" | "down" | "neutral";
+}
+
+export interface OpportunityDetail extends AIOpportunity {
+  generatedAt: string;
+  detection: OpportunityDetection;
+  evidence: OpportunityEvidenceItem[];
+  impact: OpportunityImpact;
+  actions: OpportunityAction[];
+  relatedIds: string[];
+  listMetric: OpportunityListMetric;
+  impactLevel: "high" | "medium" | "low";
+  insightBanner?: string;
+}
+
 export interface ReviewIntelligence {
   averageRating: number;
   totalReviews: number;

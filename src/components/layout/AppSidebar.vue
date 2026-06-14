@@ -13,11 +13,13 @@ interface SidebarItem {
 const items = sidebarItems as SidebarItem[];
 
 const navDashboard = useLocalizedString("nav", "dashboard");
+const navOpportunities = useLocalizedString("nav", "opportunities");
 const navReports = useLocalizedString("nav", "reports");
 const navSettings = useLocalizedString("nav", "settings");
 
 const labels = computed(() => ({
   "nav.dashboard": navDashboard.value,
+  "nav.opportunities": navOpportunities.value,
   "nav.reports": navReports.value,
   "nav.settings": navSettings.value,
 }));
