@@ -11,6 +11,21 @@
   .card-header-action--disabled {
     @apply cursor-not-allowed bg-slate-100 text-slate-400 opacity-60 hover:bg-slate-100;
   }
+
+  .sync-now-spinner {
+    display: inline-block;
+    animation: expenzey-sync-spin 0.75s linear infinite;
+  }
+}
+
+@keyframes expenzey-sync-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .expenzey-ai-app {

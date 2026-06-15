@@ -11,7 +11,7 @@
           <ExpenzeyIcon />
         </div>
         <div class="min-w-0">
-          <p class="text-sm font-semibold lowercase tracking-tight text-slate-900">
+          <p class="text-sm font-semibold tracking-tight text-slate-900">
             {{ copy.brandName }}
           </p>
           <p class="text-xs text-slate-500">{{ copy.tagline }}</p>

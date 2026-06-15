@@ -39,10 +39,16 @@
       <div class="mt-5 flex flex-wrap gap-3">
         <button
           type="button"
-          class="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 disabled:opacity-60"
+          class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
           :disabled="syncing"
           @click="syncNow"
         >
+          <FaIcon
+            v-if="syncing"
+            icon="fa-spinner"
+            size="sm"
+            icon-class="sync-now-spinner"
+          />
           {{ syncNowLabel }}
         </button>
         <button
@@ -88,8 +94,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from "vue";
-import { inject } from "vue";
+import { computed, inject, onMounted, onUnmounted, ref } from "vue";
+import FaIcon from "@/components/icons/FaIcon.vue";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
 import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
