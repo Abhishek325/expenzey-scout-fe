@@ -1,13 +1,3 @@
-<script setup lang="ts">
-import DateRangePicker from "@/components/shared/DateRangePicker.vue";
-import ExportButton from "@/components/shared/ExportButton.vue";
-import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
-
-const emit = defineEmits<{ export: [] }>();
-
-const copy = useReactiveLocaleStringRecord("dashboard", ["title", "greeting"] as const);
-</script>
-
 <template>
   <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
     <div>
@@ -22,3 +12,13 @@ const copy = useReactiveLocaleStringRecord("dashboard", ["title", "greeting"] as
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import DateRangePicker from "@/components/shared/DateRangePicker.vue";
+import ExportButton from "@/components/shared/ExportButton.vue";
+import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
+
+const emit = defineEmits<{ export: [] }>();
+
+const copy = useReactiveLocaleStringRecord("dashboard", ["title", "greeting"] as const);
+</script>

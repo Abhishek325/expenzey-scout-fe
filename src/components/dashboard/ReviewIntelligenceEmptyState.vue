@@ -1,12 +1,3 @@
-<script setup lang="ts">
-import FaIcon from "@/components/icons/FaIcon.vue";
-import { useLocalizedString } from "@/composables/useLocalizedString";
-
-const emptyTitle = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.empty.title");
-const emptyDescription = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.empty.description");
-const emptyFooter = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.empty.footer");
-</script>
-
 <template>
   <div class="flex h-full min-h-0 flex-col justify-center gap-2 p-4">
     <div class="flex items-center gap-3">
@@ -27,3 +18,12 @@ const emptyFooter = useLocalizedString("dashboard", "aiInsights.reviewIntelligen
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import FaIcon from "@/components/icons/FaIcon.vue";
+import { useLocalizedString } from "@/composables/useLocalizedString";
+
+const emptyTitle = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.empty.title");
+const emptyDescription = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.empty.description");
+const emptyFooter = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.empty.footer");
+</script>

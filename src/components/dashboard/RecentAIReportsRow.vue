@@ -1,22 +1,3 @@
-<script setup lang="ts">
-import { computed } from "vue";
-import FaIcon from "@/components/icons/FaIcon.vue";
-import DashboardCard from "@/components/shared/DashboardCard.vue";
-import { useRecentReports } from "@/composables/dashboard/useRecentReports";
-import { useLocalizedString } from "@/composables/useLocalizedString";
-
-const { loading, error, hasData, reports, reload } = useRecentReports();
-const emptyLabel = useLocalizedString("dashboard", "aiInsights.reportsEmpty");
-const viewAllReports = useLocalizedString("common", "viewAllReports");
-const title = useLocalizedString("dashboard", "aiInsights.recentReportsTitle");
-
-const viewAllAction = computed(() => ({
-  kind: "link" as const,
-  to: "/reports",
-  label: viewAllReports.value,
-}));
-</script>
-
 <template>
   <DashboardCard
     :title="title"
@@ -55,3 +36,22 @@ const viewAllAction = computed(() => ({
     </div>
   </DashboardCard>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import FaIcon from "@/components/icons/FaIcon.vue";
+import DashboardCard from "@/components/shared/DashboardCard.vue";
+import { useRecentReports } from "@/composables/dashboard/useRecentReports";
+import { useLocalizedString } from "@/composables/useLocalizedString";
+
+const { loading, error, hasData, reports, reload } = useRecentReports();
+const emptyLabel = useLocalizedString("dashboard", "aiInsights.reportsEmpty");
+const viewAllReports = useLocalizedString("common", "viewAllReports");
+const title = useLocalizedString("dashboard", "aiInsights.recentReportsTitle");
+
+const viewAllAction = computed(() => ({
+  kind: "link" as const,
+  to: "/reports",
+  label: viewAllReports.value,
+}));
+</script>

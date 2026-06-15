@@ -1,3 +1,39 @@
+<template>
+  <div class="mx-auto max-w-md px-6 py-16">
+    <h1 class="text-xl font-semibold text-gray-900">{{ title }}</h1>
+    <p class="mt-2 text-sm text-gray-600">{{ description }}</p>
+    <div class="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <p class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ installationIdLabel }}</p>
+      <p class="mt-2 break-all font-mono text-sm text-gray-900">{{ installationId }}</p>
+      <p v-if="syncPhase === 'syncing'" class="mt-4 rounded-lg bg-indigo-50 px-3 py-2 text-sm text-indigo-700">
+        {{ syncingLabel }}
+      </p>
+      <p v-if="syncPhase === 'done'" class="mt-4 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+        {{ syncCompleteLabel }}
+      </p>
+      <p v-if="errorMessage" class="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        {{ errorMessage }}
+      </p>
+      <button
+        type="button"
+        class="mt-6 w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 disabled:opacity-60"
+        :disabled="connecting || syncPhase === 'syncing'"
+        @click="connect"
+      >
+        {{ connectCta }}
+      </button>
+      <button
+        type="button"
+        class="mt-3 w-full text-sm font-medium text-gray-500 hover:text-gray-700 disabled:opacity-60"
+        :disabled="connecting || syncPhase === 'syncing'"
+        @click="skip"
+      >
+        {{ skipForNow }}
+      </button>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { computed, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -76,39 +112,3 @@ onUnmounted(() => {
   if (pollTimer) clearInterval(pollTimer);
 });
 </script>
-
-<template>
-  <div class="mx-auto max-w-md px-6 py-16">
-    <h1 class="text-xl font-semibold text-gray-900">{{ title }}</h1>
-    <p class="mt-2 text-sm text-gray-600">{{ description }}</p>
-    <div class="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-      <p class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ installationIdLabel }}</p>
-      <p class="mt-2 break-all font-mono text-sm text-gray-900">{{ installationId }}</p>
-      <p v-if="syncPhase === 'syncing'" class="mt-4 rounded-lg bg-indigo-50 px-3 py-2 text-sm text-indigo-700">
-        {{ syncingLabel }}
-      </p>
-      <p v-if="syncPhase === 'done'" class="mt-4 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
-        {{ syncCompleteLabel }}
-      </p>
-      <p v-if="errorMessage" class="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
-        {{ errorMessage }}
-      </p>
-      <button
-        type="button"
-        class="mt-6 w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 disabled:opacity-60"
-        :disabled="connecting || syncPhase === 'syncing'"
-        @click="connect"
-      >
-        {{ connectCta }}
-      </button>
-      <button
-        type="button"
-        class="mt-3 w-full text-sm font-medium text-gray-500 hover:text-gray-700 disabled:opacity-60"
-        :disabled="connecting || syncPhase === 'syncing'"
-        @click="skip"
-      >
-        {{ skipForNow }}
-      </button>
-    </div>
-  </div>
-</template>

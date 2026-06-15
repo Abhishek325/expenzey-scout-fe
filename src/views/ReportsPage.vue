@@ -1,63 +1,3 @@
-<script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { inject } from "vue";
-import GenerateReportButton from "@/components/dashboard/GenerateReportButton.vue";
-import AIInsightItem from "@/components/dashboard/AIInsightItem.vue";
-import UsageQuotaFooter from "@/components/shared/UsageQuotaFooter.vue";
-import { useLocalizedString } from "@/composables/useLocalizedString";
-import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
-import type { AISummary, WeeklyReport } from "@/types/reports";
-import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
-
-const title = useLocalizedString("reports", "title");
-const subtitle = useLocalizedString("reports", "subtitle");
-const historyTitle = useLocalizedString("reports", "history.title");
-
-const reportsService = inject(REPORTS_SERVICE_KEY) as IReportsService;
-const stringService = inject(STRING_SERVICE_KEY) as IStringService;
-
-const reports = ref<WeeklyReport[]>([]);
-const summary = ref<AISummary | null>(null);
-const expandedId = ref<string | null>(null);
-const loading = ref(true);
-
-function toggleExpanded(id: string) {
-  expandedId.value = expandedId.value === id ? null : id;
-}
-
-function reportSummaryText(report: WeeklyReport): string {
-  const match = report.summaryKey.match(/^reports\.history\.(.+)$/);
-  if (match) {
-    const history = stringService.getRaw("reports", "history") as Record<string, string> | undefined;
-    return history?.[match[1]] ?? report.title;
-  }
-  return stringService.getStrings("reports", report.summaryKey);
-}
-
-async function loadReports() {
-  loading.value = true;
-  try {
-    const [list, aiSummary] = await Promise.all([
-      reportsService.listWeeklyReports(),
-      reportsService.getAISummary(),
-    ]);
-    reports.value = list;
-    summary.value = aiSummary;
-  } finally {
-    loading.value = false;
-  }
-}
-
-async function onGenerate() {
-  await reportsService.generateWeeklyReport();
-  await loadReports();
-}
-
-onMounted(() => {
-  void loadReports();
-});
-</script>
-
 <template>
   <div class="flex min-h-full flex-col gap-6 pb-10">
     <header class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -119,3 +59,63 @@ onMounted(() => {
     <UsageQuotaFooter feature="reports" class="mt-auto" />
   </div>
 </template>
+
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
+import { inject } from "vue";
+import GenerateReportButton from "@/components/dashboard/GenerateReportButton.vue";
+import AIInsightItem from "@/components/dashboard/AIInsightItem.vue";
+import UsageQuotaFooter from "@/components/shared/UsageQuotaFooter.vue";
+import { useLocalizedString } from "@/composables/useLocalizedString";
+import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
+import type { AISummary, WeeklyReport } from "@/types/reports";
+import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
+
+const title = useLocalizedString("reports", "title");
+const subtitle = useLocalizedString("reports", "subtitle");
+const historyTitle = useLocalizedString("reports", "history.title");
+
+const reportsService = inject(REPORTS_SERVICE_KEY) as IReportsService;
+const stringService = inject(STRING_SERVICE_KEY) as IStringService;
+
+const reports = ref<WeeklyReport[]>([]);
+const summary = ref<AISummary | null>(null);
+const expandedId = ref<string | null>(null);
+const loading = ref(true);
+
+function toggleExpanded(id: string) {
+  expandedId.value = expandedId.value === id ? null : id;
+}
+
+function reportSummaryText(report: WeeklyReport): string {
+  const match = report.summaryKey.match(/^reports\.history\.(.+)$/);
+  if (match) {
+    const history = stringService.getRaw("reports", "history") as Record<string, string> | undefined;
+    return history?.[match[1]] ?? report.title;
+  }
+  return stringService.getStrings("reports", report.summaryKey);
+}
+
+async function loadReports() {
+  loading.value = true;
+  try {
+    const [list, aiSummary] = await Promise.all([
+      reportsService.listWeeklyReports(),
+      reportsService.getAISummary(),
+    ]);
+    reports.value = list;
+    summary.value = aiSummary;
+  } finally {
+    loading.value = false;
+  }
+}
+
+async function onGenerate() {
+  await reportsService.generateWeeklyReport();
+  await loadReports();
+}
+
+onMounted(() => {
+  void loadReports();
+});
+</script>

@@ -1,30 +1,3 @@
-<script setup lang="ts">
-import { computed } from "vue";
-import { useRouter } from "vue-router";
-import FaIcon from "@/components/icons/FaIcon.vue";
-import DashboardCard from "@/components/shared/DashboardCard.vue";
-import { INSIGHTS_CARD_BODY_HEIGHT } from "@/constants/dashboardRowHeights";
-import { useOpportunities } from "@/composables/dashboard/useOpportunities";
-import { useLocalizedString } from "@/composables/useLocalizedString";
-
-const router = useRouter();
-const { loading, error, hasData, opportunities, reload } = useOpportunities();
-const emptyLabel = useLocalizedString("dashboard", "aiInsights.opportunitiesEmpty");
-const viewAll = useLocalizedString("common", "viewAll");
-const title = useLocalizedString("dashboard", "aiInsights.opportunitiesTitle");
-const recommendationLabel = useLocalizedString("dashboard", "aiInsights.recommendation");
-
-const viewAllAction = computed(() => ({
-  kind: "link" as const,
-  to: "/opportunities",
-  label: viewAll.value,
-}));
-
-function openOpportunity(id: string) {
-  void router.push({ path: "/opportunities", query: { id } });
-}
-</script>
-
 <template>
   <DashboardCard
     :title="title"
@@ -81,3 +54,30 @@ function openOpportunity(id: string) {
     </div>
   </DashboardCard>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import FaIcon from "@/components/icons/FaIcon.vue";
+import DashboardCard from "@/components/shared/DashboardCard.vue";
+import { INSIGHTS_CARD_BODY_HEIGHT } from "@/constants/dashboardRowHeights";
+import { useOpportunities } from "@/composables/dashboard/useOpportunities";
+import { useLocalizedString } from "@/composables/useLocalizedString";
+
+const router = useRouter();
+const { loading, error, hasData, opportunities, reload } = useOpportunities();
+const emptyLabel = useLocalizedString("dashboard", "aiInsights.opportunitiesEmpty");
+const viewAll = useLocalizedString("common", "viewAll");
+const title = useLocalizedString("dashboard", "aiInsights.opportunitiesTitle");
+const recommendationLabel = useLocalizedString("dashboard", "aiInsights.recommendation");
+
+const viewAllAction = computed(() => ({
+  kind: "link" as const,
+  to: "/opportunities",
+  label: viewAll.value,
+}));
+
+function openOpportunity(id: string) {
+  void router.push({ path: "/opportunities", query: { id } });
+}
+</script>

@@ -1,3 +1,26 @@
+<template>
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+    <div
+      v-for="card in cards"
+      :key="card.key"
+      class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+    >
+      <span
+        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
+        :class="card.iconClass"
+        aria-hidden="true"
+      >
+        <FaIcon :icon="card.icon" size="base" />
+      </span>
+      <div class="min-w-0 flex-1">
+        <p class="text-2xl font-semibold leading-none text-slate-900">{{ card.value }}</p>
+        <p class="mt-1.5 text-sm font-medium text-slate-700">{{ card.title }}</p>
+        <p class="mt-0.5 text-xs text-slate-500">{{ card.footer }}</p>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { computed } from "vue";
 import FaIcon from "@/components/icons/FaIcon.vue";
@@ -70,26 +93,3 @@ const cards = computed(() => [
   },
 ]);
 </script>
-
-<template>
-  <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
-    <div
-      v-for="card in cards"
-      :key="card.key"
-      class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
-    >
-      <span
-        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
-        :class="card.iconClass"
-        aria-hidden="true"
-      >
-        <FaIcon :icon="card.icon" size="base" />
-      </span>
-      <div class="min-w-0 flex-1">
-        <p class="text-2xl font-semibold leading-none text-slate-900">{{ card.value }}</p>
-        <p class="mt-1.5 text-sm font-medium text-slate-700">{{ card.title }}</p>
-        <p class="mt-0.5 text-xs text-slate-500">{{ card.footer }}</p>
-      </div>
-    </div>
-  </div>
-</template>

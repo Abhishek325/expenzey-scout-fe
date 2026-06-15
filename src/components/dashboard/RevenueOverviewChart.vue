@@ -1,3 +1,16 @@
+<template>
+  <div class="relative h-52 overflow-hidden">
+    <ChartSkeleton v-if="loading" class="absolute inset-0" />
+    <canvas
+      v-show="!loading"
+      ref="canvasRef"
+      class="block h-full w-full"
+      role="img"
+      :aria-label="datasetLabel"
+    />
+  </div>
+</template>
+
 <script setup lang="ts">
 import {
   CategoryScale,
@@ -123,16 +136,3 @@ onBeforeUnmount(() => {
   chart?.destroy();
 });
 </script>
-
-<template>
-  <div class="relative h-52 overflow-hidden">
-    <ChartSkeleton v-if="loading" class="absolute inset-0" />
-    <canvas
-      v-show="!loading"
-      ref="canvasRef"
-      class="block h-full w-full"
-      role="img"
-      :aria-label="datasetLabel"
-    />
-  </div>
-</template>

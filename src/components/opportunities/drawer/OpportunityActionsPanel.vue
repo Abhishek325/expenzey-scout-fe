@@ -1,35 +1,3 @@
-<script setup lang="ts">
-import { useChatOverlayStore } from "@/stores/chatOverlay";
-import { useOpportunityInvestigationContext } from "@/composables/opportunities/useOpportunityInvestigation";
-import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
-import { FALLBACK_ACTION_TITLE_KEY } from "@/utils/opportunityEvidence";
-import type { OpportunityDetail } from "@/types/ai";
-
-const props = defineProps<{
-  opportunity: OpportunityDetail;
-}>();
-
-const chatOverlay = useChatOverlayStore();
-const { actionPlanPrompt } = useOpportunityInvestigationContext();
-
-const copy = useReactiveLocaleStringRecord("opportunities", [
-  "drawer.actions",
-  "drawer.createActionPlan",
-  "drawer.defaultActionTitle",
-] as const);
-
-function actionTitle(title: string): string {
-  if (title === FALLBACK_ACTION_TITLE_KEY) {
-    return copy.value["drawer.defaultActionTitle"];
-  }
-  return title;
-}
-
-function createActionPlan() {
-  chatOverlay.openWithPrompt(actionPlanPrompt.value);
-}
-</script>
-
 <template>
   <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
     <h3 class="text-sm font-semibold text-slate-900">
@@ -63,3 +31,35 @@ function createActionPlan() {
     </button>
   </section>
 </template>
+
+<script setup lang="ts">
+import { useChatOverlayStore } from "@/stores/chatOverlay";
+import { useOpportunityInvestigationContext } from "@/composables/opportunities/useOpportunityInvestigation";
+import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
+import { FALLBACK_ACTION_TITLE_KEY } from "@/utils/opportunityEvidence";
+import type { OpportunityDetail } from "@/types/ai";
+
+const props = defineProps<{
+  opportunity: OpportunityDetail;
+}>();
+
+const chatOverlay = useChatOverlayStore();
+const { actionPlanPrompt } = useOpportunityInvestigationContext();
+
+const copy = useReactiveLocaleStringRecord("opportunities", [
+  "drawer.actions",
+  "drawer.createActionPlan",
+  "drawer.defaultActionTitle",
+] as const);
+
+function actionTitle(title: string): string {
+  if (title === FALLBACK_ACTION_TITLE_KEY) {
+    return copy.value["drawer.defaultActionTitle"];
+  }
+  return title;
+}
+
+function createActionPlan() {
+  chatOverlay.openWithPrompt(actionPlanPrompt.value);
+}
+</script>

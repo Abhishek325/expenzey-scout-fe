@@ -1,3 +1,92 @@
+<template>
+  <div class="flex flex-col gap-6 pb-10">
+    <header>
+      <h1 class="text-xl font-semibold text-gray-900">{{ title }}</h1>
+      <p class="mt-1 text-sm text-gray-500">{{ subtitle }}</p>
+    </header>
+
+    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h2 class="text-lg font-semibold text-gray-900">{{ connectionTitle }}</h2>
+      <dl class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div>
+          <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ siteUrlLabel }}</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ connection.siteUrl }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ installationIdLabel }}</dt>
+          <dd class="mt-1 font-mono text-sm text-gray-900">{{ connection.installationId }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ syncStatusLabel }}</dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            {{ statusLabel("connection.status", connection.syncStatus) }}
+            <span v-if="Object.keys(entityCounts).length" class="text-gray-500">
+              ({{ Object.entries(entityCounts).map(([k, v]) => `${k}: ${v}`).join(", ") }})
+            </span>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ lastSyncLabel }}</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ formatDate(connection.lastSync) }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ accountStatusLabel }}</dt>
+          <dd class="mt-1 text-sm capitalize text-gray-900">
+            {{ statusLabel("account.status", connection.accountStatus) }}
+          </dd>
+        </div>
+      </dl>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <button
+          type="button"
+          class="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 disabled:opacity-60"
+          :disabled="syncing"
+          @click="syncNow"
+        >
+          {{ syncNowLabel }}
+        </button>
+        <button
+          v-if="connection.connected"
+          type="button"
+          class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-60"
+          :disabled="disconnecting"
+          @click="disconnectStore"
+        >
+          {{ disconnectLabel }}
+        </button>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h2 class="text-lg font-semibold text-gray-900">{{ usageTitle }}</h2>
+      <ul class="mt-4 space-y-3">
+        <li class="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3 text-sm">
+          <span class="font-medium text-gray-700">{{ strings['usage.reports'] }}</span>
+          <span class="text-gray-900">{{ usageLabel(usage.reports.used, usage.reports.limit) }}</span>
+        </li>
+        <li class="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3 text-sm">
+          <span class="font-medium text-gray-700">{{ strings['usage.chat'] }}</span>
+          <span class="text-gray-900">{{ usageLabel(usage.chat.used, usage.chat.limit) }}</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <button
+        type="button"
+        class="flex w-full items-center justify-between px-6 py-4 text-left font-semibold text-gray-900 hover:bg-gray-50"
+        @click="helpOpen = !helpOpen"
+      >
+        <span>{{ strings['help.title'] }}</span>
+        <span :class="helpOpen ? 'rotate-180' : ''" class="text-indigo-600 transition" aria-hidden="true">▼</span>
+      </button>
+      <div v-show="helpOpen" class="border-t border-gray-100 px-6 py-4 text-sm text-gray-600">
+        <p>{{ strings['help.body'] }}</p>
+      </div>
+    </section>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { inject } from "vue";
@@ -155,92 +244,3 @@ onUnmounted(() => {
   if (pollTimer) clearInterval(pollTimer);
 });
 </script>
-
-<template>
-  <div class="flex flex-col gap-6 pb-10">
-    <header>
-      <h1 class="text-xl font-semibold text-gray-900">{{ title }}</h1>
-      <p class="mt-1 text-sm text-gray-500">{{ subtitle }}</p>
-    </header>
-
-    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-      <h2 class="text-lg font-semibold text-gray-900">{{ connectionTitle }}</h2>
-      <dl class="mt-4 grid gap-4 sm:grid-cols-2">
-        <div>
-          <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ siteUrlLabel }}</dt>
-          <dd class="mt-1 text-sm text-gray-900">{{ connection.siteUrl }}</dd>
-        </div>
-        <div>
-          <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ installationIdLabel }}</dt>
-          <dd class="mt-1 font-mono text-sm text-gray-900">{{ connection.installationId }}</dd>
-        </div>
-        <div>
-          <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ syncStatusLabel }}</dt>
-          <dd class="mt-1 text-sm text-gray-900">
-            {{ statusLabel("connection.status", connection.syncStatus) }}
-            <span v-if="Object.keys(entityCounts).length" class="text-gray-500">
-              ({{ Object.entries(entityCounts).map(([k, v]) => `${k}: ${v}`).join(", ") }})
-            </span>
-          </dd>
-        </div>
-        <div>
-          <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ lastSyncLabel }}</dt>
-          <dd class="mt-1 text-sm text-gray-900">{{ formatDate(connection.lastSync) }}</dd>
-        </div>
-        <div>
-          <dt class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ accountStatusLabel }}</dt>
-          <dd class="mt-1 text-sm capitalize text-gray-900">
-            {{ statusLabel("account.status", connection.accountStatus) }}
-          </dd>
-        </div>
-      </dl>
-      <div class="mt-5 flex flex-wrap gap-3">
-        <button
-          type="button"
-          class="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 disabled:opacity-60"
-          :disabled="syncing"
-          @click="syncNow"
-        >
-          {{ syncNowLabel }}
-        </button>
-        <button
-          v-if="connection.connected"
-          type="button"
-          class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-60"
-          :disabled="disconnecting"
-          @click="disconnectStore"
-        >
-          {{ disconnectLabel }}
-        </button>
-      </div>
-    </section>
-
-    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-      <h2 class="text-lg font-semibold text-gray-900">{{ usageTitle }}</h2>
-      <ul class="mt-4 space-y-3">
-        <li class="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3 text-sm">
-          <span class="font-medium text-gray-700">{{ strings['usage.reports'] }}</span>
-          <span class="text-gray-900">{{ usageLabel(usage.reports.used, usage.reports.limit) }}</span>
-        </li>
-        <li class="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3 text-sm">
-          <span class="font-medium text-gray-700">{{ strings['usage.chat'] }}</span>
-          <span class="text-gray-900">{{ usageLabel(usage.chat.used, usage.chat.limit) }}</span>
-        </li>
-      </ul>
-    </section>
-
-    <section class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-      <button
-        type="button"
-        class="flex w-full items-center justify-between px-6 py-4 text-left font-semibold text-gray-900 hover:bg-gray-50"
-        @click="helpOpen = !helpOpen"
-      >
-        <span>{{ strings['help.title'] }}</span>
-        <span :class="helpOpen ? 'rotate-180' : ''" class="text-indigo-600 transition" aria-hidden="true">▼</span>
-      </button>
-      <div v-show="helpOpen" class="border-t border-gray-100 px-6 py-4 text-sm text-gray-600">
-        <p>{{ strings['help.body'] }}</p>
-      </div>
-    </section>
-  </div>
-</template>

@@ -1,16 +1,3 @@
-<script setup lang="ts">
-import FaIcon from "@/components/icons/FaIcon.vue";
-import { useBusinessSummary } from "@/composables/dashboard/useBusinessSummary";
-import { useLocalizedString } from "@/composables/useLocalizedString";
-
-const { loading, error, highlights, reload } = useBusinessSummary();
-const loadingLabel = useLocalizedString("common", "loading");
-const errorLabel = useLocalizedString("common", "error");
-const retryLabel = useLocalizedString("common", "retry");
-const title = useLocalizedString("dashboard", "aiInsights.businessSummaryTitle");
-const viewFullReport = useLocalizedString("dashboard", "viewFullReport");
-</script>
-
 <template>
   <section class="rounded-xl border border-expenzey-100 bg-expenzey-50 p-3 shadow-sm">
     <div class="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-expenzey-100/80 pb-3">
@@ -64,3 +51,16 @@ const viewFullReport = useLocalizedString("dashboard", "viewFullReport");
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import FaIcon from "@/components/icons/FaIcon.vue";
+import { useBusinessSummary } from "@/composables/dashboard/useBusinessSummary";
+import { useLocalizedString } from "@/composables/useLocalizedString";
+
+const { loading, error, highlights, reload } = useBusinessSummary();
+const loadingLabel = useLocalizedString("common", "loading");
+const errorLabel = useLocalizedString("common", "error");
+const retryLabel = useLocalizedString("common", "retry");
+const title = useLocalizedString("dashboard", "aiInsights.businessSummaryTitle");
+const viewFullReport = useLocalizedString("dashboard", "viewFullReport");
+</script>

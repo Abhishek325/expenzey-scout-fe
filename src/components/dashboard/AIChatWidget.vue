@@ -1,40 +1,3 @@
-<script setup lang="ts">
-import { computed, inject } from "vue";
-import ChatInput from "@/components/chat/ChatInput.vue";
-import ChatMessage from "@/components/chat/ChatMessage.vue";
-import SuggestedPromptChips from "@/components/chat/SuggestedPromptChips.vue";
-import UsageQuotaFooter from "@/components/shared/UsageQuotaFooter.vue";
-import { useAIChat } from "@/composables/chat/useAIChat";
-import { useLocalizedString } from "@/composables/useLocalizedString";
-import { resolveStringKey } from "@/composables/dashboard/resolveStringKey";
-import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
-
-const { floating = false, initialPrompt = null } = defineProps<{
-  floating?: boolean;
-  initialPrompt?: string | null;
-}>();
-
-const emit = defineEmits<{ close: [] }>();
-
-const { messages, prompts, usage, send } = useAIChat({ limitMessages: 4 });
-const widgetTitle = useLocalizedString("dashboard", "chatWidgetTitle");
-const greeting = useLocalizedString("chat", "greetingDefault");
-const closeLabel = useLocalizedString("chat", "closeChat");
-
-const stringService = inject(STRING_SERVICE_KEY) as IStringService;
-
-const displayMessages = computed(() =>
-  messages.value.map((m) => ({
-    ...m,
-    text: m.content ?? (m.contentKey ? resolveStringKey(stringService, m.contentKey) : ""),
-  }))
-);
-
-async function onSend(text: string) {
-  await send(text);
-}
-</script>
-
 <template>
   <section
     class="flex min-h-0 flex-col bg-white"
@@ -88,3 +51,40 @@ async function onSend(text: string) {
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import { computed, inject } from "vue";
+import ChatInput from "@/components/chat/ChatInput.vue";
+import ChatMessage from "@/components/chat/ChatMessage.vue";
+import SuggestedPromptChips from "@/components/chat/SuggestedPromptChips.vue";
+import UsageQuotaFooter from "@/components/shared/UsageQuotaFooter.vue";
+import { useAIChat } from "@/composables/chat/useAIChat";
+import { useLocalizedString } from "@/composables/useLocalizedString";
+import { resolveStringKey } from "@/composables/dashboard/resolveStringKey";
+import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
+
+const { floating = false, initialPrompt = null } = defineProps<{
+  floating?: boolean;
+  initialPrompt?: string | null;
+}>();
+
+const emit = defineEmits<{ close: [] }>();
+
+const { messages, prompts, usage, send } = useAIChat({ limitMessages: 4 });
+const widgetTitle = useLocalizedString("dashboard", "chatWidgetTitle");
+const greeting = useLocalizedString("chat", "greetingDefault");
+const closeLabel = useLocalizedString("chat", "closeChat");
+
+const stringService = inject(STRING_SERVICE_KEY) as IStringService;
+
+const displayMessages = computed(() =>
+  messages.value.map((m) => ({
+    ...m,
+    text: m.content ?? (m.contentKey ? resolveStringKey(stringService, m.contentKey) : ""),
+  }))
+);
+
+async function onSend(text: string) {
+  await send(text);
+}
+</script>

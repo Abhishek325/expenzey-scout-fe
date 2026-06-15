@@ -1,49 +1,3 @@
-<script setup lang="ts">
-import { computed } from "vue";
-import { useOpportunityInvestigationContext } from "@/composables/opportunities/useOpportunityInvestigation";
-import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
-
-const { highlightedEvidence, revenueShareRing, typeFocusKey } =
-  useOpportunityInvestigationContext();
-
-const copy = useReactiveLocaleStringRecord("opportunities", [
-  "drawer.evidence",
-  "drawer.revenueShare",
-  "drawer.revenueShareOfTotal",
-  "drawer.typeFocus.risingProduct",
-  "drawer.typeFocus.bundleOpportunity",
-  "drawer.typeFocus.decliningProduct",
-  "drawer.typeFocus.customerRetention",
-  "drawer.typeFocus.reviewComplaint",
-  "drawer.evidenceEmpty",
-] as const);
-
-const typeFocusCopy = computed(() => {
-  if (!typeFocusKey.value) return null;
-  return copy.value[typeFocusKey.value as keyof typeof copy.value] ?? null;
-});
-
-const gridEvidence = computed(() =>
-  highlightedEvidence.value.filter(
-    (item) => !item.label.toLowerCase().includes("revenue share"),
-  ),
-);
-
-const ringStyle = computed(() => {
-  if (!revenueShareRing.value) return null;
-  const percent = revenueShareRing.value.percent;
-  return {
-    background: `conic-gradient(#10b981 ${percent}%, #e2e8f0 ${percent}% 100%)`,
-  };
-});
-
-const TREND_CLASSES: Record<string, string> = {
-  up: "text-emerald-600 bg-emerald-50",
-  down: "text-rose-600 bg-rose-50",
-  neutral: "text-slate-600 bg-slate-100",
-};
-</script>
-
 <template>
   <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
     <h3 class="text-sm font-semibold text-slate-900">
@@ -103,3 +57,49 @@ const TREND_CLASSES: Record<string, string> = {
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import { useOpportunityInvestigationContext } from "@/composables/opportunities/useOpportunityInvestigation";
+import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
+
+const { highlightedEvidence, revenueShareRing, typeFocusKey } =
+  useOpportunityInvestigationContext();
+
+const copy = useReactiveLocaleStringRecord("opportunities", [
+  "drawer.evidence",
+  "drawer.revenueShare",
+  "drawer.revenueShareOfTotal",
+  "drawer.typeFocus.risingProduct",
+  "drawer.typeFocus.bundleOpportunity",
+  "drawer.typeFocus.decliningProduct",
+  "drawer.typeFocus.customerRetention",
+  "drawer.typeFocus.reviewComplaint",
+  "drawer.evidenceEmpty",
+] as const);
+
+const typeFocusCopy = computed(() => {
+  if (!typeFocusKey.value) return null;
+  return copy.value[typeFocusKey.value as keyof typeof copy.value] ?? null;
+});
+
+const gridEvidence = computed(() =>
+  highlightedEvidence.value.filter(
+    (item) => !item.label.toLowerCase().includes("revenue share"),
+  ),
+);
+
+const ringStyle = computed(() => {
+  if (!revenueShareRing.value) return null;
+  const percent = revenueShareRing.value.percent;
+  return {
+    background: `conic-gradient(#10b981 ${percent}%, #e2e8f0 ${percent}% 100%)`,
+  };
+});
+
+const TREND_CLASSES: Record<string, string> = {
+  up: "text-emerald-600 bg-emerald-50",
+  down: "text-rose-600 bg-rose-50",
+  neutral: "text-slate-600 bg-slate-100",
+};
+</script>

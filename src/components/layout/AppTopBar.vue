@@ -1,45 +1,3 @@
-<script setup lang="ts">
-import { computed } from "vue";
-import ExpenzeyIcon from "@/components/icons/ExpenzeyIcon.vue";
-import sidebarItems from "@/data/sidebar.json";
-import {
-  useLocalizedString,
-  useReactiveLocaleStringRecord,
-} from "@/composables/useLocalizedString";
-
-interface NavItem {
-  id: string;
-  route: string;
-  icon: string;
-  labelKey: string;
-}
-
-const items = sidebarItems as NavItem[];
-
-const copy = useReactiveLocaleStringRecord("layout", [
-  "brandName",
-  "tagline",
-  "proPlan",
-  "notifications",
-] as const);
-
-const navDashboard = useLocalizedString("nav", "dashboard");
-const navOpportunities = useLocalizedString("nav", "opportunities");
-const navReports = useLocalizedString("nav", "reports");
-const navSettings = useLocalizedString("nav", "settings");
-
-const labels = computed(() => ({
-  "nav.dashboard": navDashboard.value,
-  "nav.opportunities": navOpportunities.value,
-  "nav.reports": navReports.value,
-  "nav.settings": navSettings.value,
-}));
-
-function labelFor(key: string) {
-  return labels.value[key as keyof typeof labels.value] ?? key;
-}
-</script>
-
 <template>
   <header
     class="flex w-full items-stretch justify-between border-b border-slate-200 bg-white px-6"
@@ -125,3 +83,45 @@ function labelFor(key: string) {
     </div>
   </header>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import ExpenzeyIcon from "@/components/icons/ExpenzeyIcon.vue";
+import sidebarItems from "@/data/sidebar.json";
+import {
+  useLocalizedString,
+  useReactiveLocaleStringRecord,
+} from "@/composables/useLocalizedString";
+
+interface NavItem {
+  id: string;
+  route: string;
+  icon: string;
+  labelKey: string;
+}
+
+const items = sidebarItems as NavItem[];
+
+const copy = useReactiveLocaleStringRecord("layout", [
+  "brandName",
+  "tagline",
+  "proPlan",
+  "notifications",
+] as const);
+
+const navDashboard = useLocalizedString("nav", "dashboard");
+const navOpportunities = useLocalizedString("nav", "opportunities");
+const navReports = useLocalizedString("nav", "reports");
+const navSettings = useLocalizedString("nav", "settings");
+
+const labels = computed(() => ({
+  "nav.dashboard": navDashboard.value,
+  "nav.opportunities": navOpportunities.value,
+  "nav.reports": navReports.value,
+  "nav.settings": navSettings.value,
+}));
+
+function labelFor(key: string) {
+  return labels.value[key as keyof typeof labels.value] ?? key;
+}
+</script>

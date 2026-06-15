@@ -1,17 +1,3 @@
-<script setup lang="ts">
-import { useFormatCurrency } from "@/composables/useFormatCurrency";
-import { useStoreSnapshot } from "@/composables/dashboard/useStoreSnapshot";
-import { useLocalizedString } from "@/composables/useLocalizedString";
-
-const title = useLocalizedString("dashboard", "snapshot.title");
-const bestLabel = useLocalizedString("dashboard", "snapshot.bestPerforming");
-const attentionLabel = useLocalizedString("dashboard", "snapshot.needsAttention");
-const growthLabel = useLocalizedString("dashboard", "snapshot.growthOpportunity");
-
-const { snapshot, loading } = useStoreSnapshot();
-const { formatCurrency } = useFormatCurrency();
-</script>
-
 <template>
   <section class="rounded-xl border border-slate-200 bg-white shadow-sm">
     <div class="border-b border-slate-100 px-4 py-3">
@@ -40,3 +26,17 @@ const { formatCurrency } = useFormatCurrency();
     </ul>
   </section>
 </template>
+
+<script setup lang="ts">
+import { useFormatCurrency } from "@/composables/useFormatCurrency";
+import { useStoreSnapshot } from "@/composables/dashboard/useStoreSnapshot";
+import { useLocalizedString } from "@/composables/useLocalizedString";
+
+const title = useLocalizedString("dashboard", "snapshot.title");
+const bestLabel = useLocalizedString("dashboard", "snapshot.bestPerforming");
+const attentionLabel = useLocalizedString("dashboard", "snapshot.needsAttention");
+const growthLabel = useLocalizedString("dashboard", "snapshot.growthOpportunity");
+
+const { snapshot, loading } = useStoreSnapshot();
+const { formatCurrency } = useFormatCurrency();
+</script>

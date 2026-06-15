@@ -1,3 +1,18 @@
+<template>
+  <article class="rounded-xl border p-4" :class="variantClass[variant]">
+    <div class="flex gap-3">
+      <FaIcon v-if="iconName" :icon="iconName" size="lg" icon-class="shrink-0 text-slate-600" />
+      <div class="min-w-0 flex-1">
+        <p v-if="resolvedTitle" class="text-xs font-medium uppercase tracking-wide text-slate-500">
+          {{ resolvedTitle }}
+        </p>
+        <p v-if="productName" class="mt-1 text-sm font-bold text-slate-900">{{ productName }}</p>
+        <p v-if="resolvedDetail" class="mt-1 text-sm leading-relaxed text-slate-600">{{ resolvedDetail }}</p>
+      </div>
+    </div>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, inject } from "vue";
 import FaIcon from "@/components/icons/FaIcon.vue";
@@ -56,18 +71,3 @@ const variantClass: Record<InsightVariant, string> = {
   info: "border-sky-200 bg-sky-50",
 };
 </script>
-
-<template>
-  <article class="rounded-xl border p-4" :class="variantClass[variant]">
-    <div class="flex gap-3">
-      <FaIcon v-if="iconName" :icon="iconName" size="lg" icon-class="shrink-0 text-slate-600" />
-      <div class="min-w-0 flex-1">
-        <p v-if="resolvedTitle" class="text-xs font-medium uppercase tracking-wide text-slate-500">
-          {{ resolvedTitle }}
-        </p>
-        <p v-if="productName" class="mt-1 text-sm font-bold text-slate-900">{{ productName }}</p>
-        <p v-if="resolvedDetail" class="mt-1 text-sm leading-relaxed text-slate-600">{{ resolvedDetail }}</p>
-      </div>
-    </div>
-  </article>
-</template>

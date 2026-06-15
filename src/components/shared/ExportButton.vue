@@ -1,10 +1,3 @@
-<script setup lang="ts">
-import { useLocalizedString } from "@/composables/useLocalizedString";
-
-const emit = defineEmits<{ export: [] }>();
-const label = useLocalizedString("export", "label");
-</script>
-
 <template>
   <button
     type="button"
@@ -29,3 +22,10 @@ const label = useLocalizedString("export", "label");
     {{ label }}
   </button>
 </template>
+
+<script setup lang="ts">
+import { useLocalizedString } from "@/composables/useLocalizedString";
+
+const emit = defineEmits<{ export: [] }>();
+const label = useLocalizedString("export", "label");
+</script>

@@ -1,3 +1,51 @@
+<template>
+  <div class="shrink-0 border-b border-slate-200 bg-white px-6 py-5">
+    <div class="flex items-start justify-between gap-4">
+      <div class="flex min-w-0 items-start gap-3">
+        <div
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+          :class="typeIconClass"
+        >
+          <FaIcon :icon="typeIcon" size="sm" />
+        </div>
+        <div class="min-w-0">
+          <div class="flex flex-wrap items-center gap-2">
+            <span
+              class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
+              :class="style.labelClass"
+            >
+              <FaIcon :icon="style.badgeIcon" size="xs" />
+              {{ opportunity.badge }}
+            </span>
+            <span
+              class="inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-medium"
+              :class="typeIconClass"
+            >
+              {{ typeLabel }}
+            </span>
+            <span class="text-[11px] text-slate-500">
+              {{ detectedLabel }}
+            </span>
+          </div>
+          <h2 class="mt-2 text-xl font-semibold leading-snug text-slate-900">
+            {{ opportunity.title }}
+          </h2>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+        :aria-label="closeLabel"
+        @click="emit('close')"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M18 6 6 18M6 6l12 12" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import dayjs from "dayjs";
 import { computed } from "vue";
@@ -62,51 +110,3 @@ const detectedLabel = computed(() => {
     .replace("{time}", detected.format("h:mm A"));
 });
 </script>
-
-<template>
-  <div class="shrink-0 border-b border-slate-200 bg-white px-6 py-5">
-    <div class="flex items-start justify-between gap-4">
-      <div class="flex min-w-0 items-start gap-3">
-        <div
-          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
-          :class="typeIconClass"
-        >
-          <FaIcon :icon="typeIcon" size="sm" />
-        </div>
-        <div class="min-w-0">
-          <div class="flex flex-wrap items-center gap-2">
-            <span
-              class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
-              :class="style.labelClass"
-            >
-              <FaIcon :icon="style.badgeIcon" size="xs" />
-              {{ opportunity.badge }}
-            </span>
-            <span
-              class="inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-medium"
-              :class="typeIconClass"
-            >
-              {{ typeLabel }}
-            </span>
-            <span class="text-[11px] text-slate-500">
-              {{ detectedLabel }}
-            </span>
-          </div>
-          <h2 class="mt-2 text-xl font-semibold leading-snug text-slate-900">
-            {{ opportunity.title }}
-          </h2>
-        </div>
-      </div>
-      <button
-        type="button"
-        class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
-        :aria-label="closeLabel"
-        @click="emit('close')"
-      >
-        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M18 6 6 18M6 6l12 12" stroke-linecap="round" />
-        </svg>
-      </button>
-    </div>
-  </div>
-</template>

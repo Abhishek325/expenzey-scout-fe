@@ -1,3 +1,7 @@
+<template>
+  <i :class="['fa-solid', icon, sizeClass[size], iconClass]" aria-hidden="true" />
+</template>
+
 <script setup lang="ts">
 const sizeClass = {
   xs: "text-xs",
@@ -16,7 +20,3 @@ withDefaults(
   { size: "sm" }
 );
 </script>
-
-<template>
-  <i :class="['fa-solid', icon, sizeClass[size], iconClass]" aria-hidden="true" />
-</template>

@@ -1,12 +1,3 @@
-<script setup lang="ts">
-defineProps<{
-  disabled?: boolean;
-  to?: string;
-}>();
-
-const emit = defineEmits<{ click: [] }>();
-</script>
-
 <template>
   <RouterLink v-if="to && !disabled" :to="to" class="card-header-action">
     <slot />
@@ -22,3 +13,12 @@ const emit = defineEmits<{ click: [] }>();
     <slot />
   </button>
 </template>
+
+<script setup lang="ts">
+defineProps<{
+  disabled?: boolean;
+  to?: string;
+}>();
+
+const emit = defineEmits<{ click: [] }>();
+</script>

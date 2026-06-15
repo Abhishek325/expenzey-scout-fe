@@ -1,3 +1,38 @@
+<template>
+  <section :class="sectionClasses">
+    <div :class="headerClasses">
+      <h3 class="text-sm font-semibold text-slate-900">{{ title }}</h3>
+      <CardHeaderAction
+        v-if="action?.kind === 'link'"
+        :to="action.to"
+        :disabled="actionDisabled"
+      >
+        {{ actionLabel }}
+      </CardHeaderAction>
+      <CardHeaderAction
+        v-else-if="action?.kind === 'button'"
+        :disabled="actionDisabled"
+        @click="action.onClick"
+      >
+        {{ actionLabel }}
+      </CardHeaderAction>
+    </div>
+
+    <div :class="bodyWrapperClasses">
+      <p v-if="loading" class="text-sm text-slate-500">{{ loadingLabel }}</p>
+      <div v-else-if="error" class="flex items-center gap-3 text-sm text-rose-600">
+        <span>{{ errorLabel }}</span>
+        <button type="button" class="font-medium underline" @click="emit('retry')">
+          {{ retryLabel }}
+        </button>
+      </div>
+      <p v-else-if="!hasData && !$slots.empty" class="text-sm text-slate-500">{{ emptyLabel }}</p>
+      <slot v-else-if="!hasData" name="empty" />
+      <slot v-else />
+    </div>
+  </section>
+</template>
+
 <script setup lang="ts">
 import { computed, unref } from "vue";
 import CardHeaderAction from "@/components/shared/CardHeaderAction.vue";
@@ -57,38 +92,3 @@ const bodyWrapperClasses = computed(() => [
   props.bodyClass,
 ]);
 </script>
-
-<template>
-  <section :class="sectionClasses">
-    <div :class="headerClasses">
-      <h3 class="text-sm font-semibold text-slate-900">{{ title }}</h3>
-      <CardHeaderAction
-        v-if="action?.kind === 'link'"
-        :to="action.to"
-        :disabled="actionDisabled"
-      >
-        {{ actionLabel }}
-      </CardHeaderAction>
-      <CardHeaderAction
-        v-else-if="action?.kind === 'button'"
-        :disabled="actionDisabled"
-        @click="action.onClick"
-      >
-        {{ actionLabel }}
-      </CardHeaderAction>
-    </div>
-
-    <div :class="bodyWrapperClasses">
-      <p v-if="loading" class="text-sm text-slate-500">{{ loadingLabel }}</p>
-      <div v-else-if="error" class="flex items-center gap-3 text-sm text-rose-600">
-        <span>{{ errorLabel }}</span>
-        <button type="button" class="font-medium underline" @click="emit('retry')">
-          {{ retryLabel }}
-        </button>
-      </div>
-      <p v-else-if="!hasData && !$slots.empty" class="text-sm text-slate-500">{{ emptyLabel }}</p>
-      <slot v-else-if="!hasData" name="empty" />
-      <slot v-else />
-    </div>
-  </section>
-</template>

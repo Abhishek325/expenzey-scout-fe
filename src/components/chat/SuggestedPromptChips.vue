@@ -1,11 +1,3 @@
-<script setup lang="ts">
-defineProps<{
-  prompts: string[];
-}>();
-
-const emit = defineEmits<{ select: [prompt: string] }>();
-</script>
-
 <template>
   <div class="flex flex-wrap gap-2">
     <button
@@ -19,3 +11,11 @@ const emit = defineEmits<{ select: [prompt: string] }>();
     </button>
   </div>
 </template>
+
+<script setup lang="ts">
+defineProps<{
+  prompts: string[];
+}>();
+
+const emit = defineEmits<{ select: [prompt: string] }>();
+</script>

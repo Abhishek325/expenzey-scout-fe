@@ -1,8 +1,3 @@
-<script setup lang="ts">
-import AppTopBar from "@/components/layout/AppTopBar.vue";
-import FloatingChat from "@/components/chat/FloatingChat.vue";
-</script>
-
 <template>
   <div class="expenzey-ai-app min-h-screen bg-white text-slate-900">
     <AppTopBar />
@@ -12,3 +7,8 @@ import FloatingChat from "@/components/chat/FloatingChat.vue";
     <FloatingChat />
   </div>
 </template>
+
+<script setup lang="ts">
+import AppTopBar from "@/components/layout/AppTopBar.vue";
+import FloatingChat from "@/components/chat/FloatingChat.vue";
+</script>

@@ -1,31 +1,3 @@
-<script setup lang="ts">
-import { computed } from "vue";
-import FaIcon from "@/components/icons/FaIcon.vue";
-import { useOpportunitiesStore } from "@/stores/opportunitiesStore";
-import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
-import type { OpportunityDetail } from "@/types/ai";
-import { TYPE_ICON_CLASSES, TYPE_ICONS, badgeStyle } from "@/utils/opportunityStyles";
-
-const props = defineProps<{
-  opportunity: OpportunityDetail;
-}>();
-
-const emit = defineEmits<{
-  selectRelated: [id: string];
-}>();
-
-const store = useOpportunitiesStore();
-
-const copy = useReactiveLocaleStringRecord("opportunities", ["drawer.related"] as const);
-
-const relatedOpportunities = computed(() =>
-  props.opportunity.relatedIds
-    .slice(0, 3)
-    .map((id) => store.byId.get(id))
-    .filter((item): item is OpportunityDetail => item != null && item.id !== props.opportunity.id),
-);
-</script>
-
 <template>
   <section
     v-if="relatedOpportunities.length > 0"
@@ -63,3 +35,31 @@ const relatedOpportunities = computed(() =>
     </ul>
   </section>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import FaIcon from "@/components/icons/FaIcon.vue";
+import { useOpportunitiesStore } from "@/stores/opportunitiesStore";
+import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
+import type { OpportunityDetail } from "@/types/ai";
+import { TYPE_ICON_CLASSES, TYPE_ICONS, badgeStyle } from "@/utils/opportunityStyles";
+
+const props = defineProps<{
+  opportunity: OpportunityDetail;
+}>();
+
+const emit = defineEmits<{
+  selectRelated: [id: string];
+}>();
+
+const store = useOpportunitiesStore();
+
+const copy = useReactiveLocaleStringRecord("opportunities", ["drawer.related"] as const);
+
+const relatedOpportunities = computed(() =>
+  props.opportunity.relatedIds
+    .slice(0, 3)
+    .map((id) => store.byId.get(id))
+    .filter((item): item is OpportunityDetail => item != null && item.id !== props.opportunity.id),
+);
+</script>

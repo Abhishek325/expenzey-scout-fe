@@ -1,23 +1,3 @@
-<script setup lang="ts">
-import { computed } from "vue";
-import FaIcon from "@/components/icons/FaIcon.vue";
-import type { LocalizedMetricCard } from "@/composables/dashboard/useDashboardMetrics";
-import { useLocalizedString } from "@/composables/useLocalizedString";
-
-const props = defineProps<{
-  metric: LocalizedMetricCard;
-  icon: string;
-  iconClass: string;
-  comparisonPeriod: string;
-}>();
-
-const vsLabel = useLocalizedString("common", "vs");
-
-const isUp = computed(() => props.metric.changeDirection === "up");
-const isDown = computed(() => props.metric.changeDirection === "down");
-const displayPercent = computed(() => Math.abs(props.metric.changePercent).toFixed(1));
-</script>
-
 <template>
   <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
     <div class="flex items-start justify-between gap-3">
@@ -55,3 +35,23 @@ const displayPercent = computed(() => Math.abs(props.metric.changePercent).toFix
     </div>
   </article>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import FaIcon from "@/components/icons/FaIcon.vue";
+import type { LocalizedMetricCard } from "@/composables/dashboard/useDashboardMetrics";
+import { useLocalizedString } from "@/composables/useLocalizedString";
+
+const props = defineProps<{
+  metric: LocalizedMetricCard;
+  icon: string;
+  iconClass: string;
+  comparisonPeriod: string;
+}>();
+
+const vsLabel = useLocalizedString("common", "vs");
+
+const isUp = computed(() => props.metric.changeDirection === "up");
+const isDown = computed(() => props.metric.changeDirection === "down");
+const displayPercent = computed(() => Math.abs(props.metric.changePercent).toFixed(1));
+</script>

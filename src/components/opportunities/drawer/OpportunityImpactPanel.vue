@@ -1,3 +1,40 @@
+<template>
+  <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div class="flex items-center gap-1.5">
+      <h3 class="text-sm font-semibold text-slate-900">
+        {{ copy["drawer.impact"] }}
+      </h3>
+      <FaIcon icon="fa-circle-info" size="xs" class="text-slate-400" />
+    </div>
+
+    <p class="mt-1 text-xs text-slate-500">
+      {{ impactSubtitle }}
+    </p>
+
+    <p
+      v-if="impactRangeText"
+      class="mt-3 text-2xl font-bold tabular-nums"
+      :class="opportunity.impact.impactType === 'risk' ? 'text-rose-600' : 'text-emerald-600'"
+    >
+      {{ impactRangeText }}
+    </p>
+    <p
+      v-else
+      class="mt-3 text-base font-semibold leading-snug text-slate-800"
+    >
+      {{ opportunity.impact.displayText }}
+    </p>
+
+    <span
+      class="mt-4 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
+      :class="confidenceClass"
+    >
+      <FaIcon icon="fa-chart-column" size="xs" :class="confidenceIconClass" />
+      {{ confidenceBadgeText }}
+    </span>
+  </section>
+</template>
+
 <script setup lang="ts">
 import { computed } from "vue";
 import FaIcon from "@/components/icons/FaIcon.vue";
@@ -58,40 +95,3 @@ const confidenceIconClass = computed(() => {
   return map[opportunity.value.impact?.confidence ?? "medium"] ?? map.medium;
 });
 </script>
-
-<template>
-  <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-    <div class="flex items-center gap-1.5">
-      <h3 class="text-sm font-semibold text-slate-900">
-        {{ copy["drawer.impact"] }}
-      </h3>
-      <FaIcon icon="fa-circle-info" size="xs" class="text-slate-400" />
-    </div>
-
-    <p class="mt-1 text-xs text-slate-500">
-      {{ impactSubtitle }}
-    </p>
-
-    <p
-      v-if="impactRangeText"
-      class="mt-3 text-2xl font-bold tabular-nums"
-      :class="opportunity.impact.impactType === 'risk' ? 'text-rose-600' : 'text-emerald-600'"
-    >
-      {{ impactRangeText }}
-    </p>
-    <p
-      v-else
-      class="mt-3 text-base font-semibold leading-snug text-slate-800"
-    >
-      {{ opportunity.impact.displayText }}
-    </p>
-
-    <span
-      class="mt-4 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
-      :class="confidenceClass"
-    >
-      <FaIcon icon="fa-chart-column" size="xs" :class="confidenceIconClass" />
-      {{ confidenceBadgeText }}
-    </span>
-  </section>
-</template>

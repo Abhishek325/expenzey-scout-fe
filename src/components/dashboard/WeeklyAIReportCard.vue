@@ -1,30 +1,3 @@
-<script setup lang="ts">
-import FaIcon from "@/components/icons/FaIcon.vue";
-import GenerateReportButton from "@/components/dashboard/GenerateReportButton.vue";
-import { useWeeklyReport } from "@/composables/dashboard/useWeeklyReport";
-import { useLocalizedString } from "@/composables/useLocalizedString";
-
-const {
-  loading,
-  generating,
-  error,
-  reportPeriod,
-  sections,
-  recommendedAction,
-  hasContent,
-  reload,
-  generate,
-} = useWeeklyReport();
-
-const loadingLabel = useLocalizedString("common", "loading");
-const errorLabel = useLocalizedString("common", "error");
-const retryLabel = useLocalizedString("common", "retry");
-const emptyLabel = useLocalizedString("dashboard", "aiInsights.weeklyReportEmpty");
-const viewFullReport = useLocalizedString("dashboard", "viewFullReport");
-const title = useLocalizedString("dashboard", "aiInsights.weeklyReport.title");
-const recommendedActionLabel = useLocalizedString("dashboard", "aiInsights.weeklyReport.recommendedAction");
-</script>
-
 <template>
   <section class="flex min-h-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
     <div class="shrink-0 border-b border-slate-100 px-4 py-3">
@@ -92,3 +65,30 @@ const recommendedActionLabel = useLocalizedString("dashboard", "aiInsights.weekl
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import FaIcon from "@/components/icons/FaIcon.vue";
+import GenerateReportButton from "@/components/dashboard/GenerateReportButton.vue";
+import { useWeeklyReport } from "@/composables/dashboard/useWeeklyReport";
+import { useLocalizedString } from "@/composables/useLocalizedString";
+
+const {
+  loading,
+  generating,
+  error,
+  reportPeriod,
+  sections,
+  recommendedAction,
+  hasContent,
+  reload,
+  generate,
+} = useWeeklyReport();
+
+const loadingLabel = useLocalizedString("common", "loading");
+const errorLabel = useLocalizedString("common", "error");
+const retryLabel = useLocalizedString("common", "retry");
+const emptyLabel = useLocalizedString("dashboard", "aiInsights.weeklyReportEmpty");
+const viewFullReport = useLocalizedString("dashboard", "viewFullReport");
+const title = useLocalizedString("dashboard", "aiInsights.weeklyReport.title");
+const recommendedActionLabel = useLocalizedString("dashboard", "aiInsights.weeklyReport.recommendedAction");
+</script>

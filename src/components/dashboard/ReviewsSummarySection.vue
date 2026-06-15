@@ -1,19 +1,3 @@
-<script setup lang="ts">
-import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
-
-const copy = useReactiveLocaleStringRecord("reviews", [
-  "title",
-  "avgRating",
-  "reviewStub",
-] as const);
-
-const stubReviews = [
-  { id: 1, author: "Jordan P.", rating: 5 },
-  { id: 2, author: "Sam R.", rating: 4 },
-  { id: 3, author: "Taylor M.", rating: 5 },
-];
-</script>
-
 <template>
   <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
     <h3 class="text-sm font-semibold text-slate-900">{{ copy.title }}</h3>
@@ -39,3 +23,19 @@ const stubReviews = [
     </ul>
   </section>
 </template>
+
+<script setup lang="ts">
+import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
+
+const copy = useReactiveLocaleStringRecord("reviews", [
+  "title",
+  "avgRating",
+  "reviewStub",
+] as const);
+
+const stubReviews = [
+  { id: 1, author: "Jordan P.", rating: 5 },
+  { id: 2, author: "Sam R.", rating: 4 },
+  { id: 3, author: "Taylor M.", rating: 5 },
+];
+</script>

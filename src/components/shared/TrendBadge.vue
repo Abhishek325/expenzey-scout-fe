@@ -1,21 +1,3 @@
-<script setup lang="ts">
-import { computed } from "vue";
-import type { MetricChangeDirection } from "@/types/metrics";
-
-const props = withDefaults(
-  defineProps<{
-    percent: number;
-    direction: MetricChangeDirection;
-    compact?: boolean;
-  }>(),
-  { compact: false }
-);
-
-const isUp = computed(() => props.direction === "up");
-const isDown = computed(() => props.direction === "down");
-const displayPercent = computed(() => Math.abs(props.percent).toFixed(1));
-</script>
-
 <template>
   <span
     class="inline-flex items-center gap-0.5 text-xs font-medium"
@@ -37,3 +19,21 @@ const displayPercent = computed(() => Math.abs(props.percent).toFixed(1));
     <span>{{ displayPercent }}%</span>
   </span>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import type { MetricChangeDirection } from "@/types/metrics";
+
+const props = withDefaults(
+  defineProps<{
+    percent: number;
+    direction: MetricChangeDirection;
+    compact?: boolean;
+  }>(),
+  { compact: false }
+);
+
+const isUp = computed(() => props.direction === "up");
+const isDown = computed(() => props.direction === "down");
+const displayPercent = computed(() => Math.abs(props.percent).toFixed(1));
+</script>

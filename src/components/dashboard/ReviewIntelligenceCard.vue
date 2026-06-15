@@ -1,38 +1,3 @@
-<script setup lang="ts">
-import { computed } from "vue";
-import FaIcon from "@/components/icons/FaIcon.vue";
-import DashboardCard from "@/components/shared/DashboardCard.vue";
-import ReviewIntelligenceEmptyState from "@/components/dashboard/ReviewIntelligenceEmptyState.vue";
-import { REVIEW_INTELLIGENCE_CARD_BODY_HEIGHT } from "@/constants/dashboardRowHeights";
-import { useReviewIntelligence } from "@/composables/dashboard/useReviewIntelligence";
-import { useLocalizedString } from "@/composables/useLocalizedString";
-
-const {
-  loading,
-  error,
-  hasData,
-  positivePercent,
-  reviewCount,
-  positiveMentions,
-  complaints,
-  reload,
-} = useReviewIntelligence();
-const emptyLabel = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.empty.title");
-const viewDetails = useLocalizedString("common", "viewDetails");
-const title = useLocalizedString("dashboard", "aiInsights.reviewIntelligenceTitle");
-const overallSentiment = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.overallSentiment");
-const positiveLabel = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.positive");
-const reviewsAnalyzed = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.reviewsAnalyzed");
-const topPositiveMentions = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.topPositiveMentions");
-const topComplaints = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.topComplaints");
-
-const viewDetailsAction = computed(() => ({
-  kind: "link" as const,
-  to: "/reports",
-  label: viewDetails.value,
-}));
-</script>
-
 <template>
   <DashboardCard
     :title="title"
@@ -123,3 +88,38 @@ const viewDetailsAction = computed(() => ({
     </div>
   </DashboardCard>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import FaIcon from "@/components/icons/FaIcon.vue";
+import DashboardCard from "@/components/shared/DashboardCard.vue";
+import ReviewIntelligenceEmptyState from "@/components/dashboard/ReviewIntelligenceEmptyState.vue";
+import { REVIEW_INTELLIGENCE_CARD_BODY_HEIGHT } from "@/constants/dashboardRowHeights";
+import { useReviewIntelligence } from "@/composables/dashboard/useReviewIntelligence";
+import { useLocalizedString } from "@/composables/useLocalizedString";
+
+const {
+  loading,
+  error,
+  hasData,
+  positivePercent,
+  reviewCount,
+  positiveMentions,
+  complaints,
+  reload,
+} = useReviewIntelligence();
+const emptyLabel = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.empty.title");
+const viewDetails = useLocalizedString("common", "viewDetails");
+const title = useLocalizedString("dashboard", "aiInsights.reviewIntelligenceTitle");
+const overallSentiment = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.overallSentiment");
+const positiveLabel = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.positive");
+const reviewsAnalyzed = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.reviewsAnalyzed");
+const topPositiveMentions = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.topPositiveMentions");
+const topComplaints = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.topComplaints");
+
+const viewDetailsAction = computed(() => ({
+  kind: "link" as const,
+  to: "/reports",
+  label: viewDetails.value,
+}));
+</script>

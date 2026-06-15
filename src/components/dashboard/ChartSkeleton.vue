@@ -1,9 +1,3 @@
-<script setup lang="ts">
-import { useLocalizedString } from "@/composables/useLocalizedString";
-
-const loading = useLocalizedString("common", "loading");
-</script>
-
 <template>
   <div
     class="h-full min-h-0 w-full overflow-hidden"
@@ -28,6 +22,12 @@ const loading = useLocalizedString("common", "loading");
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useLocalizedString } from "@/composables/useLocalizedString";
+
+const loading = useLocalizedString("common", "loading");
+</script>
 
 <style scoped>
 @keyframes shimmer {

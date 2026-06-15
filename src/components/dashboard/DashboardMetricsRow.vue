@@ -1,19 +1,3 @@
-<script setup lang="ts">
-import MetricCard from "@/components/dashboard/MetricCard.vue";
-import { useDashboardMetrics } from "@/composables/dashboard/useDashboardMetrics";
-import { useLocalizedString } from "@/composables/useLocalizedString";
-
-const { kpis, loading, comparisonPeriod } = useDashboardMetrics();
-const loadingLabel = useLocalizedString("common", "loading");
-
-const iconMap: Record<string, { icon: string; iconClass: string }> = {
-  "total-revenue": { icon: "fa-sack-dollar", iconClass: "bg-violet-100 text-violet-600" },
-  orders: { icon: "fa-box", iconClass: "bg-indigo-100 text-indigo-600" },
-  customers: { icon: "fa-users", iconClass: "bg-sky-100 text-sky-600" },
-  aov: { icon: "fa-chart-line", iconClass: "bg-emerald-100 text-emerald-600" },
-};
-</script>
-
 <template>
   <div v-if="loading" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
     <div
@@ -33,3 +17,19 @@ const iconMap: Record<string, { icon: string; iconClass: string }> = {
     />
   </div>
 </template>
+
+<script setup lang="ts">
+import MetricCard from "@/components/dashboard/MetricCard.vue";
+import { useDashboardMetrics } from "@/composables/dashboard/useDashboardMetrics";
+import { useLocalizedString } from "@/composables/useLocalizedString";
+
+const { kpis, loading, comparisonPeriod } = useDashboardMetrics();
+const loadingLabel = useLocalizedString("common", "loading");
+
+const iconMap: Record<string, { icon: string; iconClass: string }> = {
+  "total-revenue": { icon: "fa-sack-dollar", iconClass: "bg-violet-100 text-violet-600" },
+  orders: { icon: "fa-box", iconClass: "bg-indigo-100 text-indigo-600" },
+  customers: { icon: "fa-users", iconClass: "bg-sky-100 text-sky-600" },
+  aov: { icon: "fa-chart-line", iconClass: "bg-emerald-100 text-emerald-600" },
+};
+</script>

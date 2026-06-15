@@ -1,3 +1,21 @@
+<template>
+  <div
+    class="flex"
+    :class="resolvedRole === 'user' ? 'justify-end' : 'justify-start'"
+  >
+    <div
+      class="max-w-[85%] rounded-xl px-3 py-2 text-sm leading-relaxed"
+      :class="
+        resolvedRole === 'user'
+          ? 'bg-expenzey-50 text-slate-800'
+          : 'bg-slate-100 text-slate-700'
+      "
+    >
+      {{ resolvedContent }}
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { computed, inject } from "vue";
 import { resolveStringKey } from "@/composables/dashboard/resolveStringKey";
@@ -27,21 +45,3 @@ const resolvedContent = computed(() => {
   return "";
 });
 </script>
-
-<template>
-  <div
-    class="flex"
-    :class="resolvedRole === 'user' ? 'justify-end' : 'justify-start'"
-  >
-    <div
-      class="max-w-[85%] rounded-xl px-3 py-2 text-sm leading-relaxed"
-      :class="
-        resolvedRole === 'user'
-          ? 'bg-expenzey-50 text-slate-800'
-          : 'bg-slate-100 text-slate-700'
-      "
-    >
-      {{ resolvedContent }}
-    </div>
-  </div>
-</template>

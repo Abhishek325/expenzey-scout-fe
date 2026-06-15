@@ -1,26 +1,3 @@
-<script setup lang="ts">
-import { ref } from "vue";
-import AIOpportunitiesSection from "@/components/dashboard/AIOpportunitiesSection.vue";
-import RecentAIReportsRow from "@/components/dashboard/RecentAIReportsRow.vue";
-import ReviewIntelligenceCard from "@/components/dashboard/ReviewIntelligenceCard.vue";
-import RevenueOverviewChart from "@/components/dashboard/RevenueOverviewChart.vue";
-import TopProductsTable from "@/components/dashboard/TopProductsTable.vue";
-import WeeklyAIReportCard from "@/components/dashboard/WeeklyAIReportCard.vue";
-import { provideTopProducts } from "@/composables/dashboard/useTopProducts";
-import { INSIGHTS_DATA_TABLE_OFFSET, WEEKLY_REPORT_HEIGHT } from "@/constants/dashboardRowHeights";
-import { useLocalizedString } from "@/composables/useLocalizedString";
-import type { RevenueChartGranularity } from "@/types/metrics";
-
-provideTopProducts();
-
-const revenueTitle = useLocalizedString("dashboard", "revenueTrendTitle");
-const periodDaily = useLocalizedString("dashboard", "revenuePeriodDaily");
-const periodWeekly = useLocalizedString("dashboard", "revenuePeriodWeekly");
-const periodMonthly = useLocalizedString("dashboard", "revenuePeriodMonthly");
-
-const chartGranularity = ref<RevenueChartGranularity>("daily");
-</script>
-
 <template>
   <div class="flex flex-col gap-3">
     <div class="grid gap-3 lg:grid-cols-3 lg:items-start">
@@ -51,3 +28,26 @@ const chartGranularity = ref<RevenueChartGranularity>("daily");
     <RecentAIReportsRow />
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+import AIOpportunitiesSection from "@/components/dashboard/AIOpportunitiesSection.vue";
+import RecentAIReportsRow from "@/components/dashboard/RecentAIReportsRow.vue";
+import ReviewIntelligenceCard from "@/components/dashboard/ReviewIntelligenceCard.vue";
+import RevenueOverviewChart from "@/components/dashboard/RevenueOverviewChart.vue";
+import TopProductsTable from "@/components/dashboard/TopProductsTable.vue";
+import WeeklyAIReportCard from "@/components/dashboard/WeeklyAIReportCard.vue";
+import { provideTopProducts } from "@/composables/dashboard/useTopProducts";
+import { INSIGHTS_DATA_TABLE_OFFSET, WEEKLY_REPORT_HEIGHT } from "@/constants/dashboardRowHeights";
+import { useLocalizedString } from "@/composables/useLocalizedString";
+import type { RevenueChartGranularity } from "@/types/metrics";
+
+provideTopProducts();
+
+const revenueTitle = useLocalizedString("dashboard", "revenueTrendTitle");
+const periodDaily = useLocalizedString("dashboard", "revenuePeriodDaily");
+const periodWeekly = useLocalizedString("dashboard", "revenuePeriodWeekly");
+const periodMonthly = useLocalizedString("dashboard", "revenuePeriodMonthly");
+
+const chartGranularity = ref<RevenueChartGranularity>("daily");
+</script>

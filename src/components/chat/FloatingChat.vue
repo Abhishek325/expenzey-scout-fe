@@ -1,44 +1,3 @@
-<script setup lang="ts">
-import { computed, watch } from "vue";
-import { storeToRefs } from "pinia";
-import AIChatWidget from "@/components/dashboard/AIChatWidget.vue";
-import ExpenzeyIcon from "@/components/icons/ExpenzeyIcon.vue";
-import { useLocalizedString } from "@/composables/useLocalizedString";
-import { useChatOverlayStore } from "@/stores/chatOverlay";
-
-const chatOverlay = useChatOverlayStore();
-const { isOpen, pendingPrompt } = storeToRefs(chatOverlay);
-
-const openLabel = useLocalizedString("chat", "openChat");
-const closeLabel = useLocalizedString("chat", "closeChat");
-
-const fabBottomClass = computed(() =>
-  import.meta.env.DEV ? "bottom-14" : "bottom-6"
-);
-
-const panelBottomClass = computed(() =>
-  import.meta.env.DEV ? "bottom-[5.5rem]" : "bottom-24"
-);
-
-watch(isOpen, (value) => {
-  if (!value) {
-    chatOverlay.clearPending();
-  }
-});
-
-function toggle() {
-  if (isOpen.value) {
-    chatOverlay.close();
-  } else {
-    chatOverlay.open();
-  }
-}
-
-function close() {
-  chatOverlay.close();
-}
-</script>
-
 <template>
   <div class="pointer-events-none fixed inset-0 z-[10000]">
     <Transition
@@ -86,3 +45,44 @@ function close() {
     </button>
   </div>
 </template>
+
+<script setup lang="ts">
+import { computed, watch } from "vue";
+import { storeToRefs } from "pinia";
+import AIChatWidget from "@/components/dashboard/AIChatWidget.vue";
+import ExpenzeyIcon from "@/components/icons/ExpenzeyIcon.vue";
+import { useLocalizedString } from "@/composables/useLocalizedString";
+import { useChatOverlayStore } from "@/stores/chatOverlay";
+
+const chatOverlay = useChatOverlayStore();
+const { isOpen, pendingPrompt } = storeToRefs(chatOverlay);
+
+const openLabel = useLocalizedString("chat", "openChat");
+const closeLabel = useLocalizedString("chat", "closeChat");
+
+const fabBottomClass = computed(() =>
+  import.meta.env.DEV ? "bottom-14" : "bottom-6"
+);
+
+const panelBottomClass = computed(() =>
+  import.meta.env.DEV ? "bottom-[5.5rem]" : "bottom-24"
+);
+
+watch(isOpen, (value) => {
+  if (!value) {
+    chatOverlay.clearPending();
+  }
+});
+
+function toggle() {
+  if (isOpen.value) {
+    chatOverlay.close();
+  } else {
+    chatOverlay.open();
+  }
+}
+
+function close() {
+  chatOverlay.close();
+}
+</script>
