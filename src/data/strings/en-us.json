@@ -86,11 +86,20 @@
       },
       "weeklyReport": {
         "title": "Weekly AI Report",
+        "weekOf": "Week of {period}",
         "recommendedAction": "Recommended Action",
+        "ofRevenue": "of revenue",
+        "vsLastWeek": "vs last week",
         "recentPeriod": "Recent period",
+        "opportunitiesDetected": "{count} opportunities detected",
+        "itemsNeedAttention": "{count} items need attention",
+        "scheduledForMonday": "Your report is scheduled for Monday, or generate it now.",
         "sections": {
           "overview": "Overview",
           "revenue": "Revenue",
+          "orders": "Orders",
+          "topProduct": "Top Product",
+          "customerTrend": "Customer Trend",
           "customers": "Customers",
           "products": "Products",
           "mainRisk": "Main Risk"
@@ -165,25 +174,104 @@
     "closeChat": "Close chat"
   },
   "reports": {
-    "title": "Reports",
-    "subtitle": "Weekly performance summaries",
+    "title": "AI Reports",
+    "subtitle": "Get weekly AI-generated business reviews of your store's performance.",
     "generate": "Generate report",
     "generating": "Generating report\u2026",
-    "history": {
-      "title": "Report history",
-      "week20Summary": "Revenue up 9% week over week; Protein Powder and Whey Isolate led category growth.",
-      "week19Summary": "Steady traffic with a slight dip in Yoga Mat conversions; AOV held flat."
-    },
-    "columns": {
-      "period": "Period",
-      "generated": "Generated",
-      "status": "Status",
-      "actions": "Actions"
+    "generateNow": "Generate Report Now",
+    "generatePastWeek": "Generate Report for Past Week",
+    "generateNewReport": "Generate New Report",
+    "generateCard": {
+      "title": "Generate Weekly Business Review",
+      "description": "Our AI will analyze your store data and create a comprehensive report with insights and actions."
     },
     "status": {
+      "lastReport": "Last report",
+      "noReportsFound": "No reports found",
+      "nextRecommended": "Next recommended",
+      "weeklyOnMonday": "Weekly on Monday",
       "completed": "Completed",
       "pending": "Pending",
       "failed": "Failed"
+    },
+    "latest": {
+      "badge": "Latest Report",
+      "title": "Weekly AI Report",
+      "viewFullReport": "View Full Report",
+      "emptyHint": "No report for {period} yet. Your report is scheduled for Monday, or generate it now."
+    },
+    "kpi": {
+      "revenue": "Revenue",
+      "orders": "Orders",
+      "opportunities": "Opportunities",
+      "needsAttention": "Needs Attention",
+      "newFound": "New found this week",
+      "requireAction": "Require action",
+      "opportunitiesCount": "{count} opportunities identified"
+    },
+    "summary": {
+      "revenueUp": "Revenue up {percent}%",
+      "revenueDown": "Revenue down {percent}%",
+      "strongPerformance": "Strong performance",
+      "needsImprovement": "Needs improvement"
+    },
+    "columns": {
+      "period": "Report Period",
+      "summary": "Summary",
+      "opportunities": "Opportunities",
+      "keyHighlights": "Key Highlights",
+      "generated": "Generated",
+      "actions": "Actions",
+      "viewReport": "View Report"
+    },
+    "sections": {
+      "executiveSummary": "Executive Summary",
+      "keyWins": "Key Wins",
+      "needsAttention": "Needs Attention",
+      "topProducts": "Top Products",
+      "customerInsights": "Customer Insights",
+      "opportunities": "Opportunities",
+      "recommendedActions": "Recommended Actions",
+      "reviewIntelligence": "Review Intelligence",
+      "overallSentiment": "Overall Sentiment",
+      "topPositiveTheme": "Top Positive Theme",
+      "topComplaintTheme": "Top Complaint Theme"
+    },
+    "customerKpi": {
+      "newCustomers": "New Customers",
+      "returningCustomers": "Returning Customers",
+      "repeatRevenue": "Repeat Revenue",
+      "aov": "Average Order Value"
+    },
+    "table": {
+      "product": "Product",
+      "revenue": "Revenue",
+      "growth": "Growth",
+      "recentTitle": "Recent Reports",
+      "viewAllReports": "View all reports"
+    },
+    "dates": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "{days} days ago",
+      "tomorrow": "Tomorrow",
+      "inDays": "In {days} days"
+    },
+    "formats": {
+      "comparisonVs": "vs",
+      "growthVsPriorWeek": "{sign}{percent}% vs prior week",
+      "printFallbackTitle": "Weekly Report"
+    },
+    "detail": {
+      "backToReports": "Back to Reports",
+      "periodLabel": "Report period",
+      "downloadPdf": "Download PDF",
+      "shareReport": "Share Report",
+      "moreActions": "More actions",
+      "noData": "No data for this period"
+    },
+    "history": {
+      "title": "Report history"
     },
     "download": "Download PDF",
     "usageLimit": "You have used {used} of {limit} reports this billing period."

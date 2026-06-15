@@ -7,14 +7,67 @@ export interface BusinessSummary {
   cached?: boolean;
 }
 
+export interface WeeklyReportPeriodMetrics {
+  revenue: number;
+  revenueGrowthPercent: number;
+  orders: number;
+  ordersGrowthPercent: number;
+}
+
+export interface WeeklyReportTopProduct {
+  productName: string;
+  revenue: number;
+  growthPercent: number;
+  imageUrl?: string;
+}
+
+export interface WeeklyReportCustomerInsights {
+  newCustomers: number;
+  newCustomersGrowthPercent?: number;
+  returningCustomers: number;
+  returningGrowthPercent: number;
+  averageOrderValue: number;
+  averageOrderValueGrowthPercent: number;
+  repeatRevenue: number;
+  repeatRevenueGrowthPercent: number;
+}
+
+export interface WeeklyReportOpportunity {
+  title: string;
+  recommendation: string;
+}
+
+export interface WeeklyReportReviewIntelligence {
+  sentimentScore?: number;
+  topPositiveTheme?: string;
+  topComplaintTheme?: string;
+}
+
 export interface WeeklyReportContent {
-  overview: string;
-  revenueAnalysis: string;
-  productAnalysis: string;
-  customerAnalysis: string | null;
-  risks: string[] | string;
-  opportunities: string[] | string;
+  executiveSummary: string;
+  keyWins: string[];
+  needsAttention: string[];
+  topProducts: WeeklyReportTopProduct[];
+  customerInsights: WeeklyReportCustomerInsights;
+  periodMetrics: WeeklyReportPeriodMetrics;
+  opportunities: WeeklyReportOpportunity[];
   recommendedActions: string[];
+  reviewIntelligence?: WeeklyReportReviewIntelligence;
+}
+
+export interface ReportsPageMeta {
+  priorWeekReportExists: boolean;
+  priorWeekReportId: string | null;
+  priorWeek: {
+    periodStart: string;
+    periodEnd: string;
+    comparisonPeriodStart: string;
+    comparisonPeriodEnd: string;
+  };
+  lastReportGeneratedAt: string | null;
+  lastReportPeriodStart: string | null;
+  lastReportPeriodEnd: string | null;
+  nextScheduledAt: string;
 }
 
 export interface WeeklyReportDetail {
@@ -26,6 +79,7 @@ export interface WeeklyReportDetail {
   status: string | null;
   reportType?: string | null;
   content: WeeklyReportContent | null;
+  meta?: ReportsPageMeta;
 }
 
 export interface AIOpportunity {

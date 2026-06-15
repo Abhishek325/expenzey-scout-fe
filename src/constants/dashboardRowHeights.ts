@@ -1,6 +1,9 @@
 /** Fixed scrollable body for top products and AI opportunities cards. */
 export const INSIGHTS_CARD_BODY_HEIGHT = "h-[24rem] max-h-[24rem] min-h-[24rem] overflow-y-auto";
 
+/** Report detail — caps body height and scrolls only when content overflows. */
+export const REPORT_SECTION_SCROLL_BODY = "max-h-[24rem] overflow-y-auto";
+
 /** Pull top products and AI opportunities up toward the chart row. */
 export const INSIGHTS_DATA_TABLE_OFFSET = "-mt-[13.5rem]";
 

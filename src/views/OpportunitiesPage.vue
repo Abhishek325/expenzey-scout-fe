@@ -7,7 +7,6 @@
       </div>
       <div class="flex flex-wrap items-center gap-3">
         <DateRangePicker />
-        <ExportButton />
       </div>
     </header>
 
@@ -106,7 +105,6 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from "vue";
 import DateRangePicker from "@/components/shared/DateRangePicker.vue";
-import ExportButton from "@/components/shared/ExportButton.vue";
 import OpportunitiesFilterTabs from "@/components/opportunities/OpportunitiesFilterTabs.vue";
 import OpportunitiesSummaryCards from "@/components/opportunities/OpportunitiesSummaryCards.vue";
 import OpportunitiesTable from "@/components/opportunities/OpportunitiesTable.vue";

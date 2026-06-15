@@ -1,12 +1,15 @@
 <template>
   <section class="flex min-h-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
     <div class="shrink-0 border-b border-slate-100 px-4 py-3">
-      <div class="flex items-center gap-2">
-        <FaIcon icon="fa-calendar-days" size="sm" icon-class="text-slate-400" />
-        <div>
-          <h3 class="text-sm font-semibold text-slate-900">{{ title }}</h3>
-          <p class="mt-0.5 text-xs text-slate-500">{{ reportPeriod || "—" }}</p>
-        </div>
+      <div class="flex items-start justify-between gap-3">
+        <h3 class="text-sm font-bold text-slate-900">{{ title }}</h3>
+        <span
+          v-if="hasContent || priorWeekPeriod"
+          class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-600"
+        >
+          <FaIcon icon="fa-calendar-days" size="xs" icon-class="text-slate-400" />
+          {{ weekOfLabel }}
+        </span>
       </div>
     </div>
 
@@ -16,69 +19,74 @@
         <span>{{ errorLabel }}</span>
         <button type="button" class="font-medium underline" @click="reload">{{ retryLabel }}</button>
       </div>
-      <p v-else-if="!hasContent" class="text-sm text-slate-500">{{ emptyLabel }}</p>
-      <div v-else class="flex flex-col gap-3">
-        <div
-          v-for="section in sections"
-          :key="section.label"
-          class="flex gap-3 rounded-lg bg-slate-50 px-3 py-2.5"
-        >
-          <span
-            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-            :class="section.iconClass"
-            aria-hidden="true"
-          >
-            <FaIcon :icon="section.icon" size="sm" />
-          </span>
-          <div class="min-w-0 flex-1">
-            <p class="text-xs font-medium uppercase tracking-wide text-slate-400">{{ section.label }}</p>
-            <p class="mt-0.5 text-sm font-semibold text-slate-900">{{ section.value }}</p>
-          </div>
-        </div>
-        <div
-          v-if="recommendedAction"
-          class="flex gap-3 rounded-lg border border-indigo-100 bg-indigo-50/50 px-3 py-2.5"
-        >
-          <span
-            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-600"
-            aria-hidden="true"
-          >
-            <FaIcon icon="fa-magnifying-glass" size="sm" />
-          </span>
-          <div class="min-w-0 flex-1">
-            <p class="text-xs font-medium uppercase tracking-wide text-indigo-400">{{ recommendedActionLabel }}</p>
-            <p class="mt-1 text-sm leading-relaxed text-slate-700">{{ recommendedAction }}</p>
-          </div>
-        </div>
+      <div v-else-if="!hasContent && canGenerate" class="flex flex-col gap-2">
+        <p class="text-sm text-slate-600">{{ emptyHint }}</p>
+        <p class="text-xs text-slate-400">{{ scheduledHint }}</p>
       </div>
+      <ul v-else-if="hasContent" class="flex flex-col gap-4">
+        <li v-for="row in widgetRows" :key="row.key" class="flex gap-3">
+          <span
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+            :class="rowStyle[row.key].bg"
+            aria-hidden="true"
+          >
+            <FaIcon :icon="rowStyle[row.key].icon" size="sm" :icon-class="rowStyle[row.key].color" />
+          </span>
+          <div class="min-w-0 flex-1">
+            <p class="text-[11px] font-medium text-slate-500">{{ row.label }}</p>
+            <p class="mt-0.5 text-sm font-semibold leading-snug text-slate-900">{{ row.value }}</p>
+            <p v-if="row.detail" class="mt-0.5 text-xs text-slate-600">{{ row.detail }}</p>
+            <p
+              v-if="row.trendPercent !== undefined && row.trendDirection"
+              class="mt-0.5 text-xs font-medium"
+              :class="row.trendDirection === 'up' ? 'text-emerald-600' : 'text-rose-600'"
+            >
+              {{ row.trendDirection === "up" ? "↑" : "↓" }} {{ row.trendPercent }}% {{ vsLastWeek }}
+            </p>
+          </div>
+        </li>
+      </ul>
+      <p v-else class="text-sm text-slate-500">{{ emptyLabel }}</p>
     </div>
 
     <div class="flex shrink-0 gap-2 border-t border-slate-100 p-3">
       <RouterLink
-        to="/reports"
-        class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+        v-if="reportId && hasContent"
+        :to="`/reports/${reportId}`"
+        class="inline-flex flex-1 items-center justify-center rounded-lg border border-indigo-200 bg-white px-3 py-2 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50"
       >
         {{ viewFullReport }}
-        <FaIcon icon="fa-arrow-right" size="xs" />
       </RouterLink>
-      <GenerateReportButton class="flex-1" compact :disabled="generating" @generate="generate" />
+      <GenerateReportButton
+        v-if="canGenerate"
+        class="flex-1"
+        compact
+        :full-width="true"
+        :disabled="generating"
+        :label-key="hasContent ? 'reports.generateNewReport' : 'reports.generatePastWeek'"
+        @generate="generate"
+      />
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import FaIcon from "@/components/icons/FaIcon.vue";
 import GenerateReportButton from "@/components/dashboard/GenerateReportButton.vue";
 import { useWeeklyReport } from "@/composables/dashboard/useWeeklyReport";
 import { useLocalizedString } from "@/composables/useLocalizedString";
+import type { WeeklyReportWidgetRow } from "@/utils/weeklyReportWidget";
 
 const {
   loading,
   generating,
   error,
-  reportPeriod,
-  sections,
-  recommendedAction,
+  reportId,
+  priorWeekPeriod,
+  weekOfLabel,
+  widgetRows,
+  canGenerate,
   hasContent,
   reload,
   generate,
@@ -90,5 +98,22 @@ const retryLabel = useLocalizedString("common", "retry");
 const emptyLabel = useLocalizedString("dashboard", "aiInsights.weeklyReportEmpty");
 const viewFullReport = useLocalizedString("dashboard", "viewFullReport");
 const title = useLocalizedString("dashboard", "aiInsights.weeklyReport.title");
-const recommendedActionLabel = useLocalizedString("dashboard", "aiInsights.weeklyReport.recommendedAction");
+const scheduledHint = useLocalizedString("dashboard", "aiInsights.weeklyReport.scheduledForMonday");
+const vsLastWeek = useLocalizedString("dashboard", "aiInsights.weeklyReport.vsLastWeek");
+const emptyHintRaw = useLocalizedString("reports", "latest.emptyHint");
+const emptyHint = computed(() =>
+  emptyHintRaw.value.replace("{period}", priorWeekPeriod.value || "—"),
+);
+
+const rowStyle: Record<
+  WeeklyReportWidgetRow["key"],
+  { icon: string; bg: string; color: string }
+> = {
+  revenue: { icon: "fa-chart-line", bg: "bg-sky-50", color: "text-sky-600" },
+  orders: { icon: "fa-cart-shopping", bg: "bg-indigo-50", color: "text-indigo-600" },
+  topProduct: { icon: "fa-shirt", bg: "bg-violet-50", color: "text-violet-600" },
+  customerTrend: { icon: "fa-users", bg: "bg-emerald-50", color: "text-emerald-600" },
+  mainRisk: { icon: "fa-triangle-exclamation", bg: "bg-rose-50", color: "text-rose-600" },
+  recommendedAction: { icon: "fa-lightbulb", bg: "bg-amber-50", color: "text-amber-600" },
+};
 </script>

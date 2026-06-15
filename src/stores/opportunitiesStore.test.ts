@@ -33,7 +33,6 @@ function createReportsService(
   overrides: Partial<IReportsService> = {},
 ): IReportsService {
   return {
-    getAISummary: vi.fn(),
     getBusinessSummary: vi.fn(),
     getOpportunities: vi.fn(),
     getOpportunityStates: vi.fn().mockResolvedValue([]),

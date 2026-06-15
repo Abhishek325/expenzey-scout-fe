@@ -1,22 +1,11 @@
 export type WeeklyReportStatus = "completed" | "pending" | "failed";
 
-export interface AISummaryProductInsight {
-  productName: string;
-  revenue: number;
-  growthPercent: number;
+export interface ReportKeyHighlight {
+  text: string;
+  tone: "positive" | "negative";
 }
 
-export interface AISummaryGrowthOpportunity {
-  textKey: string;
-}
-
-export interface AISummary {
-  topPerformer: AISummaryProductInsight;
-  needsAttention: AISummaryProductInsight;
-  growthOpportunity: AISummaryGrowthOpportunity;
-}
-
-export interface WeeklyReport {
+export interface WeeklyReportListItem {
   id: string;
   title: string;
   periodStart: string;
@@ -25,4 +14,24 @@ export interface WeeklyReport {
   status: WeeklyReportStatus;
   summaryKey: string;
   downloadUrl: string;
+  summary: string;
+  revenueGrowthPercent: number;
+  opportunityCount: number;
+  attentionCount: number;
+  keyHighlights: ReportKeyHighlight[];
+  comparisonPeriodStart: string;
+  comparisonPeriodEnd: string;
+}
+
+/** @deprecated Use WeeklyReportListItem */
+export type WeeklyReport = WeeklyReportListItem;
+
+export interface GenerateWeeklyReportOptions {
+  periodStart?: string;
+  periodEnd?: string;
+}
+
+export interface GenerateWeeklyReportResult extends WeeklyReportListItem {
+  content?: import("@/types/ai").WeeklyReportContent;
+  existing?: boolean;
 }

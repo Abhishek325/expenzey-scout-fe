@@ -72,3 +72,39 @@ body.admin-bar .opportunity-drawer {
     height: calc(100vh - 46px);
   }
 }
+
+@media print {
+  @page {
+    margin: 1cm;
+    size: auto;
+  }
+
+  .weekly-report-print {
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .weekly-report-print,
+  .weekly-report-print .report-section-body {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .weekly-report-print section {
+    height: auto !important;
+    min-height: 0 !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .weekly-report-print thead {
+    position: static !important;
+  }
+
+  .weekly-report-print img {
+    break-inside: avoid;
+  }
+}

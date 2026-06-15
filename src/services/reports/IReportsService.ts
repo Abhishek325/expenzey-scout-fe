@@ -8,10 +8,13 @@ import type {
   ReviewIntelligence,
   WeeklyReportDetail,
 } from "@/types/ai";
-import type { AISummary, WeeklyReport } from "@/types/reports";
+import type {
+  GenerateWeeklyReportOptions,
+  GenerateWeeklyReportResult,
+  WeeklyReportListItem,
+} from "@/types/reports";
 
 export interface IReportsService {
-  getAISummary(): Promise<AISummary>;
   getBusinessSummary(range: DateRangeSelection): Promise<BusinessSummary>;
   getOpportunities(range: DateRangeSelection): Promise<OpportunityDetail[]>;
   getOpportunityStates(): Promise<OpportunityStateRecord[]>;
@@ -22,8 +25,8 @@ export interface IReportsService {
   ): Promise<void>;
   getWeeklyReportDetail(id?: string): Promise<WeeklyReportDetail>;
   getReviewIntelligence(range: DateRangeSelection): Promise<ReviewIntelligence>;
-  listWeeklyReports(): Promise<WeeklyReport[]>;
-  generateWeeklyReport(): Promise<WeeklyReport>;
+  listWeeklyReports(): Promise<WeeklyReportListItem[]>;
+  generateWeeklyReport(options?: GenerateWeeklyReportOptions): Promise<GenerateWeeklyReportResult>;
 }
 
 export const REPORTS_SERVICE_KEY = "reportsService";
