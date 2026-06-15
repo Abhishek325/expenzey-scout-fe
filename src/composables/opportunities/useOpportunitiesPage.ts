@@ -1,5 +1,5 @@
 import { computed, inject, onMounted, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import router from "@/router";
 import { storeToRefs } from "pinia";
 import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
 import { useDateRangeStore } from "@/stores/dateRange";
@@ -13,27 +13,47 @@ import {
 import type { OpportunityDetail } from "@/types/ai";
 
 export type OpportunitySortKey = "impact" | "priority";
+export type OpportunitiesTableMode = "active" | "archived";
 
 const PAGE_SIZE = 6;
 
 function matchesTab(item: OpportunityDetail, tab: OpportunityFilterTab): boolean {
+  if (tab === "archived") return true;
   const config = FILTER_TABS.find((t) => t.id === tab);
   if (!config || !config.badges) return true;
   return (config.badges as readonly string[]).includes(item.badge);
 }
 
+function sortItems(
+  list: OpportunityDetail[],
+  sortKey: OpportunitySortKey,
+): OpportunityDetail[] {
+  return [...list].sort((a, b) => {
+    if (sortKey === "priority") {
+      return PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
+    }
+    return (IMPACT_LEVEL_DOTS[b.impactLevel] ?? 0) - (IMPACT_LEVEL_DOTS[a.impactLevel] ?? 0);
+  });
+}
+
+const OPPORTUNITIES_PATH = "/opportunities";
+
 export function useOpportunitiesPage() {
   const reportsService = inject(REPORTS_SERVICE_KEY) as IReportsService;
   const store = useOpportunitiesStore();
   const dateRange = useDateRangeStore();
-  const route = useRoute();
-  const router = useRouter();
-  const { items, loading, error } = storeToRefs(store);
+  const { activeItems, archivedItems, archivedCount, loading, error } = storeToRefs(store);
 
   const activeTab = ref<OpportunityFilterTab>("all");
   const sortKey = ref<OpportunitySortKey>("impact");
   const page = ref(1);
   const selectedId = ref<string | null>(null);
+  const openMenuId = ref<string | null>(null);
+  const statusError = ref<string | null>(null);
+
+  const tableMode = computed<OpportunitiesTableMode>(() =>
+    activeTab.value === "archived" ? "archived" : "active",
+  );
 
   onMounted(() => {
     void store.ensureLoaded(reportsService);
@@ -48,32 +68,34 @@ export function useOpportunitiesPage() {
   );
 
   watch(
-    () => route.query.id,
+    () => {
+      const current = router.currentRoute.value;
+      return current.path === OPPORTUNITIES_PATH ? current.query.id : undefined;
+    },
     (id) => {
       selectedId.value = typeof id === "string" && id ? id : null;
     },
     { immediate: true },
   );
 
+  const sourceItems = computed(() =>
+    activeTab.value === "archived" ? archivedItems.value : activeItems.value,
+  );
+
   const filteredItems = computed(() => {
-    const list = items.value.filter((item) => matchesTab(item, activeTab.value));
-    return [...list].sort((a, b) => {
-      if (sortKey.value === "priority") {
-        return PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
-      }
-      return (IMPACT_LEVEL_DOTS[b.impactLevel] ?? 0) - (IMPACT_LEVEL_DOTS[a.impactLevel] ?? 0);
-    });
+    const list = sourceItems.value.filter((item) => matchesTab(item, activeTab.value));
+    return sortItems(list, sortKey.value);
   });
 
   const tabCounts = computed(() => {
-    const counts: Record<OpportunityFilterTab, number> = {
-      all: items.value.length,
+    const counts: Record<Exclude<OpportunityFilterTab, "archived">, number> = {
+      all: activeItems.value.length,
       highImpact: 0,
       quickWins: 0,
       needsAttention: 0,
       growth: 0,
     };
-    for (const item of items.value) {
+    for (const item of activeItems.value) {
       for (const tab of FILTER_TABS) {
         if (tab.id !== "all" && (tab.badges as readonly string[] | null)?.includes(item.badge)) {
           counts[tab.id]++;
@@ -84,13 +106,12 @@ export function useOpportunitiesPage() {
   });
 
   const summary = computed(() => ({
-    total: items.value.length,
+    total: activeItems.value.length,
     highImpact: tabCounts.value.highImpact,
     quickWins: tabCounts.value.quickWins,
     needsAttention: tabCounts.value.needsAttention,
-    estimatedImpact: items.value.reduce((sum, item) => {
-      const val =
-        item.impact?.estimatedValue ?? item.impact?.estimatedRange?.min ?? 0;
+    estimatedImpact: activeItems.value.reduce((sum, item) => {
+      const val = item.impact?.estimatedValue ?? item.impact?.estimatedRange?.min ?? 0;
       return sum + val;
     }, 0),
   }));
@@ -111,6 +132,7 @@ export function useOpportunitiesPage() {
   function setTab(tab: OpportunityFilterTab) {
     activeTab.value = tab;
     page.value = 1;
+    openMenuId.value = null;
   }
 
   function setSort(key: OpportunitySortKey) {
@@ -118,29 +140,68 @@ export function useOpportunitiesPage() {
     page.value = 1;
   }
 
+  function syncQueryId(id: string | null) {
+    const current = router.currentRoute.value;
+    if (current.path !== OPPORTUNITIES_PATH) return;
+
+    const query = { ...current.query };
+    if (id) {
+      query.id = id;
+    } else {
+      delete query.id;
+    }
+    void router.replace({ path: OPPORTUNITIES_PATH, query });
+  }
+
   function openDetail(id: string) {
     selectedId.value = id;
-    void router.replace({ query: { ...route.query, id } });
+    syncQueryId(id);
   }
 
   function closeDetail() {
     selectedId.value = null;
-    const { id: _removed, ...rest } = route.query;
-    void router.replace({ query: rest });
+    syncQueryId(null);
   }
 
   function reload() {
     return store.reload(reportsService);
   }
 
-  watch(activeTab, () => {
-    page.value = 1;
-  });
+  async function updateStatus(id: string, status: "done" | "dismissed") {
+    statusError.value = null;
+    const item = store.byId.get(id);
+    try {
+      await store.setStatus(reportsService, id, status, item);
+      if (selectedId.value === id) {
+        closeDetail();
+      }
+    } catch (e) {
+      statusError.value = e instanceof Error ? e.message : "error";
+    } finally {
+      openMenuId.value = null;
+    }
+  }
+
+  function markDone(id: string) {
+    return updateStatus(id, "done");
+  }
+
+  function dismiss(id: string) {
+    return updateStatus(id, "dismissed");
+  }
+
+  function toggleMenu(id: string) {
+    openMenuId.value = openMenuId.value === id ? null : id;
+  }
+
+  function closeMenu() {
+    openMenuId.value = null;
+  }
 
   return {
     loading,
     error,
-    items,
+    statusError,
     activeTab,
     sortKey,
     page,
@@ -149,13 +210,21 @@ export function useOpportunitiesPage() {
     filteredItems,
     paginatedItems,
     tabCounts,
+    archivedCount,
     summary,
     totalPages,
     selectedOpportunity,
+    tableMode,
+    openMenuId,
     setTab,
     setSort,
     openDetail,
     closeDetail,
     reload,
+    markDone,
+    dismiss,
+    toggleMenu,
+    closeMenu,
+    statusOf: (id: string) => store.statusOf(id),
   };
 }

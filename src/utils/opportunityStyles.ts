@@ -71,7 +71,9 @@ export const FILTER_TABS = [
   { id: "growth", badges: ["Growth Opportunity"] },
 ] as const;
 
-export type OpportunityFilterTab = (typeof FILTER_TABS)[number]["id"];
+export type OpportunityFilterTab =
+  | (typeof FILTER_TABS)[number]["id"]
+  | "archived";
 
 export function badgeStyle(badge: string) {
   return BADGE_STYLES[badge] ?? BADGE_STYLES["Quick Win"];

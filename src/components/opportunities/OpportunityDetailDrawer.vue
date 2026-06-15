@@ -1,55 +1,3 @@
-<script setup lang="ts">
-import { ref, toRef } from "vue";
-import OpportunityActionsPanel from "@/components/opportunities/drawer/OpportunityActionsPanel.vue";
-import OpportunityDrawerHeader from "@/components/opportunities/drawer/OpportunityDrawerHeader.vue";
-import OpportunityImpactPanel from "@/components/opportunities/drawer/OpportunityImpactPanel.vue";
-import OpportunityRelatedPanel from "@/components/opportunities/drawer/OpportunityRelatedPanel.vue";
-import OpportunitySupportingData from "@/components/opportunities/drawer/OpportunitySupportingData.vue";
-import OpportunityWhyDetected from "@/components/opportunities/drawer/OpportunityWhyDetected.vue";
-import { provideOpportunityInvestigation } from "@/composables/opportunities/useOpportunityInvestigation";
-import { useLocalizedString, useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
-import type { OpportunityDetail } from "@/types/ai";
-
-const props = defineProps<{
-  opportunity: OpportunityDetail;
-}>();
-
-const emit = defineEmits<{
-  close: [];
-  selectRelated: [id: string];
-}>();
-
-const copy = useReactiveLocaleStringRecord("opportunities", [
-  "drawer.opportunityId",
-  "drawer.copyId",
-  "drawer.copiedId",
-  "drawer.markCompleted",
-  "drawer.markCompletedSoon",
-] as const);
-
-const closeLabel = useLocalizedString("common", "close");
-
-provideOpportunityInvestigation(toRef(() => props.opportunity));
-
-const copied = ref(false);
-
-function onKeydown(event: KeyboardEvent) {
-  if (event.key === "Escape") emit("close");
-}
-
-async function copyId() {
-  try {
-    await navigator.clipboard.writeText(props.opportunity.id);
-    copied.value = true;
-    window.setTimeout(() => {
-      copied.value = false;
-    }, 2000);
-  } catch {
-    copied.value = false;
-  }
-}
-</script>
-
 <template>
   <Teleport to="body">
     <div class="opportunity-drawer fixed inset-0 z-[10003] flex justify-end" @keydown="onKeydown">
@@ -106,16 +54,86 @@ async function copyId() {
               </button>
             </div>
             <button
+              v-if="
+                lifecycleStatus === 'active' ||
+                lifecycleStatus === 'in_progress' ||
+                !lifecycleStatus
+              "
               type="button"
-              class="cursor-not-allowed rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-400"
-              disabled
-              :title="copy['drawer.markCompletedSoon']"
+              class="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100"
+              @click="emit('markDone')"
             >
-              {{ copy["drawer.markCompleted"] }}
+              {{ copy["actions.markDone"] }}
             </button>
+            <span
+              v-else-if="lifecycleStatus === 'done' || lifecycleStatus === 'dismissed'"
+              class="rounded-lg border px-3 py-1.5 text-xs font-medium"
+              :class="
+                lifecycleStatus === 'done'
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                  : 'border-slate-200 bg-slate-100 text-slate-600'
+              "
+            >
+              {{ lifecycleStatus === 'done' ? copy['status.done'] : copy['status.dismissed'] }}
+            </span>
           </div>
         </footer>
       </aside>
     </div>
   </Teleport>
 </template>
+
+<script setup lang="ts">
+import { ref, toRef } from "vue";
+import OpportunityActionsPanel from "@/components/opportunities/drawer/OpportunityActionsPanel.vue";
+import OpportunityDrawerHeader from "@/components/opportunities/drawer/OpportunityDrawerHeader.vue";
+import OpportunityImpactPanel from "@/components/opportunities/drawer/OpportunityImpactPanel.vue";
+import OpportunityRelatedPanel from "@/components/opportunities/drawer/OpportunityRelatedPanel.vue";
+import OpportunitySupportingData from "@/components/opportunities/drawer/OpportunitySupportingData.vue";
+import OpportunityWhyDetected from "@/components/opportunities/drawer/OpportunityWhyDetected.vue";
+import { provideOpportunityInvestigation } from "@/composables/opportunities/useOpportunityInvestigation";
+import { useLocalizedString, useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
+import type { OpportunityDetail, OpportunityLifecycleStatus } from "@/types/ai";
+
+const props = defineProps<{
+  opportunity: OpportunityDetail;
+  lifecycleStatus?: OpportunityLifecycleStatus;
+}>();
+
+const emit = defineEmits<{
+  close: [];
+  selectRelated: [id: string];
+  markDone: [];
+}>();
+
+const copy = useReactiveLocaleStringRecord("opportunities", [
+  "drawer.opportunityId",
+  "drawer.copyId",
+  "drawer.copiedId",
+  "actions.markDone",
+  "status.done",
+  "status.dismissed",
+] as const);
+
+const closeLabel = useLocalizedString("common", "close");
+
+provideOpportunityInvestigation(toRef(() => props.opportunity));
+
+const copied = ref(false);
+
+function onKeydown(event: KeyboardEvent) {
+  if (event.key === "Escape") emit("close");
+}
+
+async function copyId() {
+  try {
+    await navigator.clipboard.writeText(props.opportunity.id);
+    copied.value = true;
+    window.setTimeout(() => {
+      copied.value = false;
+    }, 2000);
+  } catch {
+    copied.value = false;
+  }
+}
+</script>

@@ -89,6 +89,27 @@ export interface OpportunityDetail extends AIOpportunity {
   insightBanner?: string;
 }
 
+export type OpportunityLifecycleStatus = "active" | "in_progress" | "done" | "dismissed";
+
+export interface OpportunityActionProgress {
+  completed: number[];
+}
+
+export interface OpportunityStateSnapshot extends Partial<OpportunityDetail> {
+  actionProgress?: OpportunityActionProgress;
+}
+
+export interface OpportunityStateRecord {
+  opportunityId: string;
+  status: "in_progress" | "done" | "dismissed";
+  snapshot: OpportunityStateSnapshot;
+  updatedAt: string;
+}
+
+export interface OpportunityStatesResponse {
+  items: OpportunityStateRecord[];
+}
+
 export interface ReviewIntelligence {
   averageRating: number;
   totalReviews: number;

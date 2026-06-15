@@ -29,7 +29,7 @@ export function useOpportunities(): OpportunitiesState {
   const store = useOpportunitiesStore();
   const dateRange = useDateRangeStore();
   const { productImagesByName } = useTopProducts();
-  const { items, loading, error } = storeToRefs(store);
+  const { activeItems, loading, error } = storeToRefs(store);
 
   onMounted(() => {
     void store.ensureLoaded(reportsService);
@@ -42,10 +42,10 @@ export function useOpportunities(): OpportunitiesState {
     },
   );
 
-  const hasData = computed(() => items.value.length > 0);
+  const hasData = computed(() => activeItems.value.length > 0);
 
   const opportunities = computed<OpportunityViewModel[]>(() =>
-    items.value.slice(0, MAX_OPPORTUNITIES).map((o) => {
+    activeItems.value.slice(0, MAX_OPPORTUNITIES).map((o) => {
       const style = badgeStyle(o.badge);
       const name = (o.productName ?? o.badge).trim();
       const productImageUrl = resolveProductImageUrl(o, productImagesByName.value);

@@ -4,6 +4,10 @@ import { withDateRange } from "@/services/wp/wpQueryUtils";
 import type {
   BusinessSummary,
   OpportunityDetail,
+  OpportunityLifecycleStatus,
+  OpportunityStateRecord,
+  OpportunityStateSnapshot,
+  OpportunityStatesResponse,
   ReviewIntelligence,
   WeeklyReportDetail,
 } from "@/types/ai";
@@ -38,6 +42,22 @@ export class WpReportsService implements IReportsService {
 
   async getOpportunities(range: DateRangeSelection): Promise<OpportunityDetail[]> {
     return wpRestFetch<OpportunityDetail[]>(withDateRange("/ai/opportunities", range));
+  }
+
+  async getOpportunityStates(): Promise<OpportunityStateRecord[]> {
+    const response = await wpRestFetch<OpportunityStatesResponse>("/ai/opportunities/status");
+    return response.items ?? [];
+  }
+
+  async setOpportunityStatus(
+    opportunityId: string,
+    status: OpportunityLifecycleStatus,
+    snapshot?: OpportunityStateSnapshot,
+  ): Promise<void> {
+    await wpRestFetch<{ ok: boolean }>("/ai/opportunities/status", {
+      method: "POST",
+      body: JSON.stringify({ opportunityId, status, snapshot }),
+    });
   }
 
   async getWeeklyReportDetail(id?: string): Promise<WeeklyReportDetail> {

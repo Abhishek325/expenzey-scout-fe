@@ -298,14 +298,30 @@
       "highImpact": "High Impact",
       "quickWins": "Quick Wins",
       "needsAttention": "Needs Attention",
-      "growth": "Growth Opportunities"
+      "growth": "Growth Opportunities",
+      "archived": "Archived"
+    },
+    "actions": {
+      "menuLabel": "Actions",
+      "markDone": "Mark as Done",
+      "markDoneHint": "I've completed this",
+      "dismiss": "Dismiss",
+      "dismissHint": "Not relevant"
+    },
+    "status": {
+      "done": "Completed",
+      "dismissed": "Dismissed"
+    },
+    "archived": {
+      "empty": "No completed or dismissed opportunities yet."
     },
     "columns": {
       "opportunity": "Opportunity",
       "impact": "Impact",
       "dataReason": "Data / Reason",
       "recommendation": "Recommendation",
-      "action": "Action"
+      "action": "Action",
+      "status": "Status"
     },
     "types": {
       "risingProduct": "Growth Opportunity",
@@ -359,8 +375,6 @@
       "copyId": "Copy ID",
       "copiedId": "Copied",
       "opportunityId": "Opportunity ID",
-      "markCompleted": "Mark as completed",
-      "markCompletedSoon": "Coming soon",
       "confidenceLabel": "Confidence: {level}",
       "typeFocus": {
         "risingProduct": "Capitalize on this product's growth momentum with inventory and merchandising.",

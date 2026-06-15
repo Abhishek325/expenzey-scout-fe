@@ -1,30 +1,19 @@
-<script setup lang="ts">
-export interface DataTableColumn {
-  key: string;
-  label: string;
-  align?: "left" | "right";
-}
-
-const props = withDefaults(
-  defineProps<{
-    columns: DataTableColumn[];
-    rows: Record<string, unknown>[];
-    rowKey?: string;
-  }>(),
-  { rowKey: "id" }
-);
-</script>
-
 <template>
   <div class="overflow-x-auto">
-    <table class="min-w-full text-left text-xs">
+    <table
+      class="w-full text-left text-xs"
+      :class="fixed ? 'table-fixed' : 'min-w-full'"
+    >
       <thead>
         <tr class="border-b border-slate-100 text-xs font-medium text-slate-500">
           <th
             v-for="col in columns"
             :key="col.key"
             class="px-3 py-2 first:pl-4 last:pr-4"
-            :class="col.align === 'right' ? 'text-right' : 'text-left'"
+            :class="[
+              col.className,
+              col.align === 'right' ? 'text-right' : 'text-left',
+            ]"
           >
             {{ col.label }}
           </th>
@@ -40,7 +29,11 @@ const props = withDefaults(
             v-for="col in columns"
             :key="col.key"
             class="px-3 py-2.5 text-slate-600 first:pl-4 last:pr-4"
-            :class="col.align === 'right' ? 'text-right' : 'text-left'"
+            :class="[
+              col.className,
+              fixed && col.className ? 'max-w-0' : '',
+              col.align === 'right' ? 'text-right' : 'text-left',
+            ]"
           >
             <slot :name="`cell-${col.key}`" :row="row" :value="row[col.key]">
               {{ row[col.key] }}
@@ -51,3 +44,22 @@ const props = withDefaults(
     </table>
   </div>
 </template>
+
+<script setup lang="ts">
+export interface DataTableColumn {
+  key: string;
+  label: string;
+  align?: "left" | "right";
+  className?: string;
+}
+
+const props = withDefaults(
+  defineProps<{
+    columns: DataTableColumn[];
+    rows: Record<string, unknown>[];
+    rowKey?: string;
+    fixed?: boolean;
+  }>(),
+  { rowKey: "id", fixed: false }
+);
+</script>

@@ -1,59 +1,3 @@
-<script setup lang="ts">
-import { defineAsyncComponent } from "vue";
-import DateRangePicker from "@/components/shared/DateRangePicker.vue";
-import ExportButton from "@/components/shared/ExportButton.vue";
-import OpportunitiesFilterTabs from "@/components/opportunities/OpportunitiesFilterTabs.vue";
-import OpportunitiesSummaryCards from "@/components/opportunities/OpportunitiesSummaryCards.vue";
-import OpportunitiesTable from "@/components/opportunities/OpportunitiesTable.vue";
-import {
-  useOpportunitiesPage,
-  type OpportunitySortKey,
-} from "@/composables/opportunities/useOpportunitiesPage";
-import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
-
-const OpportunityDetailDrawer = defineAsyncComponent(
-  () => import("@/components/opportunities/OpportunityDetailDrawer.vue"),
-);
-
-const {
-  loading,
-  error,
-  activeTab,
-  sortKey,
-  page,
-  pageSize,
-  paginatedItems,
-  filteredItems,
-  tabCounts,
-  summary,
-  totalPages,
-  selectedOpportunity,
-  setTab,
-  setSort,
-  openDetail,
-  closeDetail,
-  reload,
-} = useOpportunitiesPage();
-
-const copy = useReactiveLocaleStringRecord("opportunities", [
-  "title",
-  "subtitle",
-  "empty",
-  "sortBy",
-  "sortImpact",
-  "sortPriority",
-  "showing",
-  "of",
-  "opportunities",
-] as const);
-
-const common = useReactiveLocaleStringRecord("common", ["loading", "error", "retry"] as const);
-
-function onSortChange(event: Event) {
-  setSort((event.target as HTMLSelectElement).value as OpportunitySortKey);
-}
-</script>
-
 <template>
   <div class="flex min-h-full flex-col gap-6 pb-10">
     <header class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -82,8 +26,13 @@ function onSortChange(event: Event) {
       />
 
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <OpportunitiesFilterTabs :active-tab="activeTab" :counts="tabCounts" @change="setTab" />
-        <label class="flex items-center gap-2 text-sm text-slate-600">
+        <OpportunitiesFilterTabs
+          :active-tab="activeTab"
+          :counts="tabCounts"
+          :archived-count="archivedCount"
+          @change="setTab"
+        />
+        <!-- <label class="flex items-center gap-2 text-sm text-slate-600">
           <span>{{ copy.sortBy }}</span>
           <select
             class="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-800"
@@ -93,12 +42,26 @@ function onSortChange(event: Event) {
             <option value="impact">{{ copy.sortImpact }}</option>
             <option value="priority">{{ copy.sortPriority }}</option>
           </select>
-        </label>
+        </label> -->
       </div>
 
-      <p v-if="filteredItems.length === 0" class="text-sm text-slate-500">{{ copy.empty }}</p>
+      <p v-if="statusError" class="text-sm text-rose-600">{{ statusError }}</p>
+
+      <p v-if="filteredItems.length === 0" class="text-sm text-slate-500">
+        {{ activeTab === 'archived' ? copy['archived.empty'] : copy.empty }}
+      </p>
       <template v-else>
-        <OpportunitiesTable :rows="paginatedItems" @view-details="openDetail" />
+        <OpportunitiesTable
+          :rows="paginatedItems"
+          :mode="tableMode"
+          :open-menu-id="openMenuId"
+          :status-of="statusOf"
+          @view-details="openDetail"
+          @mark-done="markDone"
+          @dismiss="dismiss"
+          @toggle-menu="toggleMenu"
+          @close-menu="closeMenu"
+        />
 
         <div class="flex items-center justify-between text-xs text-slate-500">
           <p>
@@ -132,8 +95,76 @@ function onSortChange(event: Event) {
     <OpportunityDetailDrawer
       v-if="selectedOpportunity"
       :opportunity="selectedOpportunity"
+      :lifecycle-status="statusOf(selectedOpportunity.id)"
       @close="closeDetail"
       @select-related="openDetail"
+      @mark-done="markDone(selectedOpportunity.id)"
     />
   </div>
 </template>
+
+<script setup lang="ts">
+import { defineAsyncComponent } from "vue";
+import DateRangePicker from "@/components/shared/DateRangePicker.vue";
+import ExportButton from "@/components/shared/ExportButton.vue";
+import OpportunitiesFilterTabs from "@/components/opportunities/OpportunitiesFilterTabs.vue";
+import OpportunitiesSummaryCards from "@/components/opportunities/OpportunitiesSummaryCards.vue";
+import OpportunitiesTable from "@/components/opportunities/OpportunitiesTable.vue";
+import {
+  useOpportunitiesPage,
+  type OpportunitySortKey,
+} from "@/composables/opportunities/useOpportunitiesPage";
+import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
+
+const OpportunityDetailDrawer = defineAsyncComponent(
+  () => import("@/components/opportunities/OpportunityDetailDrawer.vue"),
+);
+
+const {
+  loading,
+  error,
+  statusError,
+  activeTab,
+  sortKey,
+  page,
+  pageSize,
+  paginatedItems,
+  filteredItems,
+  tabCounts,
+  archivedCount,
+  summary,
+  totalPages,
+  selectedOpportunity,
+  tableMode,
+  openMenuId,
+  setTab,
+  setSort,
+  openDetail,
+  closeDetail,
+  reload,
+  markDone,
+  dismiss,
+  toggleMenu,
+  closeMenu,
+  statusOf,
+} = useOpportunitiesPage();
+
+const copy = useReactiveLocaleStringRecord("opportunities", [
+  "title",
+  "subtitle",
+  "empty",
+  "archived.empty",
+  "sortBy",
+  "sortImpact",
+  "sortPriority",
+  "showing",
+  "of",
+  "opportunities",
+] as const);
+
+const common = useReactiveLocaleStringRecord("common", ["loading", "error", "retry"] as const);
+
+function onSortChange(event: Event) {
+  setSort((event.target as HTMLSelectElement).value as OpportunitySortKey);
+}
+</script>
