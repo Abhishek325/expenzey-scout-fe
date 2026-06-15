@@ -218,8 +218,6 @@
     },
     "account": {
       "title": "Account",
-      "plan": "Plan",
-      "billing": "Billing",
       "status": {
         "active": "Active",
         "trial": "Trial",
@@ -259,7 +257,6 @@
   "layout": {
     "brandName": "Expenzey Scout",
     "tagline": "AI Business Insights for WooCommerce",
-    "proPlan": "Pro Plan",
     "notifications": "Notifications"
   },
   "dateRange": {
@@ -391,8 +388,7 @@
     }
   },
   "usage": {
-    "remaining": "{remaining} / {limit} queries left this month",
-    "upgrade": "Upgrade to Pro for unlimited queries"
+    "remaining": "{remaining} / {limit} queries left this month"
   },
   "reviews": {
     "title": "Customer reviews",

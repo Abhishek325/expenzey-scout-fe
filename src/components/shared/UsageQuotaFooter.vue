@@ -1,9 +1,6 @@
 <template>
-  <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+  <div class="text-xs text-slate-500">
     <span>{{ remainingText }}</span>
-    <a href="#/settings" class="font-medium text-expenzey-600 hover:text-expenzey-700">
-      {{ copy.upgrade }}
-    </a>
   </div>
 </template>
 
@@ -29,7 +26,7 @@ onMounted(async () => {
   }
 });
 
-const copy = useReactiveLocaleStringRecord("usage", ["remaining", "upgrade"] as const);
+const copy = useReactiveLocaleStringRecord("usage", ["remaining"] as const);
 
 const resolvedUsed = computed(() => {
   if (props.used !== undefined) {

@@ -34,23 +34,6 @@
     <div class="flex shrink-0 items-center gap-3 py-3">
       <button
         type="button"
-        class="inline-flex items-center gap-1.5 rounded-lg bg-amber-400 px-3 py-1.5 text-sm font-semibold text-amber-950 shadow-sm transition hover:bg-amber-500"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          class="h-4 w-4"
-          aria-hidden="true"
-        >
-          <path
-            d="M12 2l2.4 7.4H22l-6 4.6 2.3 7-6.3-4.6L5.7 21l2.3-7L2 9.4h7.6L12 2z"
-          />
-        </svg>
-        {{ copy.proPlan }}
-      </button>
-      <button
-        type="button"
         class="relative rounded-lg p-2 text-slate-500 transition hover:bg-slate-100"
         :aria-label="copy.notifications"
       >
@@ -105,7 +88,6 @@ const items = sidebarItems as NavItem[];
 const copy = useReactiveLocaleStringRecord("layout", [
   "brandName",
   "tagline",
-  "proPlan",
   "notifications",
 ] as const);
 
