@@ -2,6 +2,7 @@ import { computed, inject, ref, watch } from "vue";
 import { METRICS_SERVICE_KEY, type IMetricsService } from "@/services/metrics/IMetricsService";
 import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
 import { useFormatCurrency } from "@/composables/useFormatCurrency";
+import { useDashboardOverviewStore } from "@/stores/dashboardOverviewStore";
 import { useDateRangeStore } from "@/stores/dateRange";
 import type { MetricCard } from "@/types/metrics";
 import { resolveStringKey } from "@/composables/dashboard/resolveStringKey";
@@ -16,23 +17,28 @@ export function useDashboardMetrics() {
   const metricsService = inject(METRICS_SERVICE_KEY) as IMetricsService;
   const stringService = inject(STRING_SERVICE_KEY) as IStringService;
   const dateRange = useDateRangeStore();
+  const overviewStore = useDashboardOverviewStore();
   const { formatCurrency } = useFormatCurrency();
   const loading = ref(true);
   const error = ref<string | null>(null);
   const comparisonPeriod = ref("");
   const kpis = ref<LocalizedMetricCard[]>([]);
 
-  async function load() {
+  function apply(data: { comparisonPeriod: string; kpis: MetricCard[] }) {
+    comparisonPeriod.value = data.comparisonPeriod;
+    kpis.value = data.kpis.map((card) => ({
+      ...card,
+      label: resolveStringKey(stringService, card.labelKey),
+      formattedValue: formatMetricDisplayValue(card, formatCurrency),
+    }));
+  }
+
+  async function loadFallback() {
     loading.value = true;
     error.value = null;
     try {
       const data = await metricsService.getDashboardMetrics(dateRange.selection);
-      comparisonPeriod.value = data.comparisonPeriod;
-      kpis.value = data.kpis.map((card) => ({
-        ...card,
-        label: resolveStringKey(stringService, card.labelKey),
-        formattedValue: formatMetricDisplayValue(card, formatCurrency),
-      }));
+      apply(data);
     } catch (e) {
       error.value = e instanceof Error ? e.message : "error";
     } finally {
@@ -40,14 +46,37 @@ export function useDashboardMetrics() {
     }
   }
 
-  watch(() => dateRange.rangeKey, load, { immediate: true });
+  watch(
+    [() => dateRange.rangeKey, () => overviewStore.metrics, () => overviewStore.loading, () => overviewStore.error],
+    async () => {
+      const inRange = overviewStore.loadedRangeKey === dateRange.rangeKey;
+      if (inRange && overviewStore.metrics) {
+        loading.value = overviewStore.loading;
+        error.value = overviewStore.error;
+        apply(overviewStore.metrics);
+        return;
+      }
+
+      const waitingForOverview =
+        overviewStore.loading &&
+        overviewStore.requestedRangeKey === dateRange.rangeKey;
+      if (waitingForOverview) {
+        loading.value = true;
+        error.value = null;
+        return;
+      }
+
+      await loadFallback();
+    },
+    { immediate: true }
+  );
 
   return {
     loading,
     error,
     comparisonPeriod,
     kpis: computed(() => kpis.value),
-    reload: load,
+    reload: () => overviewStore.fetch(dateRange.selection, dateRange.rangeKey, "daily", true),
   };
 }
 

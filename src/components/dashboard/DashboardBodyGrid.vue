@@ -18,14 +18,50 @@
         </div>
       </section>
 
-      <WeeklyAIReportCard class="min-h-0 lg:col-span-1" :class="WEEKLY_REPORT_HEIGHT" />
+      <LazyWidget class="min-h-0 lg:col-span-1" :class="WEEKLY_REPORT_HEIGHT">
+        <WeeklyAIReportCard class="h-full min-h-0" />
+        <template #fallback>
+          <section class="flex min-h-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div class="shrink-0 border-b border-slate-100 px-4 py-3">
+              <div class="h-4 w-40 rounded bg-slate-100" />
+            </div>
+            <div class="min-h-0 flex-1 p-4">
+              <WidgetSkeleton variant="card" :row-count="4" />
+            </div>
+          </section>
+        </template>
+      </LazyWidget>
 
       <TopProductsTable :class="INSIGHTS_DATA_TABLE_OFFSET" />
       <AIOpportunitiesSection :class="INSIGHTS_DATA_TABLE_OFFSET" />
-      <ReviewIntelligenceCard />
+      <LazyWidget class="min-h-0">
+        <ReviewIntelligenceCard />
+        <template #fallback>
+          <section class="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div class="border-b border-slate-100 px-4 py-3">
+              <div class="h-4 w-44 rounded bg-slate-100" />
+            </div>
+            <div class="px-4 py-4">
+              <WidgetSkeleton variant="list" :row-count="3" />
+            </div>
+          </section>
+        </template>
+      </LazyWidget>
     </div>
 
-    <RecentAIReportsRow />
+    <LazyWidget>
+      <RecentAIReportsRow />
+      <template #fallback>
+        <section class="rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div class="border-b border-slate-100 px-4 py-3">
+            <div class="h-4 w-40 rounded bg-slate-100" />
+          </div>
+          <div class="px-4 py-4">
+            <WidgetSkeleton variant="table" :row-count="4" />
+          </div>
+        </section>
+      </template>
+    </LazyWidget>
   </div>
 </template>
 
@@ -37,6 +73,8 @@ import ReviewIntelligenceCard from "@/components/dashboard/ReviewIntelligenceCar
 import RevenueOverviewChart from "@/components/dashboard/RevenueOverviewChart.vue";
 import TopProductsTable from "@/components/dashboard/TopProductsTable.vue";
 import WeeklyAIReportCard from "@/components/dashboard/WeeklyAIReportCard.vue";
+import LazyWidget from "@/components/shared/LazyWidget.vue";
+import WidgetSkeleton from "@/components/shared/skeleton/WidgetSkeleton.vue";
 import { provideTopProducts } from "@/composables/dashboard/useTopProducts";
 import { INSIGHTS_DATA_TABLE_OFFSET, WEEKLY_REPORT_HEIGHT } from "@/constants/dashboardRowHeights";
 import { useLocalizedString } from "@/composables/useLocalizedString";

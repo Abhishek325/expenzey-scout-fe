@@ -12,17 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  CategoryScale,
-  Chart,
-  Filler,
-  Legend,
-  LineController,
-  LineElement,
-  LinearScale,
-  PointElement,
-  Tooltip,
-} from "chart.js";
+import type { Chart as ChartInstance } from "chart.js";
 import { nextTick, onBeforeUnmount, ref, toRef, watch } from "vue";
 import ChartSkeleton from "@/components/dashboard/ChartSkeleton.vue";
 import { useRevenueTrend } from "@/composables/dashboard/useRevenueTrend";
@@ -38,24 +28,43 @@ const props = withDefaults(
   { granularity: "daily" }
 );
 
-Chart.register(
-  LineController,
-  LineElement,
-  PointElement,
-  LinearScale,
-  CategoryScale,
-  Filler,
-  Tooltip,
-  Legend
-);
-
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const granularityRef = toRef(props, "granularity");
 const { loading, trend } = useRevenueTrend(granularityRef);
 const { formatCompactAxis } = useFormatCurrency();
 const datasetLabel = useLocalizedString("dashboard", "revenueTrendTitle");
 
-let chart: Chart | null = null;
+let chart: ChartInstance | null = null;
+let chartJsReady: Promise<void> | null = null;
+
+async function ensureChartJs(): Promise<void> {
+  if (chartJsReady) return chartJsReady;
+  chartJsReady = (async () => {
+    const chartJs = await import("chart.js");
+    const {
+      Chart,
+      LineController,
+      LineElement,
+      PointElement,
+      LinearScale,
+      CategoryScale,
+      Filler,
+      Tooltip,
+      Legend,
+    } = chartJs;
+    Chart.register(
+      LineController,
+      LineElement,
+      PointElement,
+      LinearScale,
+      CategoryScale,
+      Filler,
+      Tooltip,
+      Legend
+    );
+  })();
+  return chartJsReady;
+}
 
 function formatYAxisTick(value: number | string): string {
   const n = Number(value);
@@ -65,16 +74,17 @@ function formatYAxisTick(value: number | string): string {
   return formatCompactAxis(n);
 }
 
-function renderChart() {
+async function renderChart() {
   if (!canvasRef.value || !trend.value?.dataPoints.length) {
     return;
   }
+  await ensureChartJs();
   chart?.destroy();
   const chartGranularity = trend.value.granularity ?? props.granularity;
-  const labels = trend.value.dataPoints.map((p) =>
+  const labels = trend.value.dataPoints.map((p: { date: string }) =>
     formatRevenueChartAxisLabel(p.date, chartGranularity)
   );
-  const data = trend.value.dataPoints.map((p) => p.revenue);
+  const data = trend.value.dataPoints.map((p: { revenue: number }) => p.revenue);
   const ctx = canvasRef.value.getContext("2d");
   let fillColor: string | CanvasGradient = "rgba(99, 102, 241, 0.12)";
   if (ctx) {
@@ -83,6 +93,7 @@ function renderChart() {
     gradient.addColorStop(1, "rgba(99, 102, 241, 0)");
     fillColor = gradient;
   }
+  const { Chart } = await import("chart.js");
   chart = new Chart(canvasRef.value, {
     type: "line",
     data: {
@@ -112,7 +123,7 @@ function renderChart() {
         },
         y: {
           grid: { color: "#f1f5f9" },
-          ticks: { padding: 4, callback: (v) => formatYAxisTick(v) },
+          ticks: { padding: 4, callback: (v: string | number) => formatYAxisTick(v) },
           border: { display: false },
         },
       },
@@ -127,7 +138,7 @@ watch(
       return;
     }
     await nextTick();
-    renderChart();
+    await renderChart();
   },
   { immediate: true, deep: true }
 );

@@ -104,7 +104,7 @@ export const useAppStore = defineStore("app", {
         return null;
       }
       try {
-        return await wpRestFetch<SyncStatusResponse>("/sync/status");
+        return await wpRestFetch<SyncStatusResponse>("/sync/status", { cacheTtlMs: 0 });
       } catch {
         return null;
       }

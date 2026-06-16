@@ -47,12 +47,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from "vue";
+import { computed, defineAsyncComponent, watch } from "vue";
 import { storeToRefs } from "pinia";
-import AIChatWidget from "@/components/dashboard/AIChatWidget.vue";
 import ExpenzeyIcon from "@/components/icons/ExpenzeyIcon.vue";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 import { useChatOverlayStore } from "@/stores/chatOverlay";
+
+const AIChatWidget = defineAsyncComponent(() => import("@/components/dashboard/AIChatWidget.vue"));
 
 const chatOverlay = useChatOverlayStore();
 const { isOpen, pendingPrompt } = storeToRefs(chatOverlay);
@@ -68,7 +69,7 @@ const panelBottomClass = computed(() =>
   import.meta.env.DEV ? "bottom-[5.5rem]" : "bottom-24"
 );
 
-watch(isOpen, (value) => {
+watch(isOpen, (value: boolean) => {
   if (!value) {
     chatOverlay.clearPending();
   }

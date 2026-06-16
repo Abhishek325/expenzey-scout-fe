@@ -100,8 +100,9 @@ import { useLocalizedString } from "@/composables/useLocalizedString";
 import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
 import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
 import { USAGE_SERVICE_KEY, type IUsageService } from "@/services/usage/IUsageService";
-import { isWpContext, wpRestFetch } from "@/services/wp/wpRestClient";
+import { clearWpRestCache, isWpContext, wpRestFetch } from "@/services/wp/wpRestClient";
 import { useAppStore } from "@/stores/appStore";
+import { useDashboardOverviewStore } from "@/stores/dashboardOverviewStore";
 import type { UsageQuota } from "@/types/usage";
 
 const title = useLocalizedString("settings", "title");
@@ -137,6 +138,7 @@ const strings = useReactiveLocaleStringRecord("settings", [
 const stringService = inject(STRING_SERVICE_KEY) as IStringService;
 const usageService = inject(USAGE_SERVICE_KEY) as IUsageService;
 const appStore = useAppStore();
+const dashboardOverview = useDashboardOverviewStore();
 
 const connection = computed(() => ({
   connected: appStore.connected,
@@ -181,6 +183,10 @@ async function refreshSyncStatus() {
     entityCounts.value = status.entityCounts;
     if (status.lastSync) {
       appStore.lastSync = status.lastSync;
+    }
+    if (status.status === "completed") {
+      clearWpRestCache();
+      dashboardOverview.reset();
     }
   }
 }

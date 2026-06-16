@@ -10,6 +10,25 @@ export class WpRestError extends Error {
   }
 }
 
+type WpRestCacheEntry = {
+  expiresAt: number;
+  value: unknown;
+};
+
+type WpRestInflightEntry = {
+  expiresAt: number;
+  promise: Promise<unknown>;
+};
+
+const DEFAULT_CACHE_TTL_MS = 60_000;
+const restCache = new Map<string, WpRestCacheEntry>();
+const inflight = new Map<string, WpRestInflightEntry>();
+
+export function clearWpRestCache(): void {
+  restCache.clear();
+  inflight.clear();
+}
+
 function getConfig(): ExpenzeyAiConfig {
   if (!window.expenzeyAi) {
     throw new Error("WordPress config (window.expenzeyAi) is not available");
@@ -46,12 +65,67 @@ export function buildWpRestUrl(restUrl: string, path: string): string {
   return pathQuery ? `${base}${routeSuffix}?${pathQuery}` : `${base}${routeSuffix}`;
 }
 
+type WpRestFetchOptions = RequestInit & {
+  /**
+   * Override the default 60s in-memory cache TTL.
+   * - Only applies to GET requests.
+   * - Set to 0 to disable caching for a specific call.
+   */
+  cacheTtlMs?: number;
+};
+
+function resolveCacheKey(method: string, url: string): string {
+  return `${method.toUpperCase()} ${url}`;
+}
+
+function getCachedValue<T>(key: string, now: number): T | null {
+  const entry = restCache.get(key);
+  if (!entry) return null;
+  if (entry.expiresAt <= now) {
+    restCache.delete(key);
+    return null;
+  }
+  return entry.value as T;
+}
+
+export function primeWpRestCache<T>(args: {
+  method?: string;
+  url: string;
+  value: T;
+  ttlMs?: number;
+}): void {
+  const method = (args.method ?? "GET").toUpperCase();
+  const ttl = args.ttlMs ?? DEFAULT_CACHE_TTL_MS;
+  if (ttl <= 0) return;
+  const now = Date.now();
+  const key = resolveCacheKey(method, args.url);
+  restCache.set(key, { value: args.value, expiresAt: now + ttl });
+}
+
 export async function wpRestFetch<T>(
   path: string,
-  init: RequestInit = {}
+  init: WpRestFetchOptions = {}
 ): Promise<T> {
   const config = getConfig();
   const url = buildWpRestUrl(config.restUrl, path);
+  const method = (init.method ?? "GET").toUpperCase();
+  const cacheTtlMs = init.cacheTtlMs ?? DEFAULT_CACHE_TTL_MS;
+  const useCache = method === "GET" && cacheTtlMs > 0;
+  const now = Date.now();
+
+  if (useCache) {
+    const key = resolveCacheKey(method, url);
+    const cached = getCachedValue<T>(key, now);
+    if (cached !== null) {
+      return cached;
+    }
+
+    const inflightEntry = inflight.get(key);
+    if (inflightEntry && inflightEntry.expiresAt > now) {
+      return inflightEntry.promise as Promise<T>;
+    }
+  }
+
   const headers = new Headers(init.headers);
   headers.set("X-WP-Nonce", config.nonce);
 
@@ -59,18 +133,35 @@ export async function wpRestFetch<T>(
     headers.set("Content-Type", "application/json");
   }
 
-  const response = await fetch(url, {
-    ...init,
-    headers,
-    credentials: "same-origin",
-  });
+  const requestPromise = (async () => {
+    const response = await fetch(url, {
+      ...init,
+      headers,
+      credentials: "same-origin",
+    });
 
-  if (!response.ok) {
-    const message = await response.text();
-    throw new WpRestError(message || response.statusText, response.status);
+    if (!response.ok) {
+      const message = await response.text();
+      throw new WpRestError(message || response.statusText, response.status);
+    }
+
+    return (await response.json()) as T;
+  })();
+
+  if (!useCache) {
+    return requestPromise;
   }
 
-  return (await response.json()) as T;
+  const key = resolveCacheKey(method, url);
+  inflight.set(key, { promise: requestPromise, expiresAt: now + cacheTtlMs });
+
+  try {
+    const data = await requestPromise;
+    restCache.set(key, { value: data, expiresAt: Date.now() + cacheTtlMs });
+    return data;
+  } finally {
+    inflight.delete(key);
+  }
 }
 
 export function isWpContext(): boolean {
