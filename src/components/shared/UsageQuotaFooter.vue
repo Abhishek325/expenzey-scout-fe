@@ -1,6 +1,6 @@
 <template>
   <div class="text-xs text-slate-500">
-    <span>{{ remainingText }}</span>
+    <span>{{ meterText }}</span>
   </div>
 </template>
 
@@ -26,36 +26,34 @@ onMounted(async () => {
   }
 });
 
-const copy = useReactiveLocaleStringRecord("usage", ["remaining"] as const);
+const copy = useReactiveLocaleStringRecord("usage", ["remaining", "usedOfLimit"] as const);
 
 const resolvedUsed = computed(() => {
-  if (props.used !== undefined) {
-    return props.used;
-  }
-  if (!props.feature || !quota.value) {
-    return 0;
-  }
-  return quota.value[props.feature].used;
+  if (props.used !== undefined) return props.used;
+  if (!props.feature || !quota.value) return 0;
+  return quota.value.chat.used;
 });
 
 const resolvedLimit = computed(() => {
-  if (props.limit !== undefined) {
-    return props.limit;
-  }
-  if (!props.feature || !quota.value) {
-    return 0;
-  }
-  return quota.value[props.feature].limit;
+  if (props.limit !== undefined) return props.limit;
+  if (!props.feature || !quota.value) return 0;
+  return quota.value.chat.limit;
 });
 
 const remainingCount = computed(() =>
-  Math.max(resolvedLimit.value - resolvedUsed.value, 0)
+  Math.max(resolvedLimit.value - resolvedUsed.value, 0),
 );
 
-const remainingText = computed(() =>
-  formatLocaleTemplate(copy.value.remaining, {
+const meterText = computed(() => {
+  if (props.feature === "chat") {
+    return formatLocaleTemplate(copy.value.usedOfLimit, {
+      used: resolvedUsed.value,
+      limit: resolvedLimit.value,
+    });
+  }
+  return formatLocaleTemplate(copy.value.remaining, {
     remaining: remainingCount.value,
     limit: resolvedLimit.value,
-  })
-);
+  });
+});
 </script>

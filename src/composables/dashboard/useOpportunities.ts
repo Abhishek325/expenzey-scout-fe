@@ -8,7 +8,7 @@ import type { AIOpportunity } from "@/types/ai";
 import type { DashboardWidgetState } from "@/types/dashboardWidget";
 import { badgeStyle, resolveProductImageUrl } from "@/utils/opportunityStyles";
 
-const MAX_OPPORTUNITIES = 5;
+const MAX_OPPORTUNITIES = 3;
 
 interface OpportunityViewModel extends AIOpportunity {
   cardClass: string;

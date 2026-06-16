@@ -23,12 +23,27 @@ export function normalizeReviewIntelligenceDetail(
     : countFromPercent(totalReviews, sentiment.negative);
 
   let positiveThemes = Array.isArray(detail.positiveThemes) ? detail.positiveThemes : [];
-  if (positiveThemes.length === 0 && positiveCount > 0) {
+  if (positiveThemes.length === 0 && Array.isArray(raw.positiveMentions)) {
+    positiveThemes = raw.positiveMentions.map((theme) => ({
+      theme,
+      count: 0,
+      percentOfPositive: 0,
+    }));
+  } else if (positiveThemes.length === 0 && positiveCount > 0) {
     positiveThemes = [{
       theme: "overall",
       count: positiveCount,
       percentOfPositive: 100,
     }];
+  }
+
+  let complaintThemes = Array.isArray(detail.complaintThemes) ? detail.complaintThemes : [];
+  if (complaintThemes.length > 0 && typeof complaintThemes[0] === "string") {
+    complaintThemes = (complaintThemes as unknown as string[]).map((theme) => ({
+      theme,
+      count: 0,
+      percentOfNegative: 0,
+    }));
   }
 
   return {
@@ -42,8 +57,8 @@ export function normalizeReviewIntelligenceDetail(
       negative: sentiment.negative ?? 0,
       negativeCount,
     },
-    positiveThemes: positiveThemes,
-    complaintThemes: Array.isArray(detail.complaintThemes) ? detail.complaintThemes : [],
+    positiveThemes,
+    complaintThemes,
     sentimentTrend: Array.isArray(detail.sentimentTrend) ? detail.sentimentTrend : [],
     recentReviews: raw.recentReviews ?? [],
     recentNegativeReviews: Array.isArray(detail.recentNegativeReviews)

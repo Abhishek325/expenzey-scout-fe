@@ -67,8 +67,12 @@
       <h2 class="text-lg font-semibold text-gray-900">{{ usageTitle }}</h2>
       <ul class="mt-4 space-y-3">
         <li class="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3 text-sm">
+          <span class="font-medium text-gray-700">{{ strings['usage.plan'] }}</span>
+          <span class="capitalize text-gray-900">{{ usage.plan }}</span>
+        </li>
+        <li class="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3 text-sm">
           <span class="font-medium text-gray-700">{{ strings['usage.reports'] }}</span>
-          <span class="text-gray-900">{{ usageLabel(usage.reports.used, usage.reports.limit) }}</span>
+          <span class="text-gray-900">{{ usage.reports.stored }} / {{ usage.reports.historyLimit }}</span>
         </li>
         <li class="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3 text-sm">
           <span class="font-medium text-gray-700">{{ strings['usage.chat'] }}</span>
@@ -121,6 +125,7 @@ const helpOpen = ref(false);
 const strings = useReactiveLocaleStringRecord("settings", [
   "usage.reports",
   "usage.chat",
+  "usage.plan",
   "usage.usedOfLimit",
   "help.title",
   "help.body",
@@ -149,8 +154,10 @@ const connection = computed(() => ({
   syncStatus: appStore.syncStatus,
 }));
 const usage = ref<UsageQuota>({
-  reports: { used: 0, limit: 0, labelKey: "settings.usage.reports" },
-  chat: { used: 0, limit: 0, labelKey: "settings.usage.chat" },
+  plan: "free",
+  reports: { stored: 0, historyLimit: 4, labelKey: "settings.usage.reports" },
+  chat: { used: 0, limit: 5, labelKey: "settings.usage.chat" },
+  opportunities: { visible: 3, labelKey: "settings.usage.opportunities" },
 });
 const syncing = ref(false);
 const disconnecting = ref(false);

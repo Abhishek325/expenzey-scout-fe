@@ -53,7 +53,7 @@ export function useRecentReports(): RecentReportsState {
   const widget = useDashboardWidget(
     async () => {
       const list = await reportsService.listWeeklyReports();
-      return list.slice(0, 4).map(toCard);
+      return list.items.slice(0, 4).map(toCard);
     },
     {
       hasData: (data) => (data?.length ?? 0) > 0,

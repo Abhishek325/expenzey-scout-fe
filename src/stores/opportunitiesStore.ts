@@ -7,6 +7,7 @@ import type {
   OpportunityLifecycleStatus,
   OpportunityStateRecord,
 } from "@/types/ai";
+import type { OpportunityLockedPreview } from "@/types/opportunities";
 import {
   enrichDetection,
   enrichEvidence,
@@ -85,6 +86,9 @@ export const useOpportunitiesStore = defineStore("opportunities", {
   state: () => ({
     items: [] as OpportunityDetail[],
     states: [] as OpportunityStateRecord[],
+    lockedCount: 0,
+    lockedPreviews: [] as OpportunityLockedPreview[],
+    freeVisibleCount: 3,
     loading: false,
     error: null as string | null,
     loadedRangeKey: null as string | null,
@@ -151,11 +155,14 @@ export const useOpportunitiesStore = defineStore("opportunities", {
       this.error = null;
 
       try {
-        const [items, states] = await Promise.all([
+        const [response, states] = await Promise.all([
           reportsService.getOpportunities(selection),
           reportsService.getOpportunityStates(),
         ]);
-        this.items = items.map(normalizeOpportunity);
+        this.items = response.items.map(normalizeOpportunity);
+        this.lockedCount = response.lockedCount;
+        this.lockedPreviews = response.lockedPreviews;
+        this.freeVisibleCount = response.freeVisibleCount;
         this.states = states;
         this.loadedRangeKey = rangeKey;
       } catch (e) {

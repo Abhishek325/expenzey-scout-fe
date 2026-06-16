@@ -18,12 +18,12 @@
         </div>
       </div>
 
-      <nav class="flex gap-8" aria-label="Main navigation">
+      <nav class="flex gap-6 overflow-x-auto" aria-label="Main navigation">
         <RouterLink
           v-for="item in items"
           :key="item.id"
           :to="item.route"
-          class="relative flex items-center border-b-2 border-transparent text-sm font-medium text-slate-600 transition hover:text-expenzey-600 focus:outline-none focus-visible:outline-none focus:!shadow-none focus-visible:!shadow-none focus:ring-0 focus-visible:ring-0"
+          class="relative flex shrink-0 items-center border-b-2 border-transparent py-3 text-sm font-medium text-slate-600 transition hover:text-expenzey-600 focus:outline-none focus-visible:outline-none focus:!shadow-none focus-visible:!shadow-none focus:ring-0 focus-visible:ring-0"
           active-class="!border-expenzey-600 !text-expenzey-600"
         >
           {{ labelFor(item.labelKey) }}
@@ -33,6 +33,7 @@
 
     <div class="flex shrink-0 items-center gap-3 py-3">
       <RouterLink
+        v-if="!isPro"
         to="/pro"
         class="inline-flex items-center gap-1.5 rounded-lg border border-transparent px-3 py-1.5 text-sm font-semibold text-expenzey-600 transition hover:bg-expenzey-50 hover:text-expenzey-700"
         active-class="!border-expenzey-500 !bg-expenzey-50"
@@ -40,6 +41,13 @@
         <FaIcon icon="fa-crown" size="sm" icon-class="text-expenzey-600" />
         {{ upgradeLabel }}
       </RouterLink>
+      <span
+        v-else
+        class="inline-flex items-center gap-1.5 rounded-lg bg-expenzey-50 px-3 py-1.5 text-sm font-semibold text-expenzey-700"
+      >
+        <FaIcon icon="fa-crown" size="sm" />
+        Pro
+      </span>
       <button
         type="button"
         class="relative rounded-lg p-2 text-slate-500 transition hover:bg-slate-100"
@@ -73,6 +81,7 @@
 import { computed } from "vue";
 import ExpenzeyIcon from "@/components/icons/ExpenzeyIcon.vue";
 import FaIcon from "@/components/icons/FaIcon.vue";
+import { usePlan } from "@/composables/usePlan";
 import sidebarItems from "@/data/sidebar.json";
 import {
   useLocalizedString,
@@ -87,6 +96,7 @@ interface NavItem {
 }
 
 const items = sidebarItems as NavItem[];
+const { isPro } = usePlan();
 
 const copy = useReactiveLocaleStringRecord("layout", [
   "brandName",
@@ -99,12 +109,14 @@ const upgradeLabel = useLocalizedString("nav", "upgradeToPro");
 const navDashboard = useLocalizedString("nav", "dashboard");
 const navOpportunities = useLocalizedString("nav", "opportunities");
 const navReports = useLocalizedString("nav", "reports");
+const navReviews = useLocalizedString("nav", "reviews");
 const navSettings = useLocalizedString("nav", "settings");
 
 const labels = computed(() => ({
   "nav.dashboard": navDashboard.value,
   "nav.opportunities": navOpportunities.value,
   "nav.reports": navReports.value,
+  "nav.reviews": navReviews.value,
   "nav.settings": navSettings.value,
 }));
 

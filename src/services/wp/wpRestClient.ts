@@ -10,6 +10,40 @@ export class WpRestError extends Error {
   }
 }
 
+function stripHtml(text: string): string {
+  return text.replace(/<[^>]*>/g, "").trim();
+}
+
+/** Extract a user-facing message from a WordPress REST error response body. */
+export function parseWpRestErrorBody(raw: string, fallback: string): string {
+  const trimmed = raw.trim();
+  if (!trimmed) return fallback;
+
+  try {
+    const parsed = JSON.parse(trimmed) as { message?: string };
+    if (typeof parsed.message === "string") {
+      const message = stripHtml(parsed.message).trim();
+      if (message) return message;
+    }
+  } catch {
+    if (!trimmed.startsWith("{") && !trimmed.startsWith("<")) {
+      return stripHtml(trimmed) || fallback;
+    }
+  }
+
+  return fallback;
+}
+
+export function getWpRestErrorMessage(error: unknown, fallback = "Request failed"): string {
+  if (error instanceof WpRestError) {
+    return error.message || fallback;
+  }
+  if (error instanceof Error) {
+    return parseWpRestErrorBody(error.message, error.message || fallback);
+  }
+  return fallback;
+}
+
 type WpRestCacheEntry = {
   expiresAt: number;
   value: unknown;
@@ -141,8 +175,9 @@ export async function wpRestFetch<T>(
     });
 
     if (!response.ok) {
-      const message = await response.text();
-      throw new WpRestError(message || response.statusText, response.status);
+      const raw = await response.text();
+      const message = parseWpRestErrorBody(raw, response.statusText || "Request failed");
+      throw new WpRestError(message, response.status);
     }
 
     return (await response.json()) as T;

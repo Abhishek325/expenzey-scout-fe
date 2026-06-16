@@ -112,6 +112,12 @@
           </div>
         </div>
       </template>
+
+      <LockedOpportunitiesSection
+        v-if="!isPro && lockedCount > 0 && activeTab !== 'archived'"
+        :locked-count="lockedCount"
+        :previews="lockedPreviews"
+      />
     </template>
 
     <OpportunityDetailDrawer
@@ -131,6 +137,7 @@ import DateRangePicker from "@/components/shared/DateRangePicker.vue";
 import OpportunitiesFilterTabs from "@/components/opportunities/OpportunitiesFilterTabs.vue";
 import OpportunitiesSummaryCards from "@/components/opportunities/OpportunitiesSummaryCards.vue";
 import OpportunitiesTable from "@/components/opportunities/OpportunitiesTable.vue";
+import LockedOpportunitiesSection from "@/components/opportunities/LockedOpportunitiesSection.vue";
 import SkeletonBlock from "@/components/shared/skeleton/SkeletonBlock.vue";
 import SkeletonShimmer from "@/components/shared/skeleton/SkeletonShimmer.vue";
 import WidgetSkeleton from "@/components/shared/skeleton/WidgetSkeleton.vue";
@@ -138,6 +145,7 @@ import {
   useOpportunitiesPage,
   type OpportunitySortKey,
 } from "@/composables/opportunities/useOpportunitiesPage";
+import { usePlan } from "@/composables/usePlan";
 import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
 import type { DataTableColumn } from "@/components/shared/DataTable.vue";
 
@@ -157,6 +165,8 @@ const {
   filteredItems,
   tabCounts,
   archivedCount,
+  lockedCount,
+  lockedPreviews,
   summary,
   totalPages,
   selectedOpportunity,
@@ -173,6 +183,8 @@ const {
   closeMenu,
   statusOf,
 } = useOpportunitiesPage();
+
+const { isPro } = usePlan();
 
 const copy = useReactiveLocaleStringRecord("opportunities", [
   "title",

@@ -1,8 +1,10 @@
 {
   "nav": {
     "dashboard": "Dashboard",
-    "reports": "AI Reports",
+    "reports": "Weekly Reports",
     "opportunities": "AI Opportunities",
+    "reviews": "Review Intelligence",
+    "chat": "AI Chat",
     "settings": "Settings",
     "upgradeToPro": "Upgrade to Pro"
   },
@@ -29,7 +31,6 @@
       "aov": "AOV"
     },
     "aiInsights": {
-      "businessSummaryTitle": "AI Business Summary",
       "opportunitiesTitle": "AI Opportunities",
       "recentReportsTitle": "Recent AI Reports",
       "reviewIntelligenceTitle": "Review Intelligence",
@@ -37,18 +38,6 @@
       "weeklyReportEmpty": "No weekly report yet. Generate one to see AI insights.",
       "opportunitiesEmpty": "No opportunities detected for this period.",
       "reportsEmpty": "No AI reports generated yet.",
-      "businessSummary": {
-        "overview": "Overview",
-        "topPerformer": "Top Performer",
-        "needsAttention": "Needs Attention",
-        "opportunity": "Top Opportunity",
-        "revenueIncreased": "Revenue increased",
-        "revenueDecreased": "Revenue decreased",
-        "vsLastPeriod": "vs last week",
-        "salesDown": "Sales ↓ {percent}%",
-        "bundleHeadline": "Bundle with top products",
-        "coPurchaseRate": "{percent}% co-purchase rate"
-      },
       "weeklyReport": {
         "title": "Weekly AI Report",
         "weekOf": "Week of {period}",
@@ -94,6 +83,11 @@
       }
     },
     "chatWidgetTitle": "Ask Expenzey AI",
+    "recommendedActionsTitle": "Recommended Actions",
+    "recommendedActionsEmpty": "No recommended actions for this period.",
+    "recommendedActionsDone": "Done",
+    "recommendedActionsDismiss": "Dismiss",
+    "recommendedActionsRemind": "Remind Later",
     "revenueTrendTitle": "Revenue Overview",
     "topProductsTitle": "Top Products",
     "topProductsColumnProduct": "Product",
@@ -127,11 +121,13 @@
     "productDetails": "Product Details"
   },
   "usage": {
-    "remaining": "{remaining} remaining"
+    "remaining": "{remaining} of {limit} remaining",
+    "usedOfLimit": "{used} of {limit} used this month",
+    "limitReached": "Monthly limit reached"
   },
   "reports": {
-    "title": "AI Reports",
-    "subtitle": "Get weekly AI-generated business reviews of your store's performance.",
+    "title": "Weekly Reports",
+    "subtitle": "Automatically generated weekly reviews of your store performance.",
     "generate": "Generate report",
     "generating": "Generating report\u2026",
     "generateNow": "Generate Report Now",
@@ -255,8 +251,9 @@
     },
     "usage": {
       "title": "Usage this period",
-      "reports": "Weekly reports",
+      "reports": "Weekly reports stored",
       "chat": "Chat messages",
+      "plan": "Plan",
       "usedOfLimit": "{used} / {limit} used"
     },
     "account": {
@@ -294,6 +291,15 @@
     "notifications": "Notifications"
   },
   "pro": {
+    "heroTitle": "Unlock the Full Power of Expenzey Scout",
+    "heroSubtitle": "Get unlimited AI insights, advanced reports, and priority support to grow your WooCommerce store.",
+    "comparePlans": "Compare Plans",
+    "upgradeToPro": "Upgrade to Pro",
+    "alreadyProTitle": "You're on Pro",
+    "alreadyProSubtitle": "All Pro features are unlocked for your store.",
+    "manageSubscription": "Manage subscription",
+    "activating": "Activating…",
+    "activationSuccess": "License activated. Pro features are now unlocked.",
     "comparisonTitle": "See What You Get With Pro",
     "freePlan": "Free Plan",
     "freePlanSubtitle": "Great to get you started",
@@ -304,12 +310,6 @@
         "title": "AI Chat",
         "description": "Ask anything about your store and get instant answers",
         "free": "5 questions per month",
-        "pro": "Unlimited"
-      },
-      "aiSummary": {
-        "title": "AI Summary",
-        "description": "Get AI-powered business summaries in seconds",
-        "free": "10 summaries per month",
         "pro": "Unlimited"
       },
       "aiOpportunities": {
@@ -327,8 +327,8 @@
       "reviewIntelligence": {
         "title": "Review Intelligence",
         "description": "AI analysis of customer reviews and sentiment",
-        "free": "2 analyses per month",
-        "pro": "Unlimited analyses + deep insights"
+        "free": "Included in weekly reports (last 4 weeks)",
+        "pro": "Full history + deeper trend analysis"
       },
       "opportunityHistory": {
         "title": "Opportunity History",
@@ -361,7 +361,7 @@
         "pro": "Priority"
       }
     },
-    "licenseTitle": "Unlock Expenzey Scout Pro",
+    "licenseTitle": "Got a license key?",
     "licenseSubtitle": "Enter your license key to unlock all Pro features and take your store performance to the next level.",
     "licenseInputLabel": "Enter License Key",
     "licensePlaceholder": "Enter your license key",
@@ -369,14 +369,48 @@
     "licenseSecure": "Your license key is encrypted and secure.",
     "purchaseTitle": "Why Upgrade to Pro?",
     "purchaseSubtitle": "Unlock the full Pro experience with unlimited AI insights, richer historical reporting, and deeper opportunity analysis - everything you need to make smarter decisions and grow revenue faster.",
-    "purchaseBenefit1": "Unlock all Pro features",
-    "purchaseBenefit2": "Unlimited AI usage",
-    "purchaseBenefit3": "Deeper insights and historical data",
-    "purchaseBenefit4": "Priority support",
-    "purchaseBenefit5": "Cancel anytime",
+    "purchaseBenefit1": "Unlock every Pro feature across reports, opportunities, and AI chat",
+    "purchaseBenefit2": "Ask unlimited AI questions about your store without monthly caps",
+    "purchaseBenefit3": "Access deeper insights and full historical data to spot long-term trends",
+    "purchaseBenefit4": "Get priority support when you need help with setup or billing",
+    "purchaseBenefit5": "Cancel your subscription anytime with no long-term commitment",
     "viewPricing": "View Pricing & Buy Now",
     "pricingUrl": "https://expenzey.com/pricing",
-    "moneyBackGuarantee": "30-day money-back guarantee"
+    "pricingModalTitle": "Choose Your Pro Plan",
+    "pricingModalSubtitle": "Review plan options below, then continue to secure checkout to complete your purchase.",
+    "pricingModalContinueCheckout": "Continue to Secure Checkout",
+    "pricingModalSecureNote": "Payments are processed securely by Freemius. You can return here anytime before completing checkout.",
+    "pricingModalHelpTitle": "Need help?",
+    "pricingModalHelpWebsite": "View pricing on expenzey.com",
+    "pricingModalHelpContact": "Contact support",
+    "pricingModalClose": "Back to upgrade page",
+    "pricingModalLoading": "Loading plans…"
+  },
+  "upgrade": {
+    "chat": {
+      "remaining": "{remaining} of {limit} AI questions remaining",
+      "limitTitle": "You've reached your monthly AI Chat limit",
+      "limitDescription": "Continue asking questions about your WooCommerce store with unlimited AI Chat.",
+      "limitCta": "Unlock Unlimited AI Chat"
+    },
+    "reports": {
+      "historyTitle": "Older reports available in Pro",
+      "historyDescription": "Access unlimited report history and track long-term business trends.",
+      "historyCta": "Unlock Full History",
+      "stored": "{stored} of {limit} recent reports stored"
+    },
+    "opportunities": {
+      "additionalDetected": "{count} additional opportunities detected",
+      "unlockAllTitle": "Unlock All Opportunities",
+      "unlockAllDescription": "See every growth opportunity detected in your store.",
+      "unlockAllCta": "Unlock All Opportunities",
+      "advancedTitle": "Need deeper analysis?",
+      "advancedCta": "Unlock Advanced Insights"
+    },
+    "reviews": {
+      "historyCta": "Unlock Full History",
+      "historyDescription": "Compare sentiment and themes across your full report history with Pro."
+    }
   },
   "dateRange": {
     "7d": "Last 7 days",

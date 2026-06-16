@@ -1,6 +1,5 @@
 [
   { "id": "aiChat", "icon": "fa-robot" },
-  { "id": "aiSummary", "icon": "fa-file-lines" },
   { "id": "aiOpportunities", "icon": "fa-wand-magic-sparkles" },
   { "id": "weeklyReports", "icon": "fa-calendar" },
   { "id": "reviewIntelligence", "icon": "fa-comment-dots" },

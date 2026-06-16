@@ -31,7 +31,9 @@
           </section>
         </template>
       </LazyWidget>
+    </div>
 
+    <div class="grid gap-3 lg:grid-cols-3 lg:items-start">
       <TopProductsTable :class="INSIGHTS_DATA_TABLE_OFFSET" />
       <AIOpportunitiesSection :class="INSIGHTS_DATA_TABLE_OFFSET" />
       <LazyWidget class="min-h-0">

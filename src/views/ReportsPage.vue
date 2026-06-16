@@ -36,25 +36,36 @@
       />
 
       <RecentReportsTable v-if="reports.length > 0" :reports="reports" />
+
+      <UpgradeCtaCard
+        v-if="!isPro && reportsLockedCount > 0"
+        :title="historyTitle"
+        :description="historyDescription"
+        :cta-label="historyCta"
+      />
     </template>
 
-    <UsageQuotaFooter feature="reports" class="mt-auto" />
+    <p v-if="!loading && !isPro" class="mt-auto text-xs text-slate-500">
+      {{ historyStoredLabel }}
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import GenerateReportCard from "@/components/reports/GenerateReportCard.vue";
 import LatestReportSummaryCard from "@/components/reports/LatestReportSummaryCard.vue";
 import RecentReportsTable from "@/components/reports/RecentReportsTable.vue";
+import UpgradeCtaCard from "@/components/shared/UpgradeCtaCard.vue";
 import WidgetSkeleton from "@/components/shared/skeleton/WidgetSkeleton.vue";
-import UsageQuotaFooter from "@/components/shared/UsageQuotaFooter.vue";
 import { useReportsPage } from "@/composables/reports/useReportsPage";
-import { useLocalizedString } from "@/composables/useLocalizedString";
+import { usePlan } from "@/composables/usePlan";
+import { useLocalizedString, useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
+import { formatLocaleTemplate } from "@/utils/formatLocaleTemplate";
 import type { DataTableColumn } from "@/components/shared/DataTable.vue";
 
 const title = useLocalizedString("reports", "title");
 const subtitle = useLocalizedString("reports", "subtitle");
-const loadingLabel = useLocalizedString("common", "loading");
 
 const reportTableSkeletonColumns: DataTableColumn[] = [
   { key: "period", label: "", className: "" },
@@ -70,6 +81,9 @@ const {
   generating,
   error,
   reports,
+  reportsTotalCount,
+  reportsLockedCount,
+  reportsHistoryLimit,
   priorWeekReportExists,
   canGenerate,
   latestPriorWeekContent,
@@ -82,4 +96,24 @@ const {
   nextScheduledNote,
   generate,
 } = useReportsPage();
+
+const { isPro } = usePlan();
+
+const upgradeCopy = useReactiveLocaleStringRecord("upgrade", [
+  "reports.historyTitle",
+  "reports.historyDescription",
+  "reports.historyCta",
+  "reports.stored",
+] as const);
+
+const historyTitle = computed(() => upgradeCopy.value["reports.historyTitle"]);
+const historyDescription = computed(() => upgradeCopy.value["reports.historyDescription"]);
+const historyCta = computed(() => upgradeCopy.value["reports.historyCta"]);
+
+const historyStoredLabel = computed(() =>
+  formatLocaleTemplate(upgradeCopy.value["reports.stored"], {
+    stored: reportsTotalCount.value,
+    limit: reportsHistoryLimit.value,
+  }),
+);
 </script>

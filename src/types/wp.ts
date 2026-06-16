@@ -11,11 +11,27 @@ export interface ExpenzeyAiConfig {
   currency: string;
   pluginVersion: string;
   isAdmin: boolean;
+  licensing?: {
+    enabled: boolean;
+    upgradeUrl: string | null;
+    pricingPageUrl: string | null;
+    accountUrl: string | null;
+    contactUrl: string | null;
+    isPro?: boolean;
+    paidPlanId?: string | null;
+    paidPricingId?: string | null;
+    pricingConfig?: Record<string, unknown> | null;
+  };
 }
 
 declare global {
   interface Window {
     expenzeyAi?: ExpenzeyAiConfig;
+    Freemius?: {
+      pricing?: {
+        new: (config: Record<string, unknown>) => void;
+      };
+    };
   }
 }
 

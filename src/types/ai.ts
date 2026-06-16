@@ -1,12 +1,3 @@
-export interface BusinessSummary {
-  overview: string;
-  topPerformer: string;
-  needsAttention: string;
-  opportunity: string;
-  generatedAt: string;
-  cached?: boolean;
-}
-
 export interface WeeklyReportPeriodMetrics {
   revenue: number;
   revenueGrowthPercent: number;

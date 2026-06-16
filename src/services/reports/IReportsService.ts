@@ -1,6 +1,5 @@
 import type { DateRangeSelection } from "@/types/metrics";
 import type {
-  BusinessSummary,
   OpportunityDetail,
   OpportunityLifecycleStatus,
   OpportunityStateRecord,
@@ -10,15 +9,15 @@ import type {
   WeeklyReportDetail,
 } from "@/types/ai";
 import type { RevenueChartGranularity } from "@/types/metrics";
+import type { OpportunitiesListResponse } from "@/types/opportunities";
 import type {
   GenerateWeeklyReportOptions,
   GenerateWeeklyReportResult,
-  WeeklyReportListItem,
 } from "@/types/reports";
+import type { WeeklyReportsListResponse } from "@/types/reportsList";
 
 export interface IReportsService {
-  getBusinessSummary(range: DateRangeSelection): Promise<BusinessSummary>;
-  getOpportunities(range: DateRangeSelection): Promise<OpportunityDetail[]>;
+  getOpportunities(range: DateRangeSelection): Promise<OpportunitiesListResponse>;
   getOpportunityStates(): Promise<OpportunityStateRecord[]>;
   setOpportunityStatus(
     opportunityId: string,
@@ -31,7 +30,7 @@ export interface IReportsService {
     range: DateRangeSelection,
     options?: { granularity?: RevenueChartGranularity; trendBuckets?: number },
   ): Promise<ReviewIntelligenceDetail>;
-  listWeeklyReports(): Promise<WeeklyReportListItem[]>;
+  listWeeklyReports(): Promise<WeeklyReportsListResponse>;
   generateWeeklyReport(options?: GenerateWeeklyReportOptions): Promise<GenerateWeeklyReportResult>;
 }
 

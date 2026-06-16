@@ -4,6 +4,7 @@ import { storeToRefs } from "pinia";
 import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
 import { useDateRangeStore } from "@/stores/dateRange";
 import { useOpportunitiesStore } from "@/stores/opportunitiesStore";
+import { usePlan } from "@/composables/usePlan";
 import {
   FILTER_TABS,
   IMPACT_LEVEL_DOTS,
@@ -42,7 +43,17 @@ export function useOpportunitiesPage() {
   const reportsService = inject(REPORTS_SERVICE_KEY) as IReportsService;
   const store = useOpportunitiesStore();
   const dateRange = useDateRangeStore();
-  const { activeItems, archivedItems, archivedCount, loading, error } = storeToRefs(store);
+  const { isPro } = usePlan();
+  const {
+    activeItems,
+    archivedItems,
+    archivedCount,
+    lockedCount,
+    lockedPreviews,
+    freeVisibleCount,
+    loading,
+    error,
+  } = storeToRefs(store);
 
   const activeTab = ref<OpportunityFilterTab>("all");
   const sortKey = ref<OpportunitySortKey>("impact");
@@ -78,8 +89,15 @@ export function useOpportunitiesPage() {
     { immediate: true },
   );
 
+  const visibleActiveItems = computed(() => {
+    if (isPro.value || activeTab.value === "archived") {
+      return activeItems.value;
+    }
+    return activeItems.value.slice(0, freeVisibleCount.value);
+  });
+
   const sourceItems = computed(() =>
-    activeTab.value === "archived" ? archivedItems.value : activeItems.value,
+    activeTab.value === "archived" ? archivedItems.value : visibleActiveItems.value,
   );
 
   const filteredItems = computed(() => {
@@ -125,9 +143,16 @@ export function useOpportunitiesPage() {
     return filteredItems.value.slice(start, start + PAGE_SIZE);
   });
 
-  const selectedOpportunity = computed(() =>
-    selectedId.value ? store.byId.get(selectedId.value) ?? null : null,
-  );
+  const selectedOpportunity = computed(() => {
+    if (!selectedId.value) return null;
+    const item = store.byId.get(selectedId.value) ?? null;
+    if (!item) return null;
+    if (!isPro.value && activeTab.value !== "archived") {
+      const isVisible = visibleActiveItems.value.some((entry) => entry.id === selectedId.value);
+      if (!isVisible) return null;
+    }
+    return item;
+  });
 
   function setTab(tab: OpportunityFilterTab) {
     activeTab.value = tab;
@@ -211,6 +236,8 @@ export function useOpportunitiesPage() {
     paginatedItems,
     tabCounts,
     archivedCount,
+    lockedCount,
+    lockedPreviews,
     summary,
     totalPages,
     selectedOpportunity,

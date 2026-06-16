@@ -64,7 +64,7 @@
         />
       </div>
 
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+      <div v-if="isPro" class="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
         <ReviewSentimentTrendChart
           :title="sentimentTrendLabel"
           :points="data.sentimentTrend ?? []"
@@ -75,7 +75,14 @@
         />
       </div>
 
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <UpgradeCtaCard
+        v-else
+        :title="reviewsHistoryTitle"
+        :description="reviewsHistoryDescription"
+        :cta-label="reviewsHistoryCta"
+      />
+
+      <div v-if="isPro" class="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <ReviewThemeTable
           :title="topPositiveThemesLabel"
           variant="positive"
@@ -115,8 +122,10 @@ import ReviewSentimentTrendChart from "@/components/reviews/ReviewSentimentTrend
 import ReviewThemeMentionList from "@/components/reviews/ReviewThemeMentionList.vue";
 import ReviewThemeTable from "@/components/reviews/ReviewThemeTable.vue";
 import WidgetSkeleton from "@/components/shared/skeleton/WidgetSkeleton.vue";
+import UpgradeCtaCard from "@/components/shared/UpgradeCtaCard.vue";
 import { useReviewIntelligencePage } from "@/composables/reviews/useReviewIntelligencePage";
-import { useLocalizedString } from "@/composables/useLocalizedString";
+import { usePlan } from "@/composables/usePlan";
+import { useLocalizedString, useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
 import type { DataTableColumn } from "@/components/shared/DataTable.vue";
 
 const {
@@ -128,6 +137,17 @@ const {
   complaintThemes,
   reload,
 } = useReviewIntelligencePage();
+
+const { isPro } = usePlan();
+
+const reviewsUpgradeCopy = useReactiveLocaleStringRecord("upgrade", [
+  "reviews.historyCta",
+  "reviews.historyDescription",
+] as const);
+
+const reviewsHistoryTitle = computed(() => "Need deeper review trends?");
+const reviewsHistoryDescription = computed(() => reviewsUpgradeCopy.value["reviews.historyDescription"]);
+const reviewsHistoryCta = computed(() => reviewsUpgradeCopy.value["reviews.historyCta"]);
 
 const negativeReviewsDrawerOpen = ref(false);
 

@@ -18,6 +18,12 @@
     "labelKey": "nav.reports"
   },
   {
+    "id": "reviews",
+    "route": "/reviews",
+    "icon": "⭐",
+    "labelKey": "nav.reviews"
+  },
+  {
     "id": "settings",
     "route": "/settings",
     "icon": "⚙️",

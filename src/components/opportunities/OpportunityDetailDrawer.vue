@@ -24,6 +24,7 @@
                 <OpportunityWhyDetected />
                 <OpportunitySupportingData />
                 <OpportunityRelatedPanel
+                  v-if="isPro"
                   class="lg:hidden"
                   :opportunity="opportunity"
                   @select-related="emit('selectRelated', $event)"
@@ -34,9 +35,16 @@
                 <OpportunityImpactPanel />
                 <OpportunityActionsPanel :opportunity="opportunity" />
                 <OpportunityRelatedPanel
+                  v-if="isPro"
                   class="hidden lg:block"
                   :opportunity="opportunity"
                   @select-related="emit('selectRelated', $event)"
+                />
+                <UpgradeCtaCard
+                  v-else
+                  class="hidden lg:block"
+                  :title="advancedTitle"
+                  :cta-label="advancedCta"
                 />
               </div>
             </div>
@@ -89,14 +97,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRef } from "vue";
+import { computed, ref, toRef } from "vue";
 import OpportunityActionsPanel from "@/components/opportunities/drawer/OpportunityActionsPanel.vue";
 import OpportunityDrawerHeader from "@/components/opportunities/drawer/OpportunityDrawerHeader.vue";
 import OpportunityImpactPanel from "@/components/opportunities/drawer/OpportunityImpactPanel.vue";
 import OpportunityRelatedPanel from "@/components/opportunities/drawer/OpportunityRelatedPanel.vue";
 import OpportunitySupportingData from "@/components/opportunities/drawer/OpportunitySupportingData.vue";
 import OpportunityWhyDetected from "@/components/opportunities/drawer/OpportunityWhyDetected.vue";
+import UpgradeCtaCard from "@/components/shared/UpgradeCtaCard.vue";
 import { provideOpportunityInvestigation } from "@/composables/opportunities/useOpportunityInvestigation";
+import { usePlan } from "@/composables/usePlan";
 import { useLocalizedString, useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
 import type { OpportunityDetail, OpportunityLifecycleStatus } from "@/types/ai";
 
@@ -121,6 +131,15 @@ const copy = useReactiveLocaleStringRecord("opportunities", [
 ] as const);
 
 const closeLabel = useLocalizedString("common", "close");
+const { isPro } = usePlan();
+
+const upgradeCopy = useReactiveLocaleStringRecord("upgrade", [
+  "opportunities.advancedTitle",
+  "opportunities.advancedCta",
+] as const);
+
+const advancedTitle = computed(() => upgradeCopy.value["opportunities.advancedTitle"]);
+const advancedCta = computed(() => upgradeCopy.value["opportunities.advancedCta"]);
 
 provideOpportunityInvestigation(toRef(() => props.opportunity));
 

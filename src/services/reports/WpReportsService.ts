@@ -2,8 +2,6 @@ import type { IReportsService } from "@/services/reports/IReportsService";
 import { wpRestFetch } from "@/services/wp/wpRestClient";
 import { withDateRange, withReviewIntelligenceDetailQuery } from "@/services/wp/wpQueryUtils";
 import type {
-  BusinessSummary,
-  OpportunityDetail,
   OpportunityLifecycleStatus,
   OpportunityStateRecord,
   OpportunityStateSnapshot,
@@ -12,20 +10,50 @@ import type {
   ReviewIntelligenceDetail,
   WeeklyReportDetail,
 } from "@/types/ai";
+import type { OpportunitiesListResponse } from "@/types/opportunities";
 import type {
   GenerateWeeklyReportOptions,
   GenerateWeeklyReportResult,
   WeeklyReportListItem,
 } from "@/types/reports";
+import type { WeeklyReportsListResponse } from "@/types/reportsList";
 import type { DateRangeSelection, RevenueChartGranularity } from "@/types/metrics";
 
-export class WpReportsService implements IReportsService {
-  async getBusinessSummary(range: DateRangeSelection): Promise<BusinessSummary> {
-    return wpRestFetch<BusinessSummary>(withDateRange("/ai/business-summary", range));
+function normalizeReportsList(
+  data: WeeklyReportsListResponse | WeeklyReportListItem[],
+): WeeklyReportsListResponse {
+  if (Array.isArray(data)) {
+    return {
+      items: data,
+      totalCount: data.length,
+      historyLimit: data.length,
+      lockedCount: 0,
+    };
   }
+  return data;
+}
 
-  async getOpportunities(range: DateRangeSelection): Promise<OpportunityDetail[]> {
-    return wpRestFetch<OpportunityDetail[]>(withDateRange("/ai/opportunities", range));
+function normalizeOpportunitiesList(
+  data: OpportunitiesListResponse | OpportunitiesListResponse["items"],
+): OpportunitiesListResponse {
+  if (Array.isArray(data)) {
+    return {
+      items: data,
+      freeVisibleCount: data.length,
+      lockedCount: 0,
+      lockedPreviews: [],
+      total: data.length,
+    };
+  }
+  return data;
+}
+
+export class WpReportsService implements IReportsService {
+  async getOpportunities(range: DateRangeSelection): Promise<OpportunitiesListResponse> {
+    const data = await wpRestFetch<OpportunitiesListResponse | OpportunitiesListResponse["items"]>(
+      withDateRange("/ai/opportunities", range),
+    );
+    return normalizeOpportunitiesList(data);
   }
 
   async getOpportunityStates(): Promise<OpportunityStateRecord[]> {
@@ -64,8 +92,9 @@ export class WpReportsService implements IReportsService {
     );
   }
 
-  async listWeeklyReports(): Promise<WeeklyReportListItem[]> {
-    return wpRestFetch<WeeklyReportListItem[]>("/reports");
+  async listWeeklyReports(): Promise<WeeklyReportsListResponse> {
+    const data = await wpRestFetch<WeeklyReportsListResponse | WeeklyReportListItem[]>("/reports");
+    return normalizeReportsList(data);
   }
 
   async generateWeeklyReport(options?: GenerateWeeklyReportOptions): Promise<GenerateWeeklyReportResult> {
@@ -75,6 +104,7 @@ export class WpReportsService implements IReportsService {
     return wpRestFetch<GenerateWeeklyReportResult>("/reports/generate", {
       method: "POST",
       body: JSON.stringify(body),
+      cacheTtlMs: 0,
     });
   }
 }

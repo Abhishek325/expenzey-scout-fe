@@ -101,14 +101,22 @@
         @select="onSend"
       />
       <ChatInput
-        :disabled="isSending || loading"
+        :disabled="isSending || loading || chatLimitReached"
         :initial-prompt="initialPrompt"
         @send="onSend"
       />
-      <p class="mt-2 text-[11px] leading-relaxed text-slate-400">{{ privacyNote }}</p>
-      <UsageQuotaFooter
-        v-if="usage"
+      <UpgradeCtaCard
+        v-if="chatLimitReached"
         class="mt-3"
+        :title="chatLimitTitle"
+        :description="chatLimitDescription"
+        :cta-label="chatLimitCta"
+      />
+      <p v-else class="mt-2 text-[11px] leading-relaxed text-slate-400">{{ privacyNote }}</p>
+      <UsageQuotaFooter
+        v-if="usage && !chatLimitReached"
+        class="mt-3"
+        feature="chat"
         :used="usage.chat.used"
         :limit="usage.chat.limit"
       />
@@ -124,8 +132,10 @@ import SuggestedPromptChips from "@/components/chat/SuggestedPromptChips.vue";
 import SkeletonBlock from "@/components/shared/skeleton/SkeletonBlock.vue";
 import SkeletonShimmer from "@/components/shared/skeleton/SkeletonShimmer.vue";
 import UsageQuotaFooter from "@/components/shared/UsageQuotaFooter.vue";
+import UpgradeCtaCard from "@/components/shared/UpgradeCtaCard.vue";
 import { useAIChat } from "@/composables/chat/useAIChat";
-import { useLocalizedString } from "@/composables/useLocalizedString";
+import { usePlan } from "@/composables/usePlan";
+import { useLocalizedString, useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
 
 const { floating = false, initialPrompt = null } = defineProps<{
   floating?: boolean;
@@ -157,6 +167,23 @@ const closeLabel = useLocalizedString("chat", "closeChat");
 const clearChatLabel = useLocalizedString("chat", "clearChat");
 const privacyNote = useLocalizedString("chat", "privacyNote");
 const loadingLabel = useLocalizedString("common", "loading");
+const { isPro } = usePlan();
+
+const chatUpgradeCopy = useReactiveLocaleStringRecord("upgrade", [
+  "chat.limitTitle",
+  "chat.limitDescription",
+  "chat.limitCta",
+] as const);
+
+const chatLimitReached = computed(() => {
+  if (isPro.value || !usage.value) return false;
+  const { used, limit } = usage.value.chat;
+  return limit > 0 && used >= limit;
+});
+
+const chatLimitTitle = computed(() => chatUpgradeCopy.value["chat.limitTitle"]);
+const chatLimitDescription = computed(() => chatUpgradeCopy.value["chat.limitDescription"]);
+const chatLimitCta = computed(() => chatUpgradeCopy.value["chat.limitCta"]);
 
 async function onSend(text: string) {
   await send(text);

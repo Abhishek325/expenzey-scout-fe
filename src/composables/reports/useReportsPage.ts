@@ -19,6 +19,9 @@ export function useReportsPage() {
   const generating = ref(false);
   const error = ref<string | null>(null);
   const reports = ref<WeeklyReportListItem[]>([]);
+  const reportsTotalCount = ref(0);
+  const reportsLockedCount = ref(0);
+  const reportsHistoryLimit = ref(4);
   const priorWeekDetail = ref<WeeklyReportDetail | null>(null);
 
   const priorWeekReportExists = computed(
@@ -117,11 +120,14 @@ export function useReportsPage() {
     loading.value = true;
     error.value = null;
     try {
-      const [list, detail] = await Promise.all([
+      const [listResponse, detail] = await Promise.all([
         reportsService.listWeeklyReports(),
         reportsService.getWeeklyReportDetail(),
       ]);
-      reports.value = list;
+      reports.value = listResponse.items;
+      reportsTotalCount.value = listResponse.totalCount;
+      reportsLockedCount.value = listResponse.lockedCount;
+      reportsHistoryLimit.value = listResponse.historyLimit;
       priorWeekDetail.value = detail;
     } catch (e) {
       error.value = e instanceof Error ? e.message : "error";
@@ -152,6 +158,9 @@ export function useReportsPage() {
     generating,
     error,
     reports,
+    reportsTotalCount,
+    reportsLockedCount,
+    reportsHistoryLimit,
     priorWeekReportExists,
     canGenerate,
     latestPriorWeekContent,
