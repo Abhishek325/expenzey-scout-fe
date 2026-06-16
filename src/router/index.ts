@@ -49,6 +49,11 @@ const router = createRouter({
       component: () => import("@/views/WeeklyReportDetailPage.vue"),
     },
     {
+      path: "/reviews",
+      name: "review-intelligence",
+      component: () => import("@/views/ReviewIntelligencePage.vue"),
+    },
+    {
       path: "/settings",
       name: "settings",
       component: () => import("@/views/SettingsPage.vue"),

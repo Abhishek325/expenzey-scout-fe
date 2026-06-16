@@ -186,3 +186,49 @@ export interface ReviewIntelligence {
     date: string;
   }>;
 }
+
+export interface ReviewThemeDetail {
+  theme: string;
+  count: number;
+  percentOfPositive?: number;
+  percentOfNegative?: number;
+}
+
+export interface ReviewSentimentTrendPoint {
+  periodStart: string;
+  periodEnd: string;
+  positivePercent: number;
+  reviewCount: number;
+}
+
+export interface ReviewIntelligenceDetail extends Omit<
+  ReviewIntelligence,
+  "sentiment" | "complaintThemes" | "positiveMentions"
+> {
+  sentiment: {
+    positive: number;
+    positiveCount: number;
+    neutral: number;
+    neutralCount: number;
+    negative: number;
+    negativeCount: number;
+  };
+  positiveThemes: Array<{
+    theme: string;
+    count: number;
+    percentOfPositive: number;
+  }>;
+  complaintThemes: Array<{
+    theme: string;
+    count: number;
+    percentOfNegative: number;
+  }>;
+  sentimentTrend: ReviewSentimentTrendPoint[];
+  recentNegativeReviews: Array<{
+    id: string;
+    productName: string;
+    rating: number;
+    content: string;
+    date: string;
+  }>;
+}

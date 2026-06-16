@@ -39,6 +39,7 @@ function createReportsService(
     setOpportunityStatus: vi.fn().mockResolvedValue(undefined),
     getWeeklyReportDetail: vi.fn(),
     getReviewIntelligence: vi.fn(),
+    getReviewIntelligenceDetail: vi.fn(),
     listWeeklyReports: vi.fn(),
     generateWeeklyReport: vi.fn(),
     ...overrides,

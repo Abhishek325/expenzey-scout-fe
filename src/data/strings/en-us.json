@@ -9,59 +9,18 @@
     "loading": "Loading\u2026",
     "error": "Something went wrong. Please try again.",
     "retry": "Retry",
-    "save": "Save",
-    "cancel": "Cancel",
     "close": "Close",
     "viewAll": "View All",
     "viewAllReports": "View All Reports",
     "viewDetails": "View Details",
-    "learnMore": "Learn more",
     "vs": "vs",
-    "vsPreviousPeriod": "vs previous period",
-    "currencyUsd": "USD",
-    "today": "Today",
-    "yesterday": "Yesterday",
-    "search": "Search",
     "noResults": "No results found",
-    "connected": "Connected",
-    "disconnected": "Disconnected",
-    "syncNow": "Sync now",
-    "lastUpdated": "Last updated {date}"
+    "syncNow": "Sync now"
   },
   "dashboard": {
     "title": "Dashboard",
     "subtitle": "Overview of your store performance",
-    "sections": {
-      "revenue": "Revenue",
-      "products": "Products",
-      "customers": "Customers",
-      "reviews": "Reviews"
-    },
-    "metrics": {
-      "totalRevenue": "Total Revenue",
-      "orders": "Orders",
-      "customers": "Customers",
-      "aov": "Average Order Value",
-      "comparisonPeriod": "Compared to {period}"
-    },
-    "revenueTrend": {
-      "title": "Revenue Overview",
-      "subtitle": "Daily revenue for the selected week"
-    },
-    "topProducts": {
-      "title": "Top Products",
-      "columns": {
-        "product": "Product",
-        "revenue": "Revenue",
-        "orders": "Orders",
-        "growth": "Growth"
-      }
-    },
-    "aiSummary": {
-      "title": "AI Summary"
-    },
     "greeting": "Welcome back! Here's what's happening with your store.",
-    "generateAiReport": "Generate New Report",
     "aiInsights": {
       "businessSummaryTitle": "AI Business Summary",
       "opportunitiesTitle": "AI Opportunities",
@@ -70,7 +29,6 @@
       "recommendation": "Recommendation:",
       "weeklyReportEmpty": "No weekly report yet. Generate one to see AI insights.",
       "opportunitiesEmpty": "No opportunities detected for this period.",
-      "reviewsEmpty": "No reviews in the selected period.",
       "reportsEmpty": "No AI reports generated yet.",
       "businessSummary": {
         "overview": "Overview",
@@ -90,18 +48,12 @@
         "recommendedAction": "Recommended Action",
         "ofRevenue": "of revenue",
         "vsLastWeek": "vs last week",
-        "recentPeriod": "Recent period",
-        "opportunitiesDetected": "{count} opportunities detected",
-        "itemsNeedAttention": "{count} items need attention",
         "scheduledForMonday": "Your report is scheduled for Monday, or generate it now.",
         "sections": {
-          "overview": "Overview",
           "revenue": "Revenue",
           "orders": "Orders",
           "topProduct": "Top Product",
           "customerTrend": "Customer Trend",
-          "customers": "Customers",
-          "products": "Products",
           "mainRisk": "Main Risk"
         }
       },
@@ -122,7 +74,8 @@
             "quality": "Product quality",
             "price": "Good value",
             "support": "Great customer service",
-            "value": "Good value"
+            "value": "Good value",
+            "overall": "Overall satisfaction"
           },
           "complaint": {
             "delivery": "Delivery delays",
@@ -134,9 +87,7 @@
       }
     },
     "chatWidgetTitle": "Ask Expenzey AI",
-    "aiInsightsTitle": "AI Summary",
     "revenueTrendTitle": "Revenue Overview",
-    "revenueTrendSubtitle": "Daily revenue for the selected week",
     "topProductsTitle": "Top Products",
     "topProductsColumnProduct": "Product",
     "topProductsColumnRevenue": "Revenue",
@@ -151,20 +102,6 @@
       "bestPerforming": "Best Performing",
       "needsAttention": "Needs Attention",
       "growthOpportunity": "Growth Opportunity"
-    }
-  },
-  "aiSummary": {
-    "topPerformer": {
-      "label": "Top Performer",
-      "detail": "Protein Powder drove the strongest revenue growth this week with an 18.4% increase in sales."
-    },
-    "needsAttention": {
-      "label": "Needs Attention",
-      "detail": "Yoga Mat sales dipped 3.2% \u2014 consider a bundle offer or refreshed product imagery."
-    },
-    "growthOpportunity": {
-      "label": "Growth Opportunity",
-      "detail": "Your recent blog posts are driving organic traffic \u2014 consider adding product links to top-performing articles."
     }
   },
   "chat": {
@@ -255,8 +192,7 @@
       "product": "Product",
       "revenue": "Revenue",
       "growth": "Growth",
-      "recentTitle": "Recent Reports",
-      "viewAllReports": "View all reports"
+      "recentTitle": "Recent Reports"
     },
     "dates": {
       "today": "Today",
@@ -274,15 +210,9 @@
       "backToReports": "Back to Reports",
       "periodLabel": "Report period",
       "downloadPdf": "Download PDF",
-      "shareReport": "Share Report",
       "moreActions": "More actions",
       "noData": "No data for this period"
-    },
-    "history": {
-      "title": "Report history"
-    },
-    "download": "Download PDF",
-    "usageLimit": "You have used {used} of {limit} reports this billing period."
+    }
   },
   "settings": {
     "title": "Settings",
@@ -292,8 +222,6 @@
       "siteUrl": "Site URL",
       "lastSync": "Last sync",
       "installationId": "Installation ID",
-      "connectedMessage": "Your WooCommerce store is connected and syncing.",
-      "disconnectedMessage": "Connect your store to enable dashboards and AI features.",
       "syncStatus": "Sync status",
       "accountStatus": "Account status",
       "disconnect": "Disconnect store",
@@ -313,7 +241,6 @@
       "usedOfLimit": "{used} / {limit} used"
     },
     "account": {
-      "title": "Account",
       "status": {
         "active": "Active",
         "trial": "Trial",
@@ -329,9 +256,7 @@
   "onboarding": {
     "welcome": {
       "title": "Welcome to Expenzey",
-      "subtitle": "Connect your store to unlock AI-powered insights.",
-      "createAccount": "Create account",
-      "login": "Log in"
+      "subtitle": "Connect your store to unlock AI-powered insights."
     },
     "connect": {
       "description": "Use this installation ID to link your WooCommerce store to Expenzey AI.",
@@ -339,16 +264,10 @@
       "syncComplete": "Initial sync complete!"
     },
     "steps": {
-      "connect": "Connect store",
-      "sync": "Sync data",
-      "explore": "Explore dashboard"
+      "connect": "Connect store"
     },
     "connectCta": "Connect WooCommerce",
-    "skipForNow": "Skip for now",
-    "success": {
-      "title": "You're all set",
-      "message": "Your dashboard will update as we finish syncing your catalog and orders."
-    }
+    "skipForNow": "Skip for now"
   },
   "layout": {
     "brandName": "Expenzey Scout",
@@ -430,7 +349,6 @@
       "impact": "Estimated Impact",
       "actions": "Recommended Actions",
       "related": "Related Opportunities",
-      "detectedAgo": "Detected",
       "detectedToday": "Detected today at {time}",
       "detectedOn": "Detected {date} at {time}",
       "currentPeriod": "Current period",
@@ -443,7 +361,6 @@
       "coPurchaseRate": "Co-purchase rate",
       "smallerProductRevenue": "Smaller product revenue",
       "combinedOrders": "Combined orders",
-      "estimatedRange": "Estimated range",
       "defaultActionTitle": "Recommended action",
       "insightBannerRevenueShare": "This product's revenue share is {percent}% of your total store revenue.",
       "actionPlanIntro": "Create an action plan for this opportunity:",
@@ -464,7 +381,6 @@
         "retention": "Potential retention uplift",
         "risk": "Potential revenue at risk"
       },
-      "createActionPlan": "Create Action Plan",
       "copyId": "Copy ID",
       "copiedId": "Copied",
       "opportunityId": "Opportunity ID",
@@ -483,12 +399,27 @@
       }
     }
   },
-  "usage": {
-    "remaining": "{remaining} / {limit} queries left this month"
-  },
   "reviews": {
-    "title": "Customer reviews",
-    "avgRating": "Average rating",
-    "reviewStub": "Great product and fast shipping!"
+    "detail": {
+      "title": "Review Intelligence Details",
+      "subtitle": "Insights from {count} reviews analyzed",
+      "sentimentTrend": "Sentiment Trend",
+      "sentimentBreakdown": "Sentiment Breakdown",
+      "topPositiveThemes": "Top Positive Themes",
+      "topComplaintThemes": "Top Complaint Themes",
+      "recentNegativeReviews": "Recent Negative Reviews",
+      "mentions": "mentions",
+      "noThemes": "No themes detected in this period",
+      "noNegativeReviews": "No negative reviews in this period",
+      "viewAllNegative": "View All Negative Reviews",
+      "viewAllCount": "View All ({count})",
+      "neutral": "Neutral",
+      "negative": "Negative",
+      "table": {
+        "theme": "Theme",
+        "mentions": "Mentions",
+        "percent": "% of category"
+      }
+    }
   }
 }

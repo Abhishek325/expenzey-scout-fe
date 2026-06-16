@@ -109,7 +109,7 @@ const {
   reload,
 } = useReviewIntelligence();
 const emptyLabel = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.empty.title");
-const viewDetails = useLocalizedString("common", "viewDetails");
+const viewAll = useLocalizedString("common", "viewAll");
 const title = useLocalizedString("dashboard", "aiInsights.reviewIntelligenceTitle");
 const overallSentiment = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.overallSentiment");
 const positiveLabel = useLocalizedString("dashboard", "aiInsights.reviewIntelligence.positive");
@@ -119,7 +119,7 @@ const topComplaints = useLocalizedString("dashboard", "aiInsights.reviewIntellig
 
 const viewDetailsAction = computed(() => ({
   kind: "link" as const,
-  to: "/reports",
-  label: viewDetails.value,
+  to: "/reviews",
+  label: viewAll.value,
 }));
 </script>

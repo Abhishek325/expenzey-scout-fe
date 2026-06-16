@@ -57,12 +57,6 @@
           aria-hidden="true"
         />
       </button>
-      <div
-        class="flex h-9 w-9 items-center justify-center rounded-full bg-expenzey-600 text-sm font-semibold text-white"
-        aria-hidden="true"
-      >
-        A
-      </div>
     </div>
   </header>
 </template>

@@ -1,6 +1,6 @@
 import type { IReportsService } from "@/services/reports/IReportsService";
 import { wpRestFetch } from "@/services/wp/wpRestClient";
-import { withDateRange } from "@/services/wp/wpQueryUtils";
+import { withDateRange, withReviewIntelligenceDetailQuery } from "@/services/wp/wpQueryUtils";
 import type {
   BusinessSummary,
   OpportunityDetail,
@@ -9,6 +9,7 @@ import type {
   OpportunityStateSnapshot,
   OpportunityStatesResponse,
   ReviewIntelligence,
+  ReviewIntelligenceDetail,
   WeeklyReportDetail,
 } from "@/types/ai";
 import type {
@@ -16,7 +17,7 @@ import type {
   GenerateWeeklyReportResult,
   WeeklyReportListItem,
 } from "@/types/reports";
-import type { DateRangeSelection } from "@/types/metrics";
+import type { DateRangeSelection, RevenueChartGranularity } from "@/types/metrics";
 
 export class WpReportsService implements IReportsService {
   async getBusinessSummary(range: DateRangeSelection): Promise<BusinessSummary> {
@@ -52,6 +53,15 @@ export class WpReportsService implements IReportsService {
 
   async getReviewIntelligence(range: DateRangeSelection): Promise<ReviewIntelligence> {
     return wpRestFetch<ReviewIntelligence>(withDateRange("/reviews/summary", range));
+  }
+
+  async getReviewIntelligenceDetail(
+    range: DateRangeSelection,
+    options?: { granularity?: RevenueChartGranularity; trendBuckets?: number },
+  ): Promise<ReviewIntelligenceDetail> {
+    return wpRestFetch<ReviewIntelligenceDetail>(
+      withReviewIntelligenceDetailQuery("/reviews/summary", range, options),
+    );
   }
 
   async listWeeklyReports(): Promise<WeeklyReportListItem[]> {

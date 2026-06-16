@@ -1,22 +1,10 @@
 import { computed, inject, type ComputedRef } from "vue";
 import { useDashboardWidget } from "@/composables/dashboard/useDashboardWidget";
-import { resolveStringKey } from "@/composables/dashboard/resolveStringKey";
 import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
 import { useDateRangeStore } from "@/stores/dateRange";
 import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
 import type { DashboardWidgetState } from "@/types/dashboardWidget";
-
-function mapThemeLabels(
-  themes: string[],
-  stringService: IStringService,
-  prefix: "dashboard.aiInsights.reviewIntelligence.themes.positive" | "dashboard.aiInsights.reviewIntelligence.themes.complaint",
-): string[] {
-  return themes.map((theme) => {
-    const key = `${prefix}.${theme}`;
-    const resolved = resolveStringKey(stringService, key);
-    return resolved === key ? theme : resolved;
-  });
-}
+import { mapReviewThemeLabels } from "@/utils/reviewThemeLabels";
 
 interface ReviewIntelligenceState extends DashboardWidgetState {
   positivePercent: ComputedRef<number>;
@@ -40,7 +28,7 @@ export function useReviewIntelligence(): ReviewIntelligenceState {
   const positiveMentions = computed(() => {
     const data = widget.data.value;
     if (!data) return [];
-    return mapThemeLabels(
+    return mapReviewThemeLabels(
       data.positiveMentions,
       stringService,
       "dashboard.aiInsights.reviewIntelligence.themes.positive",
@@ -49,7 +37,7 @@ export function useReviewIntelligence(): ReviewIntelligenceState {
   const complaints = computed(() => {
     const data = widget.data.value;
     if (!data) return [];
-    return mapThemeLabels(
+    return mapReviewThemeLabels(
       data.complaintThemes,
       stringService,
       "dashboard.aiInsights.reviewIntelligence.themes.complaint",

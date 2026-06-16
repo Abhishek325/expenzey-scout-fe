@@ -6,8 +6,10 @@ import type {
   OpportunityStateRecord,
   OpportunityStateSnapshot,
   ReviewIntelligence,
+  ReviewIntelligenceDetail,
   WeeklyReportDetail,
 } from "@/types/ai";
+import type { RevenueChartGranularity } from "@/types/metrics";
 import type {
   GenerateWeeklyReportOptions,
   GenerateWeeklyReportResult,
@@ -25,6 +27,10 @@ export interface IReportsService {
   ): Promise<void>;
   getWeeklyReportDetail(id?: string): Promise<WeeklyReportDetail>;
   getReviewIntelligence(range: DateRangeSelection): Promise<ReviewIntelligence>;
+  getReviewIntelligenceDetail(
+    range: DateRangeSelection,
+    options?: { granularity?: RevenueChartGranularity; trendBuckets?: number },
+  ): Promise<ReviewIntelligenceDetail>;
   listWeeklyReports(): Promise<WeeklyReportListItem[]>;
   generateWeeklyReport(options?: GenerateWeeklyReportOptions): Promise<GenerateWeeklyReportResult>;
 }

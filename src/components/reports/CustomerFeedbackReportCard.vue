@@ -108,7 +108,7 @@ const mentionedInPositiveRaw = useLocalizedString("reports", "customerFeedback.m
 const mentionedInNegativeRaw = useLocalizedString("reports", "customerFeedback.mentionedInNegative");
 const basedOnReviewsRaw = useLocalizedString("reports", "customerFeedback.basedOnReviews");
 
-const viewAllLink = "/dashboard";
+const viewAllLink = "/reviews";
 
 const hasData = computed(() => (props.intelligence?.totalReviews ?? 0) > 0);
 const sentimentScore = computed(() => props.intelligence?.sentimentScore ?? 0);
