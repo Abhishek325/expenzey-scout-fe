@@ -3,7 +3,8 @@
     "dashboard": "Dashboard",
     "reports": "AI Reports",
     "opportunities": "AI Opportunities",
-    "settings": "Settings"
+    "settings": "Settings",
+    "upgradeToPro": "Upgrade to Pro"
   },
   "common": {
     "loading": "Loading\u2026",
@@ -291,6 +292,91 @@
     "brandName": "Expenzey Scout",
     "tagline": "AI Business Insights for WooCommerce",
     "notifications": "Notifications"
+  },
+  "pro": {
+    "comparisonTitle": "See What You Get With Pro",
+    "freePlan": "Free Plan",
+    "freePlanSubtitle": "Great to get you started",
+    "proPlan": "Pro Plan",
+    "proPlanBadge": "All features unlocked",
+    "features": {
+      "aiChat": {
+        "title": "AI Chat",
+        "description": "Ask anything about your store and get instant answers",
+        "free": "5 questions per month",
+        "pro": "Unlimited"
+      },
+      "aiSummary": {
+        "title": "AI Summary",
+        "description": "Get AI-powered business summaries in seconds",
+        "free": "10 summaries per month",
+        "pro": "Unlimited"
+      },
+      "aiOpportunities": {
+        "title": "AI Opportunities",
+        "description": "Discover growth opportunities in your store",
+        "free": "Top 3 opportunities",
+        "pro": "All opportunities + advanced analysis"
+      },
+      "weeklyReports": {
+        "title": "Weekly Reports",
+        "description": "Automated weekly reports with key insights",
+        "free": "Last 4 reports (1 month history)",
+        "pro": "Unlimited history + email delivery"
+      },
+      "reviewIntelligence": {
+        "title": "Review Intelligence",
+        "description": "AI analysis of customer reviews and sentiment",
+        "free": "2 analyses per month",
+        "pro": "Unlimited analyses + deep insights"
+      },
+      "opportunityHistory": {
+        "title": "Opportunity History",
+        "description": "Track how opportunities evolve over time",
+        "free": "—",
+        "pro": "Full history"
+      },
+      "advancedOpportunityDetails": {
+        "title": "Advanced Opportunity Details",
+        "description": "Get deeper data, trends, and recommendations",
+        "free": "Basic details",
+        "pro": "Advanced insights + trends"
+      },
+      "exportSharing": {
+        "title": "Export & Sharing",
+        "description": "Export reports and share insights",
+        "free": "—",
+        "pro": "Export PDF & Share"
+      },
+      "multiStore": {
+        "title": "Multi-store Support",
+        "description": "Connect and manage multiple stores",
+        "free": "—",
+        "pro": "Yes"
+      },
+      "prioritySupport": {
+        "title": "Priority Support",
+        "description": "Get faster support when you need it",
+        "free": "Standard",
+        "pro": "Priority"
+      }
+    },
+    "licenseTitle": "Unlock Expenzey Scout Pro",
+    "licenseSubtitle": "Enter your license key to unlock all Pro features and take your store performance to the next level.",
+    "licenseInputLabel": "Enter License Key",
+    "licensePlaceholder": "Enter your license key",
+    "activateLicense": "Activate License",
+    "licenseSecure": "Your license key is encrypted and secure.",
+    "purchaseTitle": "Why Upgrade to Pro?",
+    "purchaseSubtitle": "Unlock the full Pro experience with unlimited AI insights, richer historical reporting, and deeper opportunity analysis - everything you need to make smarter decisions and grow revenue faster.",
+    "purchaseBenefit1": "Unlock all Pro features",
+    "purchaseBenefit2": "Unlimited AI usage",
+    "purchaseBenefit3": "Deeper insights and historical data",
+    "purchaseBenefit4": "Priority support",
+    "purchaseBenefit5": "Cancel anytime",
+    "viewPricing": "View Pricing & Buy Now",
+    "pricingUrl": "https://expenzey.com/pricing",
+    "moneyBackGuarantee": "30-day money-back guarantee"
   },
   "dateRange": {
     "7d": "Last 7 days",

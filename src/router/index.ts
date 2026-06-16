@@ -67,6 +67,11 @@ const router = createRouter({
       name: "settings",
       component: () => import("@/views/SettingsPage.vue"),
     },
+    {
+      path: "/pro",
+      name: "pro-upgrade",
+      component: () => import("@/views/ProUpgradePage.vue"),
+    },
   ],
 });
 

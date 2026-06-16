@@ -32,6 +32,14 @@
     </div>
 
     <div class="flex shrink-0 items-center gap-3 py-3">
+      <RouterLink
+        to="/pro"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-transparent px-3 py-1.5 text-sm font-semibold text-expenzey-600 transition hover:bg-expenzey-50 hover:text-expenzey-700"
+        active-class="!border-expenzey-500 !bg-expenzey-50"
+      >
+        <FaIcon icon="fa-crown" size="sm" icon-class="text-expenzey-600" />
+        {{ upgradeLabel }}
+      </RouterLink>
       <button
         type="button"
         class="relative rounded-lg p-2 text-slate-500 transition hover:bg-slate-100"
@@ -64,6 +72,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import ExpenzeyIcon from "@/components/icons/ExpenzeyIcon.vue";
+import FaIcon from "@/components/icons/FaIcon.vue";
 import sidebarItems from "@/data/sidebar.json";
 import {
   useLocalizedString,
@@ -84,6 +93,8 @@ const copy = useReactiveLocaleStringRecord("layout", [
   "tagline",
   "notifications",
 ] as const);
+
+const upgradeLabel = useLocalizedString("nav", "upgradeToPro");
 
 const navDashboard = useLocalizedString("nav", "dashboard");
 const navOpportunities = useLocalizedString("nav", "opportunities");

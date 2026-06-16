@@ -1,0 +1,12 @@
+[
+  { "id": "aiChat", "icon": "fa-robot" },
+  { "id": "aiSummary", "icon": "fa-file-lines" },
+  { "id": "aiOpportunities", "icon": "fa-wand-magic-sparkles" },
+  { "id": "weeklyReports", "icon": "fa-calendar" },
+  { "id": "reviewIntelligence", "icon": "fa-comment-dots" },
+  { "id": "opportunityHistory", "icon": "fa-clock-rotate-left" },
+  { "id": "advancedOpportunityDetails", "icon": "fa-chart-line" },
+  { "id": "exportSharing", "icon": "fa-file-export" },
+  { "id": "multiStore", "icon": "fa-store" },
+  { "id": "prioritySupport", "icon": "fa-headset" }
+]
