@@ -6,17 +6,17 @@
     :has-data="hasData"
     :empty-label="emptyLabel"
     :action="viewDetailsAction"
-    :body-class="`!p-2 ${REVIEW_INTELLIGENCE_CARD_BODY_HEIGHT}`"
+    :body-class="`!p-2 flex flex-col ${REVIEW_INTELLIGENCE_CARD_BODY_HEIGHT}`"
     @retry="reload"
   >
     <template #empty>
       <ReviewIntelligenceEmptyState />
     </template>
 
-    <div class="grid gap-3 sm:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-      <div class="flex flex-col rounded-lg border border-emerald-100 bg-emerald-50/60 p-2.5">
+    <div class="grid min-h-0 flex-1 gap-3 sm:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+      <div class="flex h-full min-h-0 flex-col rounded-lg border border-emerald-100 bg-emerald-50/60 p-2.5">
         <p class="text-xs font-medium text-slate-600">{{ overallSentiment }}</p>
-        <div class="mt-2 flex items-center gap-2.5">
+        <div class="mt-2 flex flex-1 items-center gap-2.5">
           <div class="relative h-12 w-12 shrink-0">
             <svg viewBox="0 0 36 36" class="h-full w-full -rotate-90" aria-hidden="true">
               <circle cx="18" cy="18" r="15.9" fill="none" stroke="#d1fae5" stroke-width="3.2" />
@@ -43,10 +43,10 @@
             <p class="mt-0.5 text-xs font-medium text-emerald-600">{{ positiveLabel }}</p>
           </div>
         </div>
-        <p class="mt-2 text-[11px] text-slate-500">{{ reviewCount }} {{ reviewsAnalyzed }}</p>
+        <p class="mt-auto text-[11px] text-slate-500">{{ reviewCount }} {{ reviewsAnalyzed }}</p>
       </div>
 
-      <div class="flex flex-col justify-center gap-2.5">
+      <div class="flex h-full min-h-0 flex-col justify-center gap-2.5">
         <div v-if="positiveMentions.length > 0">
           <p class="text-[11px] font-semibold uppercase tracking-wide text-emerald-600">{{ topPositiveMentions }}</p>
           <ul class="mt-1.5 space-y-1.5">

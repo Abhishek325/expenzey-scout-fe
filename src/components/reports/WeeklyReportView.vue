@@ -2,21 +2,21 @@
   <div v-if="content" class="flex flex-col gap-5">
     <ExecutiveSummaryHero :title="executiveSummaryTitle" :summary="content.executiveSummary" />
 
-    <div class="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-12 lg:gap-5">
+    <div class="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-3 lg:gap-5">
       <ReportInsightList
-        class="h-full lg:col-span-3"
+        class="h-full"
         :title="keyWinsTitle"
         :items="content.keyWins"
         variant="success"
       />
       <ReportInsightList
-        class="h-full lg:col-span-3"
+        class="h-full"
         :title="needsAttentionTitle"
         :items="content.needsAttention"
         variant="warning"
       />
       <TopProductsReportTable
-        class="h-full lg:col-span-6"
+        class="h-full"
         :title="topProductsTitle"
         :products="content.topProducts"
       />
@@ -24,7 +24,7 @@
 
     <CustomerInsightsKpis :title="customerInsightsTitle" :insights="content.customerInsights" />
 
-    <div class="grid grid-cols-1 items-stretch gap-5 lg:grid-cols-2">
+    <div class="grid grid-cols-1 items-stretch gap-5 lg:grid-cols-3">
       <OpportunityReportCards
         class="h-full"
         :title="opportunitiesTitle"
@@ -35,23 +35,22 @@
         :title="recommendedActionsTitle"
         :actions="content.recommendedActions"
       />
+      <CustomerFeedbackReportCard
+        class="h-full"
+        :title="reviewIntelligenceTitle"
+        :intelligence="content.reviewIntelligence"
+      />
     </div>
-
-    <ReviewIntelligenceReportSection
-      v-if="content.reviewIntelligence"
-      :title="reviewIntelligenceTitle"
-      :intelligence="content.reviewIntelligence"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
+import CustomerFeedbackReportCard from "@/components/reports/CustomerFeedbackReportCard.vue";
 import CustomerInsightsKpis from "@/components/reports/CustomerInsightsKpis.vue";
 import ExecutiveSummaryHero from "@/components/reports/ExecutiveSummaryHero.vue";
 import OpportunityReportCards from "@/components/reports/OpportunityReportCards.vue";
 import RecommendedActionsList from "@/components/reports/RecommendedActionsList.vue";
 import ReportInsightList from "@/components/reports/ReportInsightList.vue";
-import ReviewIntelligenceReportSection from "@/components/reports/ReviewIntelligenceReportSection.vue";
 import TopProductsReportTable from "@/components/reports/TopProductsReportTable.vue";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 import type { WeeklyReportContent } from "@/types/ai";

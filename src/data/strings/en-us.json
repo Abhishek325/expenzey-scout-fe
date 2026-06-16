@@ -126,7 +126,7 @@
           },
           "complaint": {
             "delivery": "Delivery delays",
-            "quality": "Packaging damage",
+            "quality": "Product quality",
             "price": "Pricing concerns",
             "support": "Support issues"
           }
@@ -232,10 +232,18 @@
       "customerInsights": "Customer Insights",
       "opportunities": "Opportunities",
       "recommendedActions": "Recommended Actions",
+      "customerFeedback": "Customer Feedback",
       "reviewIntelligence": "Review Intelligence",
-      "overallSentiment": "Overall Sentiment",
+      "overallSentiment": "Overall Sentiment"
+    },
+    "customerFeedback": {
+      "basedOnReviews": "Based on {count} reviews",
       "topPositiveTheme": "Top Positive Theme",
-      "topComplaintTheme": "Top Complaint Theme"
+      "topComplaintTheme": "Top Complaint Theme",
+      "mentionedInPositive": "Mentioned in {percent}% of positive reviews",
+      "mentionedInNegative": "Mentioned in {percent}% of negative reviews",
+      "viewAllInsights": "View all review insights",
+      "noTheme": "No theme detected"
     },
     "customerKpi": {
       "newCustomers": "New Customers",

@@ -39,8 +39,12 @@ export interface WeeklyReportOpportunity {
 
 export interface WeeklyReportReviewIntelligence {
   sentimentScore?: number;
+  sentimentChangePercent?: number;
+  totalReviews?: number;
   topPositiveTheme?: string;
+  topPositiveThemePercent?: number;
   topComplaintTheme?: string;
+  topComplaintThemePercent?: number;
 }
 
 export interface WeeklyReportContent {
