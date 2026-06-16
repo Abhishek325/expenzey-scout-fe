@@ -10,7 +10,7 @@
     >
       <div
         v-if="isOpen"
-        class="pointer-events-auto fixed right-6 z-[10001] flex w-[min(100vw-3rem,24rem)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+        class="pointer-events-auto fixed right-6 z-[10001] flex w-[min(100vw-3rem,28rem)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
         :class="panelBottomClass"
         style="height: min(32rem, calc(100vh - 7rem))"
       >

@@ -21,6 +21,12 @@
     "title": "Dashboard",
     "subtitle": "Overview of your store performance",
     "greeting": "Welcome back! Here's what's happening with your store.",
+    "metrics": {
+      "totalRevenue": "Revenue",
+      "orders": "Orders",
+      "customers": "Customers",
+      "aov": "AOV"
+    },
     "aiInsights": {
       "businessSummaryTitle": "AI Business Summary",
       "opportunitiesTitle": "AI Opportunities",
@@ -105,10 +111,22 @@
     }
   },
   "chat": {
-    "greetingDefault": "Hi! I'm your AI assistant. Ask me anything about your store.",
-    "inputPlaceholder": "Ask anything about your store...",
-    "openChat": "Open Ask Expenzey AI",
-    "closeChat": "Close chat"
+    "widgetTitle": "Store Analyst",
+    "greetingDefault": "Ask questions about your store performance, products, customers, reviews, and opportunities.",
+    "inputPlaceholder": "Ask about your store...",
+    "openChat": "Open Store Analyst",
+    "closeChat": "Close chat",
+    "clearChat": "Clear chat",
+    "analyzing": "Analyzing your store...",
+    "copy": "Copy",
+    "regenerate": "Regenerate",
+    "privacyNote": "Your store data never leaves WordPress except when generating AI responses.",
+    "guardrailReply": "I can only answer questions about your WooCommerce store data.",
+    "viewOpportunity": "View Opportunity",
+    "productDetails": "Product Details"
+  },
+  "usage": {
+    "remaining": "{remaining} remaining"
   },
   "reports": {
     "title": "AI Reports",
