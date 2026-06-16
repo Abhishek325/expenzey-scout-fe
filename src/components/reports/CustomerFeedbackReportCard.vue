@@ -86,6 +86,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { useRoute } from "vue-router";
 import FaIcon from "@/components/icons/FaIcon.vue";
 import ReportSectionCard from "@/components/reports/ReportSectionCard.vue";
 import { useLocalizedString } from "@/composables/useLocalizedString";
@@ -108,7 +109,15 @@ const mentionedInPositiveRaw = useLocalizedString("reports", "customerFeedback.m
 const mentionedInNegativeRaw = useLocalizedString("reports", "customerFeedback.mentionedInNegative");
 const basedOnReviewsRaw = useLocalizedString("reports", "customerFeedback.basedOnReviews");
 
-const viewAllLink = "/reviews";
+const route = useRoute();
+
+const viewAllLink = computed(() => {
+  const id = route.name === "report-detail" ? String(route.params.id ?? "") : "";
+  if (id) {
+    return { path: "/reviews", query: { fromReportId: id } };
+  }
+  return "/reviews";
+});
 
 const hasData = computed(() => (props.intelligence?.totalReviews ?? 0) > 0);
 const sentimentScore = computed(() => props.intelligence?.sentimentScore ?? 0);
@@ -119,7 +128,7 @@ const topComplaintTheme = computed(() => props.intelligence?.topComplaintTheme);
 const topComplaintThemePercent = computed(() => props.intelligence?.topComplaintThemePercent);
 
 const basedOnLabel = computed(() =>
-  basedOnReviewsRaw.value.replace("{count}", String(props.intelligence?.totalReviews ?? 0)),
+  basedOnReviewsRaw.value.replace("{count}", String(props.intelligence?.totalReviews ?? "—")),
 );
 
 const mentionedInPositiveLabel = computed(() =>

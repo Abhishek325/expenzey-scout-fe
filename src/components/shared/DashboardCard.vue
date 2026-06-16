@@ -19,7 +19,16 @@
     </div>
 
     <div :class="bodyWrapperClasses">
-      <p v-if="loading" class="text-sm text-slate-500">{{ loadingLabel }}</p>
+      <template v-if="loading">
+        <slot v-if="$slots.skeleton" name="skeleton" />
+        <WidgetSkeleton
+          v-else-if="skeletonVariant !== 'none'"
+          :variant="skeletonVariant"
+          :row-count="skeletonRowCount"
+          :columns="skeletonColumns"
+        />
+        <p v-else class="text-sm text-slate-500">{{ loadingLabel }}</p>
+      </template>
       <div v-else-if="error" class="flex items-center gap-3 text-sm text-rose-600">
         <span>{{ errorLabel }}</span>
         <button type="button" class="font-medium underline" @click="emit('retry')">
@@ -36,6 +45,10 @@
 <script setup lang="ts">
 import { computed, unref } from "vue";
 import CardHeaderAction from "@/components/shared/CardHeaderAction.vue";
+import WidgetSkeleton, {
+  type WidgetSkeletonVariant,
+} from "@/components/shared/skeleton/WidgetSkeleton.vue";
+import type { DataTableColumn } from "@/components/shared/DataTable.vue";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 import { isActionDisabled, type DashboardCardAction } from "@/types/dashboardWidget";
 
@@ -51,6 +64,9 @@ const props = withDefaults(
     bodyClass?: string;
     sectionClass?: string;
     sectionPadding?: boolean;
+    skeletonVariant?: WidgetSkeletonVariant;
+    skeletonRowCount?: number;
+    skeletonColumns?: DataTableColumn[];
   }>(),
   {
     fillHeight: false,
@@ -58,6 +74,9 @@ const props = withDefaults(
     sectionClass: "",
     sectionPadding: false,
     emptyLabel: "",
+    skeletonVariant: "card",
+    skeletonRowCount: 5,
+    skeletonColumns: undefined,
   }
 );
 

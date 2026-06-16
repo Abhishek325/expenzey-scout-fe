@@ -8,17 +8,13 @@
     </div>
     <div class="flex flex-wrap items-center gap-3">
       <DateRangePicker />
-      <ExportButton @export="emit('export')" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import DateRangePicker from "@/components/shared/DateRangePicker.vue";
-import ExportButton from "@/components/shared/ExportButton.vue";
 import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
-
-const emit = defineEmits<{ export: [] }>();
 
 const copy = useReactiveLocaleStringRecord("dashboard", ["title", "greeting"] as const);
 </script>

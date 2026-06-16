@@ -421,6 +421,7 @@
     "detail": {
       "title": "Review Intelligence Details",
       "subtitle": "Insights from {count} reviews analyzed",
+      "subtitleLoading": "Insights from reviews analyzed",
       "sentimentTrend": "Sentiment Trend",
       "sentimentBreakdown": "Sentiment Breakdown",
       "topPositiveThemes": "Top Positive Themes",

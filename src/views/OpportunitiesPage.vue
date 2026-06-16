@@ -10,7 +10,28 @@
       </div>
     </header>
 
-    <p v-if="loading" class="text-sm text-slate-500">{{ common.loading }}</p>
+    <template v-if="loading">
+      <SkeletonShimmer>
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <div
+            v-for="n in 5"
+            :key="n"
+            class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+          >
+            <SkeletonBlock class-name="h-10 w-10 rounded-lg" />
+            <div class="min-w-0 flex-1 space-y-2">
+              <SkeletonBlock class-name="h-6 w-1/3" />
+              <SkeletonBlock class-name="h-4 w-2/3" />
+              <SkeletonBlock class-name="h-3 w-1/2" />
+            </div>
+          </div>
+        </div>
+      </SkeletonShimmer>
+
+      <div class="mt-2">
+        <WidgetSkeleton variant="table" :row-count="6" :columns="opportunityTableSkeletonColumns" />
+      </div>
+    </template>
     <div v-else-if="error" class="flex items-center gap-3 text-sm text-rose-600">
       <span>{{ common.error }}</span>
       <button type="button" class="font-medium underline" @click="reload">{{ common.retry }}</button>
@@ -55,6 +76,8 @@
           :mode="tableMode"
           :open-menu-id="openMenuId"
           :status-of="statusOf"
+          :loading="loading"
+          :skeleton-row-count="6"
           @view-details="openDetail"
           @mark-done="markDone"
           @dismiss="dismiss"
@@ -108,11 +131,15 @@ import DateRangePicker from "@/components/shared/DateRangePicker.vue";
 import OpportunitiesFilterTabs from "@/components/opportunities/OpportunitiesFilterTabs.vue";
 import OpportunitiesSummaryCards from "@/components/opportunities/OpportunitiesSummaryCards.vue";
 import OpportunitiesTable from "@/components/opportunities/OpportunitiesTable.vue";
+import SkeletonBlock from "@/components/shared/skeleton/SkeletonBlock.vue";
+import SkeletonShimmer from "@/components/shared/skeleton/SkeletonShimmer.vue";
+import WidgetSkeleton from "@/components/shared/skeleton/WidgetSkeleton.vue";
 import {
   useOpportunitiesPage,
   type OpportunitySortKey,
 } from "@/composables/opportunities/useOpportunitiesPage";
 import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
+import type { DataTableColumn } from "@/components/shared/DataTable.vue";
 
 const OpportunityDetailDrawer = defineAsyncComponent(
   () => import("@/components/opportunities/OpportunityDetailDrawer.vue"),
@@ -161,6 +188,14 @@ const copy = useReactiveLocaleStringRecord("opportunities", [
 ] as const);
 
 const common = useReactiveLocaleStringRecord("common", ["loading", "error", "retry"] as const);
+
+const opportunityTableSkeletonColumns: DataTableColumn[] = [
+  { key: "opportunity", label: "", className: "w-[40%]" },
+  { key: "impact", label: "", className: "w-[12%]" },
+  { key: "dataReason", label: "", className: "w-[14%]" },
+  { key: "recommendation", label: "", className: "w-[28%]" },
+  { key: "action", label: "", align: "right", className: "w-[14%]" },
+];
 
 function onSortChange(event: Event) {
   setSort((event.target as HTMLSelectElement).value as OpportunitySortKey);

@@ -7,6 +7,8 @@
     :empty-label="emptyLabel"
     :action="viewAllAction"
     section-padding
+    skeleton-variant="list"
+    :skeleton-row-count="4"
     body-class="!p-0"
     @retry="reload"
   >

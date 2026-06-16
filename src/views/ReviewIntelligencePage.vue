@@ -1,14 +1,39 @@
 <template>
   <div class="flex min-h-full flex-col gap-6 pb-10">
     <header class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-      <div>
+      <div class="min-w-0">
+        <RouterLink
+          v-if="backToReportLink"
+          :to="backToReportLink"
+          class="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 transition hover:text-slate-700"
+        >
+          <span aria-hidden="true">←</span>
+          {{ backToReportLabel }}
+        </RouterLink>
         <h1 class="text-xl font-semibold text-slate-900">{{ title }}</h1>
         <p class="mt-1 text-sm text-slate-500">{{ subtitle }}</p>
       </div>
       <DateRangePicker />
     </header>
 
-    <p v-if="loading" class="text-sm text-slate-500">{{ loadingLabel }}</p>
+    <div v-if="loading" class="space-y-4">
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <WidgetSkeleton variant="card" :row-count="3" />
+        <WidgetSkeleton variant="card" :row-count="3" />
+        <WidgetSkeleton variant="card" :row-count="3" />
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+        <WidgetSkeleton variant="chart" />
+        <WidgetSkeleton variant="chart" />
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <WidgetSkeleton variant="table" :row-count="6" :columns="themeTableSkeletonColumns" />
+        <WidgetSkeleton variant="table" :row-count="6" :columns="themeTableSkeletonColumns" />
+        <WidgetSkeleton variant="list" :row-count="3" />
+      </div>
+    </div>
     <div v-else-if="error" class="flex items-center gap-3 text-sm text-rose-600">
       <span>{{ errorLabel }}</span>
       <button type="button" class="font-medium underline" @click="reload">{{ retryLabel }}</button>
@@ -80,6 +105,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 import DateRangePicker from "@/components/shared/DateRangePicker.vue";
 import ReviewNegativeReviewsDrawer from "@/components/reviews/ReviewNegativeReviewsDrawer.vue";
 import ReviewNegativeReviewsPanel from "@/components/reviews/ReviewNegativeReviewsPanel.vue";
@@ -88,8 +114,10 @@ import ReviewSentimentSummaryCard from "@/components/reviews/ReviewSentimentSumm
 import ReviewSentimentTrendChart from "@/components/reviews/ReviewSentimentTrendChart.vue";
 import ReviewThemeMentionList from "@/components/reviews/ReviewThemeMentionList.vue";
 import ReviewThemeTable from "@/components/reviews/ReviewThemeTable.vue";
+import WidgetSkeleton from "@/components/shared/skeleton/WidgetSkeleton.vue";
 import { useReviewIntelligencePage } from "@/composables/reviews/useReviewIntelligencePage";
 import { useLocalizedString } from "@/composables/useLocalizedString";
+import type { DataTableColumn } from "@/components/shared/DataTable.vue";
 
 const {
   loading,
@@ -118,10 +146,30 @@ const sentimentBreakdownLabel = useLocalizedString("reviews", "detail.sentimentB
 const topPositiveThemesLabel = useLocalizedString("reviews", "detail.topPositiveThemes");
 const topComplaintThemesLabel = useLocalizedString("reviews", "detail.topComplaintThemes");
 const recentNegativeReviewsLabel = useLocalizedString("reviews", "detail.recentNegativeReviews");
+const backToReportLabel = useLocalizedString("reports", "columns.viewReport");
+const subtitleLoadingLabel = useLocalizedString("reviews", "detail.subtitleLoading");
 
-const subtitle = computed(() =>
-  subtitleRaw.value.replace("{count}", String(data.value?.totalReviews ?? 0)),
-);
+const route = useRoute();
+const backToReportLink = computed(() => {
+  const fromReportId = route.query.fromReportId;
+  if (typeof fromReportId === "string" && fromReportId.trim() !== "") {
+    return { path: `/reports/${fromReportId}` };
+  }
+  return null;
+});
+
+const themeTableSkeletonColumns: DataTableColumn[] = [
+  { key: "theme", label: "" },
+  { key: "mentions", label: "" },
+  { key: "percent", label: "" },
+];
+
+const subtitle = computed(() => {
+  if (loading.value) {
+    return subtitleLoadingLabel.value;
+  }
+  return subtitleRaw.value.replace("{count}", String(data.value?.totalReviews ?? 0));
+});
 
 const positiveThemeRows = computed(() =>
   positiveThemes.value.map((entry) => ({

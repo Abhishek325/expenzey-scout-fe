@@ -14,7 +14,7 @@
     </div>
 
     <div class="min-h-0 flex-1 overflow-y-auto p-4">
-      <p v-if="loading" class="text-sm text-slate-500">{{ loadingLabel }}</p>
+      <WidgetSkeleton v-if="loading" variant="card" :row-count="4" />
       <div v-else-if="error" class="flex items-center gap-3 text-sm text-rose-600">
         <span>{{ errorLabel }}</span>
         <button type="button" class="font-medium underline" @click="reload">{{ retryLabel }}</button>
@@ -74,6 +74,7 @@
 import { computed } from "vue";
 import FaIcon from "@/components/icons/FaIcon.vue";
 import GenerateReportButton from "@/components/dashboard/GenerateReportButton.vue";
+import WidgetSkeleton from "@/components/shared/skeleton/WidgetSkeleton.vue";
 import { useWeeklyReport } from "@/composables/dashboard/useWeeklyReport";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 import type { WeeklyReportWidgetRow } from "@/utils/weeklyReportWidget";

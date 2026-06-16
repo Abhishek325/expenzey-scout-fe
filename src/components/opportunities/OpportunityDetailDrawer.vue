@@ -1,84 +1,89 @@
 <template>
   <Teleport to="body">
     <div class="opportunity-drawer fixed inset-0 z-[10003] flex justify-end" @keydown="onKeydown">
-      <button
-        type="button"
-        class="absolute inset-0 bg-slate-900/30"
-        :aria-label="closeLabel"
-        @click="emit('close')"
-      />
-      <aside
-        class="relative flex h-full w-full max-w-[56rem] flex-col overflow-hidden bg-white shadow-2xl"
-        role="dialog"
-        aria-modal="true"
-      >
-        <OpportunityDrawerHeader :opportunity="opportunity" @close="emit('close')" />
+      <Transition name="drawer-backdrop" appear>
+        <button
+          type="button"
+          class="absolute inset-0 bg-slate-900/30"
+          :aria-label="closeLabel"
+          @click="emit('close')"
+        />
+      </Transition>
 
-        <div class="min-h-0 flex-1 overflow-y-auto bg-slate-50">
-          <div class="grid gap-4 px-6 py-5 lg:grid-cols-[1fr_22rem] lg:items-start">
-            <div class="flex min-w-0 flex-col gap-6">
-              <OpportunityWhyDetected />
-              <OpportunitySupportingData />
-              <OpportunityRelatedPanel
-                class="lg:hidden"
-                :opportunity="opportunity"
-                @select-related="emit('selectRelated', $event)"
-              />
-            </div>
+      <Transition name="drawer-panel" appear>
+        <aside
+          class="relative flex h-full w-full max-w-[56rem] flex-col overflow-hidden bg-white shadow-2xl"
+          role="dialog"
+          aria-modal="true"
+        >
+          <OpportunityDrawerHeader :opportunity="opportunity" @close="emit('close')" />
 
-            <div class="flex flex-col gap-4 lg:sticky lg:top-5">
-              <OpportunityImpactPanel />
-              <OpportunityActionsPanel :opportunity="opportunity" />
-              <OpportunityRelatedPanel
-                class="hidden lg:block"
-                :opportunity="opportunity"
-                @select-related="emit('selectRelated', $event)"
-              />
+          <div class="min-h-0 flex-1 overflow-y-auto bg-slate-50">
+            <div class="grid gap-4 px-6 py-5 lg:grid-cols-[1fr_22rem] lg:items-start">
+              <div class="flex min-w-0 flex-col gap-6">
+                <OpportunityWhyDetected />
+                <OpportunitySupportingData />
+                <OpportunityRelatedPanel
+                  class="lg:hidden"
+                  :opportunity="opportunity"
+                  @select-related="emit('selectRelated', $event)"
+                />
+              </div>
+
+              <div class="flex flex-col gap-4 lg:sticky lg:top-5">
+                <OpportunityImpactPanel />
+                <OpportunityActionsPanel :opportunity="opportunity" />
+                <OpportunityRelatedPanel
+                  class="hidden lg:block"
+                  :opportunity="opportunity"
+                  @select-related="emit('selectRelated', $event)"
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        <footer class="shrink-0 border-t border-slate-100 px-6 py-3">
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <div class="flex min-w-0 items-center gap-2 text-xs text-slate-500">
-              <span class="font-medium text-slate-600">{{ copy["drawer.opportunityId"] }}:</span>
-              <code class="truncate rounded bg-slate-100 px-2 py-0.5 font-mono text-[11px] text-slate-700">
-                {{ opportunity.id }}
-              </code>
+          <footer class="shrink-0 border-t border-slate-100 px-6 py-3">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div class="flex min-w-0 items-center gap-2 text-xs text-slate-500">
+                <span class="font-medium text-slate-600">{{ copy["drawer.opportunityId"] }}:</span>
+                <code class="truncate rounded bg-slate-100 px-2 py-0.5 font-mono text-[11px] text-slate-700">
+                  {{ opportunity.id }}
+                </code>
+                <button
+                  type="button"
+                  class="rounded px-2 py-0.5 text-[11px] font-medium text-indigo-600 hover:bg-indigo-50"
+                  @click="copyId"
+                >
+                  {{ copied ? copy["drawer.copiedId"] : copy["drawer.copyId"] }}
+                </button>
+              </div>
               <button
+                v-if="
+                  lifecycleStatus === 'active' ||
+                  lifecycleStatus === 'in_progress' ||
+                  !lifecycleStatus
+                "
                 type="button"
-                class="rounded px-2 py-0.5 text-[11px] font-medium text-indigo-600 hover:bg-indigo-50"
-                @click="copyId"
+                class="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100"
+                @click="emit('markDone')"
               >
-                {{ copied ? copy["drawer.copiedId"] : copy["drawer.copyId"] }}
+                {{ copy["actions.markDone"] }}
               </button>
+              <span
+                v-else-if="lifecycleStatus === 'done' || lifecycleStatus === 'dismissed'"
+                class="rounded-lg border px-3 py-1.5 text-xs font-medium"
+                :class="
+                  lifecycleStatus === 'done'
+                    ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                    : 'border-slate-200 bg-slate-100 text-slate-600'
+                "
+              >
+                {{ lifecycleStatus === 'done' ? copy['status.done'] : copy['status.dismissed'] }}
+              </span>
             </div>
-            <button
-              v-if="
-                lifecycleStatus === 'active' ||
-                lifecycleStatus === 'in_progress' ||
-                !lifecycleStatus
-              "
-              type="button"
-              class="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100"
-              @click="emit('markDone')"
-            >
-              {{ copy["actions.markDone"] }}
-            </button>
-            <span
-              v-else-if="lifecycleStatus === 'done' || lifecycleStatus === 'dismissed'"
-              class="rounded-lg border px-3 py-1.5 text-xs font-medium"
-              :class="
-                lifecycleStatus === 'done'
-                  ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                  : 'border-slate-200 bg-slate-100 text-slate-600'
-              "
-            >
-              {{ lifecycleStatus === 'done' ? copy['status.done'] : copy['status.dismissed'] }}
-            </span>
-          </div>
-        </footer>
-      </aside>
+          </footer>
+        </aside>
+      </Transition>
     </div>
   </Teleport>
 </template>
@@ -137,3 +142,28 @@ async function copyId() {
   }
 }
 </script>
+
+<style scoped>
+.drawer-backdrop-enter-active,
+.drawer-backdrop-leave-active {
+  transition: opacity 160ms ease-out;
+}
+
+.drawer-backdrop-enter-from,
+.drawer-backdrop-leave-to {
+  opacity: 0;
+}
+
+.drawer-panel-enter-active,
+.drawer-panel-leave-active {
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 220ms ease-out;
+}
+
+.drawer-panel-enter-from,
+.drawer-panel-leave-to {
+  transform: translateX(18px);
+  opacity: 0;
+}
+</style>

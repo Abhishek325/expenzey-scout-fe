@@ -6,6 +6,8 @@
     :has-data="hasData"
     :empty-label="emptyLabel"
     :action="viewAllAction"
+    skeleton-variant="list"
+    :skeleton-row-count="3"
     :body-class="INSIGHTS_CARD_BODY_HEIGHT"
     @retry="reload"
   >

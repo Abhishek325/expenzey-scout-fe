@@ -3,7 +3,9 @@
     <div class="border-b border-slate-100 px-4 py-3">
       <h3 class="text-sm font-semibold text-slate-900">{{ title }}</h3>
     </div>
-    <div v-if="loading" class="px-4 py-6 text-sm text-slate-500">Loading snapshot…</div>
+    <div v-if="loading" class="px-4 py-4">
+      <WidgetSkeleton variant="list" :row-count="2" />
+    </div>
     <ul v-else class="divide-y divide-slate-100">
       <li v-if="snapshot?.bestPerformingProduct" class="px-4 py-3">
         <p class="text-xs font-medium uppercase tracking-wide text-emerald-600">{{ bestLabel }}</p>
@@ -28,6 +30,7 @@
 </template>
 
 <script setup lang="ts">
+import WidgetSkeleton from "@/components/shared/skeleton/WidgetSkeleton.vue";
 import { useFormatCurrency } from "@/composables/useFormatCurrency";
 import { useStoreSnapshot } from "@/composables/dashboard/useStoreSnapshot";
 import { useLocalizedString } from "@/composables/useLocalizedString";

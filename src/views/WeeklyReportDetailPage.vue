@@ -1,6 +1,9 @@
 <template>
   <div class="flex min-h-full flex-col gap-6 pb-10">
-    <p v-if="loading" class="text-sm text-gray-500">{{ loadingLabel }}</p>
+    <div v-if="loading" class="space-y-4">
+      <WidgetSkeleton variant="card" :row-count="3" />
+      <WidgetSkeleton variant="card" :row-count="4" />
+    </div>
     <p v-else-if="error" class="text-sm text-rose-600">{{ error }}</p>
 
     <div
@@ -24,6 +27,7 @@ import { computed, inject, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import ReportDetailHeader from "@/components/reports/ReportDetailHeader.vue";
 import WeeklyReportView from "@/components/reports/WeeklyReportView.vue";
+import WidgetSkeleton from "@/components/shared/skeleton/WidgetSkeleton.vue";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 import { REPORTS_SERVICE_KEY, type IReportsService } from "@/services/reports/IReportsService";
 import type { WeeklyReportContent } from "@/types/ai";

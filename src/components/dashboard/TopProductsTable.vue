@@ -6,15 +6,24 @@
     :has-data="hasData"
     :empty-label="emptyLabel"
     :action="viewAllAction"
+    skeleton-variant="table"
+    :skeleton-columns="columns"
+    :skeleton-row-count="5"
     :body-class="`!p-0 ${INSIGHTS_CARD_BODY_HEIGHT}`"
     @retry="reload"
   >
-    <DataTable :columns="columns" :rows="visibleRows" row-key="id">
+    <DataTable
+      :columns="columns"
+      :rows="visibleRows"
+      row-key="id"
+      :loading="loading"
+      :skeleton-row-count="5"
+    >
       <template #cell-product="{ row }">
         <div class="flex items-center gap-2.5">
           <img
             v-if="productImageUrl(row)"
-            :src="productImageUrl(row)!"
+            :src="productImageUrl(row) ?? undefined"
             :alt="String(row.name)"
             class="h-8 w-8 shrink-0 rounded-md border border-slate-100 object-cover"
           />

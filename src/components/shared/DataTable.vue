@@ -1,6 +1,10 @@
 <template>
   <div class="overflow-x-auto">
+    <SkeletonShimmer v-if="loading" class="w-full">
+      <SkeletonTable :columns="columns" :row-count="skeletonRowCount" />
+    </SkeletonShimmer>
     <table
+      v-else
       class="w-full text-left text-xs"
       :class="fixed ? 'table-fixed' : 'min-w-full'"
     >
@@ -46,6 +50,9 @@
 </template>
 
 <script setup lang="ts">
+import SkeletonShimmer from "@/components/shared/skeleton/SkeletonShimmer.vue";
+import SkeletonTable from "@/components/shared/skeleton/SkeletonTable.vue";
+
 export interface DataTableColumn {
   key: string;
   label: string;
@@ -59,7 +66,9 @@ const props = withDefaults(
     rows: Record<string, unknown>[];
     rowKey?: string;
     fixed?: boolean;
+    loading?: boolean;
+    skeletonRowCount?: number;
   }>(),
-  { rowKey: "id", fixed: false }
+  { rowKey: "id", fixed: false, loading: false, skeletonRowCount: 5 }
 );
 </script>

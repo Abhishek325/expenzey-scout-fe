@@ -23,7 +23,7 @@
           v-for="item in items"
           :key="item.id"
           :to="item.route"
-          class="relative flex items-center border-b-2 border-transparent text-sm font-medium text-slate-600 transition hover:text-expenzey-600"
+          class="relative flex items-center border-b-2 border-transparent text-sm font-medium text-slate-600 transition hover:text-expenzey-600 focus:outline-none focus-visible:outline-none focus:!shadow-none focus-visible:!shadow-none focus:ring-0 focus-visible:ring-0"
           active-class="!border-expenzey-600 !text-expenzey-600"
         >
           {{ labelFor(item.labelKey) }}

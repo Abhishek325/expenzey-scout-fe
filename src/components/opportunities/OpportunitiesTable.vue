@@ -1,6 +1,13 @@
 <template>
   <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-    <DataTable :columns="columns" :rows="tableRows" row-key="id" fixed>
+    <DataTable
+      :columns="columns"
+      :rows="tableRows"
+      row-key="id"
+      fixed
+      :loading="loading"
+      :skeleton-row-count="skeletonRowCount"
+    >
       <template #cell-opportunity="{ row: raw }">
         <div class="flex min-w-0 items-start gap-3 py-1">
           <span
@@ -96,6 +103,8 @@ const props = defineProps<{
   mode?: OpportunitiesTableMode;
   openMenuId?: string | null;
   statusOf?: (id: string) => OpportunityLifecycleStatus;
+  loading?: boolean;
+  skeletonRowCount?: number;
 }>();
 
 const emit = defineEmits<{
