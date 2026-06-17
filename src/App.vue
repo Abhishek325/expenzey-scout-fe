@@ -9,12 +9,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute } from "vue-router";
+import { isOnboardingPath } from "@/constants/routes";
 import AppShell from "@/components/layout/AppShell.vue";
 import OnboardingLayout from "@/views/OnboardingLayout.vue";
 import DevToolbar from "@/dev/DevToolbar.vue";
 
 const route = useRoute();
 
-const isOnboarding = computed(() => route.path.startsWith("/onboarding"));
+const isOnboarding = computed(() => isOnboardingPath(route.path));
 const showDevToolbar = import.meta.env.DEV;
 </script>

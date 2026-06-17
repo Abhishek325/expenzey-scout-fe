@@ -1,5 +1,6 @@
 import { computed, inject, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { ROUTES } from "@/constants/routes";
 import { USAGE_SERVICE_KEY, type IUsageService } from "@/services/usage/IUsageService";
 import type { PlanTier, UsageQuota } from "@/types/usage";
 
@@ -38,7 +39,7 @@ export function usePlan() {
   }
 
   function goToUpgrade(_feature?: string) {
-    void router.push("/pro");
+    void router.push(ROUTES.PRO);
   }
 
   onMounted(() => {

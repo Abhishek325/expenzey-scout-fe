@@ -37,6 +37,7 @@
 import { computed, inject } from "vue";
 import { useRouter } from "vue-router";
 import { resolveStringKey } from "@/composables/dashboard/resolveStringKey";
+import { ROUTES } from "@/constants/routes";
 import { CHAT_SERVICE_KEY, type IChatService } from "@/services/chat/IChatService";
 import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
 import type { ChatMessage as ChatMessageModel, ChatRole } from "@/types/chat";
@@ -71,7 +72,7 @@ const segments = computed(() =>
 
 async function onLinkClick(link: NonNullable<typeof segments.value[number]["link"]>) {
   if (link.type === "opportunity") {
-    await router.push({ path: "/opportunities", query: { id: link.id } });
+    await router.push({ path: ROUTES.OPPORTUNITIES, query: { id: link.id } });
     return;
   }
 

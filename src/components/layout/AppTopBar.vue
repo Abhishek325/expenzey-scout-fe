@@ -5,10 +5,9 @@
     <div class="flex min-w-0 flex-1 items-stretch gap-8">
       <div class="flex items-center gap-3 py-3">
         <div
-          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-expenzey-600 text-white shadow-sm"
-          aria-hidden="true"
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white p-1.5 shadow-sm ring-1 ring-slate-200"
         >
-          <ExpenzeyIcon />
+          <img :src="logoUrl" alt="" class="h-full w-full object-contain opacity-90" aria-hidden="true" />
         </div>
         <div class="min-w-0">
           <p class="text-sm font-semibold tracking-tight text-slate-900">
@@ -34,7 +33,7 @@
     <div class="flex shrink-0 items-center gap-3 py-3">
       <RouterLink
         v-if="!isPro"
-        to="/pro"
+        :to="ROUTES.PRO"
         class="inline-flex items-center gap-1.5 rounded-lg border border-transparent px-3 py-1.5 text-sm font-semibold text-expenzey-600 transition hover:bg-expenzey-50 hover:text-expenzey-700"
         active-class="!border-expenzey-500 !bg-expenzey-50"
       >
@@ -79,14 +78,15 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import ExpenzeyIcon from "@/components/icons/ExpenzeyIcon.vue";
 import FaIcon from "@/components/icons/FaIcon.vue";
 import { usePlan } from "@/composables/usePlan";
-import sidebarItems from "@/data/sidebar.json";
+import { ROUTES } from "@/constants/routes";
+import sidebarItems from "@/data/sidebar";
 import {
   useLocalizedString,
   useReactiveLocaleStringRecord,
 } from "@/composables/useLocalizedString";
+import logoUrl from "../../../logo.png";
 
 interface NavItem {
   id: string;

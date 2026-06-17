@@ -30,6 +30,7 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
+import { ROUTES } from "@/constants/routes";
 import { useAppStore } from "@/stores/appStore";
 
 const router = useRouter();
@@ -41,10 +42,10 @@ function toggleConnected() {
 }
 
 function goOnboarding() {
-  void router.push("/onboarding/welcome");
+  void router.push(ROUTES.ONBOARDING_WELCOME);
 }
 
 function goDashboard() {
-  void router.push("/dashboard");
+  void router.push(ROUTES.DASHBOARD);
 }
 </script>

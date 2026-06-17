@@ -10,7 +10,7 @@
         <h2 class="text-lg font-semibold text-slate-900">{{ reportTitle }}</h2>
         <p class="mt-3 text-sm leading-relaxed text-slate-600">{{ content.executiveSummary }}</p>
         <RouterLink
-          :to="`/reports/${reportId}`"
+          :to="reportDetailPath(reportId)"
           class="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
         >
           {{ viewFullReport }}
@@ -56,6 +56,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import FaIcon from "@/components/icons/FaIcon.vue";
+import { reportDetailPath } from "@/constants/routes";
 import TrendBadge from "@/components/shared/TrendBadge.vue";
 import { useFormatCurrency } from "@/composables/useFormatCurrency";
 import { useLocalizedString } from "@/composables/useLocalizedString";

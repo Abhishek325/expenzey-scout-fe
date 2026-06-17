@@ -1,7 +1,7 @@
 <template>
   <header class="flex flex-col gap-4">
     <RouterLink
-      to="/reports"
+      :to="ROUTES.REPORTS"
       class="inline-flex w-fit items-center gap-1.5 text-sm font-medium text-slate-600 transition hover:text-slate-900"
     >
       <FaIcon icon="fa-arrow-left" size="xs" />
@@ -31,6 +31,7 @@
 
 <script setup lang="ts">
 import FaIcon from "@/components/icons/FaIcon.vue";
+import { ROUTES } from "@/constants/routes";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 
 defineProps<{

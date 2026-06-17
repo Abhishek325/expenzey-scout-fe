@@ -12,6 +12,7 @@ import {
   type OpportunityFilterTab,
 } from "@/utils/opportunityStyles";
 import type { OpportunityDetail } from "@/types/ai";
+import { ROUTES } from "@/constants/routes";
 
 export type OpportunitySortKey = "impact" | "priority";
 export type OpportunitiesTableMode = "active" | "archived";
@@ -36,8 +37,6 @@ function sortItems(
     return (IMPACT_LEVEL_DOTS[b.impactLevel] ?? 0) - (IMPACT_LEVEL_DOTS[a.impactLevel] ?? 0);
   });
 }
-
-const OPPORTUNITIES_PATH = "/opportunities";
 
 export function useOpportunitiesPage() {
   const reportsService = inject(REPORTS_SERVICE_KEY) as IReportsService;
@@ -81,7 +80,7 @@ export function useOpportunitiesPage() {
   watch(
     () => {
       const current = router.currentRoute.value;
-      return current.path === OPPORTUNITIES_PATH ? current.query.id : undefined;
+      return current.path === ROUTES.OPPORTUNITIES ? current.query.id : undefined;
     },
     (id) => {
       selectedId.value = typeof id === "string" && id ? id : null;
@@ -167,7 +166,7 @@ export function useOpportunitiesPage() {
 
   function syncQueryId(id: string | null) {
     const current = router.currentRoute.value;
-    if (current.path !== OPPORTUNITIES_PATH) return;
+    if (current.path !== ROUTES.OPPORTUNITIES) return;
 
     const query = { ...current.query };
     if (id) {
@@ -175,7 +174,7 @@ export function useOpportunitiesPage() {
     } else {
       delete query.id;
     }
-    void router.replace({ path: OPPORTUNITIES_PATH, query });
+    void router.replace({ path: ROUTES.OPPORTUNITIES, query });
   }
 
   function openDetail(id: string) {

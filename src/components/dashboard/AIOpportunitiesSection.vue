@@ -60,6 +60,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRouter } from "vue-router";
+import { ROUTES } from "@/constants/routes";
 import FaIcon from "@/components/icons/FaIcon.vue";
 import DashboardCard from "@/components/shared/DashboardCard.vue";
 import { INSIGHTS_CARD_BODY_HEIGHT } from "@/constants/dashboardRowHeights";
@@ -75,11 +76,11 @@ const recommendationLabel = useLocalizedString("dashboard", "aiInsights.recommen
 
 const viewAllAction = computed(() => ({
   kind: "link" as const,
-  to: "/opportunities",
+  to: ROUTES.OPPORTUNITIES,
   label: viewAll.value,
 }));
 
 function openOpportunity(id: string) {
-  void router.push({ path: "/opportunities", query: { id } });
+  void router.push({ path: ROUTES.OPPORTUNITIES, query: { id } });
 }
 </script>

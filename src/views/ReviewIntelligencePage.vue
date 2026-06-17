@@ -113,6 +113,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
+import { reportDetailPath } from "@/constants/routes";
 import DateRangePicker from "@/components/shared/DateRangePicker.vue";
 import ReviewNegativeReviewsDrawer from "@/components/reviews/ReviewNegativeReviewsDrawer.vue";
 import ReviewNegativeReviewsPanel from "@/components/reviews/ReviewNegativeReviewsPanel.vue";
@@ -173,7 +174,7 @@ const route = useRoute();
 const backToReportLink = computed(() => {
   const fromReportId = route.query.fromReportId;
   if (typeof fromReportId === "string" && fromReportId.trim() !== "") {
-    return { path: `/reports/${fromReportId}` };
+    return { path: reportDetailPath(fromReportId) };
   }
   return null;
 });

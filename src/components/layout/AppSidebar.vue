@@ -17,15 +17,8 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import sidebarItems from "@/data/sidebar.json";
+import sidebarItems, { type SidebarItem } from "@/data/sidebar";
 import { useLocalizedString } from "@/composables/useLocalizedString";
-
-interface SidebarItem {
-  id: string;
-  route: string;
-  icon: string;
-  labelKey: string;
-}
 
 const items = sidebarItems as SidebarItem[];
 

@@ -47,7 +47,7 @@
         </template>
         <template #cell-actions="{ row }">
           <RouterLink
-            :to="`/reports/${row.id}`"
+            :to="reportDetailPath(String(row.id))"
             class="inline-flex items-center rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
           >
             {{ viewReportLabel }}
@@ -61,6 +61,7 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
 import DataTable, { type DataTableColumn } from "@/components/shared/DataTable.vue";
+import { reportDetailPath } from "@/constants/routes";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
 import { formatGeneratedAt, formatReportPeriodShort } from "@/utils/reportFormatters";

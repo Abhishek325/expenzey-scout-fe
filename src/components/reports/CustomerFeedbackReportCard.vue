@@ -89,6 +89,7 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 import FaIcon from "@/components/icons/FaIcon.vue";
 import ReportSectionCard from "@/components/reports/ReportSectionCard.vue";
+import { ROUTES, reportDetailPath } from "@/constants/routes";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 import type { WeeklyReportReviewIntelligence } from "@/types/ai";
 
@@ -114,9 +115,9 @@ const route = useRoute();
 const viewAllLink = computed(() => {
   const id = route.name === "report-detail" ? String(route.params.id ?? "") : "";
   if (id) {
-    return { path: "/reviews", query: { fromReportId: id } };
+    return { path: ROUTES.REVIEWS, query: { fromReportId: id } };
   }
-  return "/reviews";
+  return ROUTES.REVIEWS;
 });
 
 const hasData = computed(() => (props.intelligence?.totalReviews ?? 0) > 0);

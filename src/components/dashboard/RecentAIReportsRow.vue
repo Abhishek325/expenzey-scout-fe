@@ -43,6 +43,7 @@
 import { computed } from "vue";
 import FaIcon from "@/components/icons/FaIcon.vue";
 import DashboardCard from "@/components/shared/DashboardCard.vue";
+import { ROUTES } from "@/constants/routes";
 import { useRecentReports } from "@/composables/dashboard/useRecentReports";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 
@@ -53,7 +54,7 @@ const title = useLocalizedString("dashboard", "aiInsights.recentReportsTitle");
 
 const viewAllAction = computed(() => ({
   kind: "link" as const,
-  to: "/reports",
+  to: ROUTES.REPORTS,
   label: viewAllReports.value,
 }));
 </script>

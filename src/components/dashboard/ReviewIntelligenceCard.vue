@@ -95,6 +95,7 @@ import FaIcon from "@/components/icons/FaIcon.vue";
 import DashboardCard from "@/components/shared/DashboardCard.vue";
 import ReviewIntelligenceEmptyState from "@/components/dashboard/ReviewIntelligenceEmptyState.vue";
 import { REVIEW_INTELLIGENCE_CARD_BODY_HEIGHT } from "@/constants/dashboardRowHeights";
+import { ROUTES } from "@/constants/routes";
 import { useReviewIntelligence } from "@/composables/dashboard/useReviewIntelligence";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 
@@ -119,7 +120,7 @@ const topComplaints = useLocalizedString("dashboard", "aiInsights.reviewIntellig
 
 const viewDetailsAction = computed(() => ({
   kind: "link" as const,
-  to: "/reviews",
+  to: ROUTES.REVIEWS,
   label: viewAll.value,
 }));
 </script>

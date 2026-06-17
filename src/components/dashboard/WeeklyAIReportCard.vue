@@ -52,7 +52,7 @@
     <div class="flex shrink-0 gap-2 border-t border-slate-100 p-3">
       <RouterLink
         v-if="reportId && hasContent"
-        :to="`/reports/${reportId}`"
+        :to="reportDetailPath(reportId)"
         class="inline-flex flex-1 items-center justify-center rounded-lg border border-indigo-200 bg-white px-3 py-2 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50"
       >
         {{ viewFullReport }}
@@ -73,6 +73,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import FaIcon from "@/components/icons/FaIcon.vue";
+import { reportDetailPath } from "@/constants/routes";
 import GenerateReportButton from "@/components/dashboard/GenerateReportButton.vue";
 import WidgetSkeleton from "@/components/shared/skeleton/WidgetSkeleton.vue";
 import { useWeeklyReport } from "@/composables/dashboard/useWeeklyReport";

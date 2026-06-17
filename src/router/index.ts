@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import { isOnboardingPath, ROUTES } from "@/constants/routes";
 import { useAppStore } from "@/stores/appStore";
 
 const router = createRouter({
@@ -14,12 +15,12 @@ const router = createRouter({
   },
   routes: [
     {
-      path: "/onboarding",
+      path: ROUTES.ONBOARDING,
       component: () => import("@/views/OnboardingLayout.vue"),
       children: [
         {
           path: "",
-          redirect: "/onboarding/welcome",
+          redirect: ROUTES.ONBOARDING_WELCOME,
         },
         {
           path: "welcome",
@@ -34,41 +35,41 @@ const router = createRouter({
       ],
     },
     {
-      path: "/",
-      redirect: "/dashboard",
+      path: ROUTES.ROOT,
+      redirect: ROUTES.DASHBOARD,
     },
     {
-      path: "/dashboard",
+      path: ROUTES.DASHBOARD,
       name: "dashboard",
       component: () => import("@/views/DashboardPage.vue"),
     },
     {
-      path: "/opportunities",
+      path: ROUTES.OPPORTUNITIES,
       name: "opportunities",
       component: () => import("@/views/OpportunitiesPage.vue"),
     },
     {
-      path: "/reports",
+      path: ROUTES.REPORTS,
       name: "reports",
       component: () => import("@/views/ReportsPage.vue"),
     },
     {
-      path: "/reports/:id",
+      path: ROUTES.REPORT_DETAIL,
       name: "report-detail",
       component: () => import("@/views/WeeklyReportDetailPage.vue"),
     },
     {
-      path: "/reviews",
+      path: ROUTES.REVIEWS,
       name: "review-intelligence",
       component: () => import("@/views/ReviewIntelligencePage.vue"),
     },
     {
-      path: "/settings",
+      path: ROUTES.SETTINGS,
       name: "settings",
       component: () => import("@/views/SettingsPage.vue"),
     },
     {
-      path: "/pro",
+      path: ROUTES.PRO,
       name: "pro-upgrade",
       component: () => import("@/views/ProUpgradePage.vue"),
     },
@@ -77,14 +78,17 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const appStore = useAppStore();
-  const isOnboarding = to.path.startsWith("/onboarding");
+  const isOnboarding = isOnboardingPath(to.path);
 
   if (appStore.requiresOnboarding && !isOnboarding) {
-    return { path: "/onboarding/welcome" };
+    if (appStore.connected && !appStore.dataConsent) {
+      return { path: ROUTES.ONBOARDING_CONNECT };
+    }
+    return { path: ROUTES.ONBOARDING_WELCOME };
   }
 
-  if (appStore.connected && isOnboarding && !import.meta.env.DEV) {
-    return { path: "/dashboard" };
+  if (appStore.connected && appStore.dataConsent && isOnboarding && !import.meta.env.DEV) {
+    return { path: ROUTES.DASHBOARD };
   }
 
   return true;
