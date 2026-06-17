@@ -1,7 +1,8 @@
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useLocalizedString } from "@/composables/useLocalizedString";
 import { getWpConfig } from "@/services/wp/applyWpBootstrap";
 import { wpRestFetch } from "@/services/wp/wpRestClient";
+import { isFreemiusCheckoutUrl } from "@/utils/freemiusCheckout";
 
 export type LicensingUrls = {
   enabled: boolean;
@@ -19,33 +20,31 @@ export function useLicensingUrls() {
   const accountUrl = ref("");
   const contactUrl = ref("");
   const marketingPricingUrl = useLocalizedString("pro", "pricingUrl");
+  const freemiusCheckoutReady = computed(() => isFreemiusCheckoutUrl(checkoutUrl.value));
+
+  function applyLicensingUrls(licensing: LicensingUrls): void {
+    if (licensing.upgradeUrl) {
+      checkoutUrl.value = licensing.upgradeUrl;
+    }
+    pricingPageUrl.value = licensing.pricingPageUrl ?? "";
+    accountUrl.value = licensing.accountUrl ?? "";
+    contactUrl.value = licensing.contactUrl ?? "";
+  }
 
   async function load(): Promise<void> {
-    checkoutUrl.value = marketingPricingUrl.value;
-
     const config = getWpConfig();
-    if (config?.licensing?.enabled) {
-      if (config.licensing.upgradeUrl) {
-        checkoutUrl.value = config.licensing.upgradeUrl;
-      }
-      pricingPageUrl.value = config.licensing.pricingPageUrl ?? "";
-      accountUrl.value = config.licensing.accountUrl ?? "";
-      contactUrl.value = config.licensing.contactUrl ?? "";
+    if (config?.licensing?.upgradeUrl) {
+      applyLicensingUrls(config.licensing);
       return;
     }
 
     try {
-      const res = await wpRestFetch<LicensingUrls>("/licensing/urls", { cacheTtlMs: 30_000 });
-      if (res.enabled) {
-        if (res.upgradeUrl) {
-          checkoutUrl.value = res.upgradeUrl;
-        }
-        pricingPageUrl.value = res.pricingPageUrl ?? "";
-        accountUrl.value = res.accountUrl ?? "";
-        contactUrl.value = res.contactUrl ?? "";
+      const res = await wpRestFetch<LicensingUrls>("/licensing/urls", { cacheTtlMs: 0 });
+      if (res.upgradeUrl) {
+        applyLicensingUrls(res);
       }
     } catch {
-      // Keep fallback URL.
+      // Leave checkoutUrl empty — never fall back to expenzey.com/pricing for checkout.
     }
   }
 
@@ -59,6 +58,7 @@ export function useLicensingUrls() {
     accountUrl,
     contactUrl,
     marketingPricingUrl,
+    freemiusCheckoutReady,
     load,
   };
 }

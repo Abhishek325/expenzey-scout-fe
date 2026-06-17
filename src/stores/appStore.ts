@@ -14,6 +14,8 @@ export interface WpConnectionConfig {
   locale?: string;
   accountStatus?: AccountStatus;
   syncStatus?: SyncStatus;
+  dataConsent?: boolean;
+  deleteCloudOnUninstall?: boolean;
 }
 
 export interface SyncStatusResponse {
@@ -34,10 +36,12 @@ export const useAppStore = defineStore("app", {
     locale: "en-us",
     accountStatus: "active" as AccountStatus,
     syncStatus: "idle" as SyncStatus,
+    dataConsent: false,
+    deleteCloudOnUninstall: false,
   }),
   getters: {
     requiresOnboarding(state): boolean {
-      return isWpContext() && !state.connected;
+      return isWpContext() && (!state.connected || !state.dataConsent);
     },
   },
   actions: {
@@ -64,15 +68,22 @@ export const useAppStore = defineStore("app", {
       if (config.locale) {
         this.locale = config.locale;
       }
+      if (config.dataConsent !== undefined) {
+        this.dataConsent = config.dataConsent;
+      }
+      if (config.deleteCloudOnUninstall !== undefined) {
+        this.deleteCloudOnUninstall = config.deleteCloudOnUninstall;
+      }
     },
-    async completeConnection(): Promise<void> {
+    async completeConnection(dataConsent = false): Promise<void> {
       if (isWpContext()) {
         const result = await wpRestFetch<{
           connected: boolean;
           lastSync: string;
           accountStatus?: AccountStatus;
           syncStatus?: SyncStatus;
-        }>("/connection/connect", { method: "POST" });
+          dataConsent?: boolean;
+        }>("/connection/connect", { method: "POST", body: JSON.stringify({ dataConsent }) });
         this.applyWpConfig({
           connected: true,
           siteUrl: this.siteUrl,
@@ -80,11 +91,13 @@ export const useAppStore = defineStore("app", {
           lastSync: result.lastSync,
           accountStatus: result.accountStatus,
           syncStatus: result.syncStatus,
+          dataConsent: result.dataConsent ?? dataConsent,
         });
         return;
       }
 
       this.setConnected(true);
+      this.dataConsent = dataConsent;
     },
     async disconnect(): Promise<void> {
       if (isWpContext()) {

@@ -30,7 +30,7 @@
         <button
           type="button"
           class="mt-5 inline-flex items-center justify-center gap-2 rounded-lg border border-expenzey-500 bg-white px-4 py-2.5 text-sm font-semibold text-expenzey-600 transition hover:bg-expenzey-50 disabled:cursor-not-allowed disabled:opacity-60"
-          :disabled="!checkoutUrl"
+          :disabled="!freemiusCheckoutReady"
           @click="pricingOpen = true"
         >
           <FaIcon icon="fa-cart-shopping" size="sm" />
@@ -46,9 +46,11 @@
     <PricingCheckoutModal
       :open="pricingOpen"
       :checkout-url="checkoutUrl"
+      :freemius-checkout-ready="freemiusCheckoutReady"
       :contact-url="contactUrl"
       :marketing-pricing-url="marketingPricingUrl"
       @close="pricingOpen = false"
+      @refresh-licensing="load"
     />
   </section>
 </template>
@@ -81,5 +83,5 @@ const benefits = computed(() => [
 ]);
 
 const pricingOpen = ref(false);
-const { checkoutUrl, contactUrl, marketingPricingUrl } = useLicensingUrls();
+const { checkoutUrl, contactUrl, marketingPricingUrl, freemiusCheckoutReady, load } = useLicensingUrls();
 </script>

@@ -115,7 +115,7 @@
     "analyzing": "Analyzing your store...",
     "copy": "Copy",
     "regenerate": "Regenerate",
-    "privacyNote": "Your store data never leaves WordPress except when generating AI responses.",
+    "privacyNote": "Store metrics and selected WooCommerce data are synced to Expenzey servers. AI responses are generated using Google Gemini.",
     "guardrailReply": "I can only answer questions about your WooCommerce store data.",
     "viewOpportunity": "View Opportunity",
     "productDetails": "Product Details"
@@ -267,23 +267,43 @@
     "help": {
       "title": "Learn more & support",
       "body": "Visit the Expenzey documentation for connection troubleshooting, usage limits, and billing questions."
+    },
+    "privacy": {
+      "title": "Privacy",
+      "subtitle": "Control what happens to synced cloud data when the plugin is uninstalled.",
+      "deleteCloudOnUninstall": {
+        "label": "Delete cloud data on uninstall",
+        "help": "When enabled, uninstalling the plugin will request deletion of synced store data from Expenzey servers. This cannot be undone.",
+        "saveError": "Failed to save setting. Please try again."
+      }
     }
   },
   "onboarding": {
     "welcome": {
       "title": "Welcome to Expenzey",
-      "subtitle": "Connect your store to unlock AI-powered insights."
+      "subtitle": "Connect your WooCommerce store to unlock AI-powered insights. You will review and accept the data processing disclosure before any store data is synced."
     },
     "connect": {
-      "description": "Use this installation ID to link your WooCommerce store to Expenzey AI.",
+      "description": "Review what data is shared, then connect your WooCommerce store to Expenzey Scout.",
       "syncing": "Syncing your store data…",
       "syncComplete": "Initial sync complete!"
+    },
+    "consent": {
+      "title": "Data processing disclosure",
+      "intro": "When you connect, Expenzey Scout sends the following data to Expenzey cloud services so we can generate analytics and AI insights:",
+      "itemSite": "Site URL, installation ID, and store currency",
+      "itemOrders": "Order metrics with hashed customer identifiers (not raw email addresses)",
+      "itemProducts": "Product catalog data (names, prices, categories, stock, sales counts)",
+      "itemReviews": "Product review text and ratings (truncated)",
+      "itemChat": "Messages you send in the AI chat widget",
+      "thirdParty": "AI features use Google Gemini to generate reports and chat replies. Optional license checkout may use Freemius.",
+      "checkbox": "I understand and consent to this data processing.",
+      "privacyPolicy": "View site privacy policy"
     },
     "steps": {
       "connect": "Connect store"
     },
-    "connectCta": "Connect WooCommerce",
-    "skipForNow": "Skip for now"
+    "connectCta": "Connect WooCommerce"
   },
   "layout": {
     "brandName": "Expenzey Scout",
@@ -375,16 +395,24 @@
     "purchaseBenefit4": "Get priority support when you need help with setup or billing",
     "purchaseBenefit5": "Cancel your subscription anytime with no long-term commitment",
     "viewPricing": "View Pricing & Buy Now",
-    "pricingUrl": "https://expenzey.com/pricing",
+    "pricingUrl": "https://expenzey.com/scout#pricing",
     "pricingModalTitle": "Choose Your Pro Plan",
     "pricingModalSubtitle": "Review plan options below, then continue to secure checkout to complete your purchase.",
+    "pricingModalBillingLegend": "Billing cycle",
+    "pricingModalBillingMonthly": "Monthly",
+    "pricingModalBillingMonthlyHint": "Billed every month",
+    "pricingModalBillingAnnual": "Annual",
+    "pricingModalBillingAnnualHint": "Billed once per year",
+    "pricingModalBillingLifetime": "Lifetime",
+    "pricingModalBillingLifetimeHint": "One-time payment",
     "pricingModalContinueCheckout": "Continue to Secure Checkout",
     "pricingModalSecureNote": "Payments are processed securely by Freemius. You can return here anytime before completing checkout.",
     "pricingModalHelpTitle": "Need help?",
     "pricingModalHelpWebsite": "View pricing on expenzey.com",
     "pricingModalHelpContact": "Contact support",
     "pricingModalClose": "Back to upgrade page",
-    "pricingModalLoading": "Loading plans…"
+    "pricingModalLoading": "Loading plans…",
+    "pricingModalCheckoutUnavailable": "Freemius checkout is not available. Ensure the Freemius SDK is installed and plugin keys are configured."
   },
   "upgrade": {
     "chat": {

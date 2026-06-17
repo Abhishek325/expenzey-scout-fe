@@ -13,7 +13,7 @@
       />
 
       <div
-        class="relative flex max-h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
+        class="relative flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
         role="dialog"
         aria-modal="true"
         :aria-label="copy.pricingModalTitle"
@@ -34,10 +34,10 @@
         </div>
 
         <div class="min-h-0 flex-1 overflow-y-auto">
-          <div class="border-b border-slate-200 bg-slate-50 px-4 py-4">
+          <div class="relative border-b border-slate-200 bg-slate-50 px-4 py-4">
             <div
               v-if="loadingPricing"
-              class="flex h-64 flex-col items-center justify-center gap-3 text-sm text-slate-500"
+              class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-slate-50/90 text-sm text-slate-500"
               role="status"
               :aria-label="copy.pricingModalLoading"
             >
@@ -49,9 +49,9 @@
               <span>{{ copy.pricingModalLoading }}</span>
             </div>
             <div
-              v-show="!loadingPricing && hasFreemiusPricing"
               id="expenzey-pricing-mount"
               class="expenzey-pricing-mount min-h-[16rem]"
+              :class="{ hidden: !hasFreemiusPricing && !loadingPricing }"
             />
             <ul v-if="!loadingPricing && !hasFreemiusPricing" class="space-y-3">
               <li
@@ -103,6 +103,7 @@
         </div>
 
         <div class="border-t border-slate-200 bg-slate-50 px-5 py-4">
+          <p v-if="checkoutError" class="mb-3 text-sm text-red-600">{{ checkoutError }}</p>
           <p class="mb-3 text-xs text-slate-500">{{ copy.pricingModalSecureNote }}</p>
           <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <button
@@ -115,7 +116,7 @@
             <button
               type="button"
               class="inline-flex items-center justify-center gap-2 rounded-lg bg-expenzey-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-expenzey-700 disabled:cursor-not-allowed disabled:opacity-60"
-              :disabled="!checkoutUrl || checkoutLoading"
+              :disabled="!freemiusCheckoutReady || checkoutLoading"
               @click="continueToCheckout"
             >
               <FaIcon
@@ -139,6 +140,7 @@ import comparisonFeatures from "@/data/pro/comparison-features.json";
 import { useReactiveLocaleStringRecord } from "@/composables/useLocalizedString";
 import { getWpConfig } from "@/services/wp/applyWpBootstrap";
 import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
+import { wpRestFetch } from "@/services/wp/wpRestClient";
 import { resolveFreemiusCheckoutUrl } from "@/utils/freemiusCheckout";
 
 interface ComparisonFeature {
@@ -151,12 +153,14 @@ const highlightFeatures = (comparisonFeatures as ComparisonFeature[]).slice(0, 5
 const props = defineProps<{
   open: boolean;
   checkoutUrl: string;
+  freemiusCheckoutReady: boolean;
   contactUrl: string;
   marketingPricingUrl: string;
 }>();
 
 const emit = defineEmits<{
   close: [];
+  refreshLicensing: [];
 }>();
 
 const stringService = inject(STRING_SERVICE_KEY) as IStringService;
@@ -171,10 +175,12 @@ const copy = useReactiveLocaleStringRecord("pro", [
   "pricingModalHelpContact",
   "pricingModalClose",
   "pricingModalLoading",
+  "pricingModalCheckoutUnavailable",
 ] as const);
 
 const loadingPricing = ref(false);
 const checkoutLoading = ref(false);
+const checkoutError = ref("");
 const hasFreemiusPricing = ref(false);
 
 function featureTitle(id: string) {
@@ -192,23 +198,61 @@ function clearMount() {
   }
 }
 
-function waitForPricingMount(timeoutMs = 5000): Promise<void> {
+function waitForFreemiusPricing(timeoutMs = 10000): Promise<boolean> {
+  if (window.Freemius?.pricing?.new) {
+    return Promise.resolve(true);
+  }
+
+  return new Promise((resolve) => {
+    const startedAt = Date.now();
+    const timer = window.setInterval(() => {
+      if (window.Freemius?.pricing?.new) {
+        window.clearInterval(timer);
+        resolve(true);
+        return;
+      }
+
+      if (Date.now() - startedAt >= timeoutMs) {
+        window.clearInterval(timer);
+        resolve(false);
+      }
+    }, 50);
+  });
+}
+
+async function loadPricingConfig(): Promise<Record<string, unknown> | null> {
+  const bootstrapConfig = getWpConfig()?.licensing?.pricingConfig;
+  if (bootstrapConfig) {
+    return bootstrapConfig;
+  }
+
+  try {
+    const response = await wpRestFetch<{
+      pricingConfig?: Record<string, unknown> | null;
+    }>("/licensing/urls", { cacheTtlMs: 0 });
+    return response.pricingConfig ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function waitForPricingMount(timeoutMs = 10000): Promise<boolean> {
   return new Promise((resolve) => {
     const mount = document.getElementById("expenzey-pricing-mount");
     if (!mount) {
-      resolve();
+      resolve(false);
       return;
     }
 
     if (mount.children.length > 0) {
-      resolve();
+      resolve(true);
       return;
     }
 
     const observer = new MutationObserver(() => {
       if (mount.children.length > 0) {
         observer.disconnect();
-        resolve();
+        resolve(true);
       }
     });
 
@@ -216,14 +260,18 @@ function waitForPricingMount(timeoutMs = 5000): Promise<void> {
 
     window.setTimeout(() => {
       observer.disconnect();
-      resolve();
+      resolve(mount.children.length > 0);
     }, timeoutMs);
   });
 }
 
 async function mountFreemiusPricing() {
-  const config = getWpConfig()?.licensing?.pricingConfig;
-  if (!config || !window.Freemius?.pricing?.new) {
+  const [config, freemiusReady] = await Promise.all([
+    loadPricingConfig(),
+    waitForFreemiusPricing(),
+  ]);
+
+  if (!config || !freemiusReady || !window.Freemius?.pricing?.new) {
     hasFreemiusPricing.value = false;
     loadingPricing.value = false;
     return;
@@ -239,7 +287,12 @@ async function mountFreemiusPricing() {
       ...config,
       selector: "#expenzey-pricing-mount",
     });
-    await waitForPricingMount();
+
+    const mounted = await waitForPricingMount();
+    if (!mounted) {
+      hasFreemiusPricing.value = false;
+      clearMount();
+    }
   } catch {
     hasFreemiusPricing.value = false;
     clearMount();
@@ -259,20 +312,20 @@ function onKeydown(event: KeyboardEvent) {
 }
 
 async function continueToCheckout() {
-  if (!props.checkoutUrl || checkoutLoading.value) {
+  if (!props.freemiusCheckoutReady || checkoutLoading.value) {
     return;
   }
 
   checkoutLoading.value = true;
+  checkoutError.value = "";
 
   try {
     const mount = document.getElementById("expenzey-pricing-mount");
-    const checkoutTarget = hasFreemiusPricing.value
-      ? await resolveFreemiusCheckoutUrl(props.checkoutUrl, mount)
-      : props.checkoutUrl;
-
+    const checkoutTarget = await resolveFreemiusCheckoutUrl(props.checkoutUrl, mount);
     const target = window.top ?? window;
     target.location.href = checkoutTarget;
+  } catch {
+    checkoutError.value = copy.value.pricingModalCheckoutUnavailable;
   } finally {
     checkoutLoading.value = false;
   }
@@ -282,11 +335,14 @@ watch(
   () => props.open,
   (isOpen) => {
     if (isOpen) {
+      checkoutError.value = "";
       loadingPricing.value = true;
       hasFreemiusPricing.value = false;
+      emit("refreshLicensing");
       void mountFreemiusPricing();
       return;
     }
+
     loadingPricing.value = false;
     hasFreemiusPricing.value = false;
     clearMount();
@@ -303,13 +359,12 @@ watch(
 .expenzey-pricing-mount :deep(.fs-full-size-wrapper) {
   max-width: none;
 }
+</style>
 
-/* Checkout is handled by the modal footer — hide Freemius in-widget upgrade buttons. */
-.expenzey-pricing-mount :deep(.fs-upgrade-button-container) {
-  display: none !important;
-}
-
-.expenzey-pricing-mount :deep(.fs-currencies) {
+<style>
+#expenzey-pricing-mount .fs-upgrade-button-container,
+#expenzey-pricing-mount .fs-upgrade-button,
+#expenzey-pricing-mount .fs-currencies {
   display: none !important;
 }
 </style>

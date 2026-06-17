@@ -23,8 +23,12 @@ export function normalizeReviewIntelligenceDetail(
     : countFromPercent(totalReviews, sentiment.negative);
 
   let positiveThemes = Array.isArray(detail.positiveThemes) ? detail.positiveThemes : [];
-  if (positiveThemes.length === 0 && Array.isArray(raw.positiveMentions)) {
-    positiveThemes = raw.positiveMentions.map((theme) => ({
+  if (
+    positiveThemes.length === 0
+    && "positiveMentions" in raw
+    && Array.isArray(raw.positiveMentions)
+  ) {
+    positiveThemes = raw.positiveMentions.map((theme: string) => ({
       theme,
       count: 0,
       percentOfPositive: 0,

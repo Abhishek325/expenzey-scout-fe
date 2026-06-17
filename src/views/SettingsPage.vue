@@ -94,6 +94,26 @@
         <p>{{ strings['help.body'] }}</p>
       </div>
     </section>
+
+    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h2 class="text-lg font-semibold text-gray-900">{{ strings["privacy.title"] }}</h2>
+      <p class="mt-2 text-sm text-gray-600">{{ strings["privacy.subtitle"] }}</p>
+
+      <label class="mt-4 flex cursor-pointer items-start gap-3 text-sm text-gray-700">
+        <input
+          v-model="deleteCloudOnUninstall"
+          type="checkbox"
+          class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+          @change="saveDeleteCloudOnUninstall"
+        />
+        <span>
+          <span class="font-medium text-gray-900">{{ strings["privacy.deleteCloudOnUninstall.label"] }}</span>
+          <span class="block text-gray-600">{{ strings["privacy.deleteCloudOnUninstall.help"] }}</span>
+        </span>
+      </label>
+
+      <p v-if="privacySaveError" class="mt-3 text-sm text-rose-600">{{ privacySaveError }}</p>
+    </section>
   </div>
 </template>
 
@@ -108,6 +128,7 @@ import { clearWpRestCache, isWpContext, wpRestFetch } from "@/services/wp/wpRest
 import { useAppStore } from "@/stores/appStore";
 import { useDashboardOverviewStore } from "@/stores/dashboardOverviewStore";
 import type { UsageQuota } from "@/types/usage";
+import { getWpConfig } from "@/services/wp/applyWpBootstrap";
 
 const title = useLocalizedString("settings", "title");
 const subtitle = useLocalizedString("settings", "subtitle");
@@ -138,6 +159,11 @@ const strings = useReactiveLocaleStringRecord("settings", [
   "account.status.trial",
   "account.status.suspended",
   "account.status.disconnected",
+  "privacy.title",
+  "privacy.subtitle",
+  "privacy.deleteCloudOnUninstall.label",
+  "privacy.deleteCloudOnUninstall.help",
+  "privacy.deleteCloudOnUninstall.saveError",
 ] as const);
 
 const stringService = inject(STRING_SERVICE_KEY) as IStringService;
@@ -162,6 +188,8 @@ const usage = ref<UsageQuota>({
 const syncing = ref(false);
 const disconnecting = ref(false);
 const entityCounts = ref<Record<string, number>>({});
+const deleteCloudOnUninstall = ref(false);
+const privacySaveError = ref<string | null>(null);
 
 function formatDate(iso: string): string {
   try {
@@ -250,6 +278,9 @@ async function disconnectStore() {
 let pollTimer: ReturnType<typeof setInterval> | undefined;
 
 onMounted(async () => {
+  const config = getWpConfig();
+  deleteCloudOnUninstall.value = Boolean(config?.deleteCloudOnUninstall);
+
   try {
     usage.value = await usageService.getUsage();
   } catch {
@@ -262,4 +293,19 @@ onMounted(async () => {
 onUnmounted(() => {
   if (pollTimer) clearInterval(pollTimer);
 });
+
+async function saveDeleteCloudOnUninstall() {
+  if (!isWpContext()) return;
+  privacySaveError.value = null;
+  try {
+    const res = await wpRestFetch<{ deleteCloudOnUninstall: boolean }>("/settings/delete-cloud-on-uninstall", {
+      method: "POST",
+      body: JSON.stringify({ deleteCloudOnUninstall: deleteCloudOnUninstall.value }),
+      cacheTtlMs: 0,
+    });
+    deleteCloudOnUninstall.value = Boolean(res.deleteCloudOnUninstall);
+  } catch {
+    privacySaveError.value = strings.value["privacy.deleteCloudOnUninstall.saveError"];
+  }
+}
 </script>

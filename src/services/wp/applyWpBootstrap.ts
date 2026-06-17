@@ -44,6 +44,8 @@ export async function applyWpBootstrap(
     syncStatus: (config.syncStatus as WpConnectionConfig["syncStatus"]) ?? "idle",
     currency: config.currency ?? "",
     locale: config.locale,
+    dataConsent: parseWpBoolean(config.dataConsent),
+    deleteCloudOnUninstall: parseWpBoolean(config.deleteCloudOnUninstall),
   });
 
   await applyLocale(stringService, config.locale);

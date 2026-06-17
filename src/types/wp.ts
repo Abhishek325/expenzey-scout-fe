@@ -11,6 +11,9 @@ export interface ExpenzeyAiConfig {
   currency: string;
   pluginVersion: string;
   isAdmin: boolean;
+  dataConsent?: boolean;
+  deleteCloudOnUninstall?: boolean;
+  privacyPolicyUrl?: string;
   licensing?: {
     enabled: boolean;
     upgradeUrl: string | null;
