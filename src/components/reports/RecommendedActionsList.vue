@@ -1,5 +1,5 @@
 <template>
-  <ReportSectionCard :title="title" fill-height>
+  <ReportSectionCard :title="title" fill-height scrollable>
     <ol v-if="actions.length" class="flex flex-col gap-3">
       <li
         v-for="(action, index) in actions"

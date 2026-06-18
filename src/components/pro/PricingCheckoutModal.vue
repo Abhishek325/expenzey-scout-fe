@@ -13,7 +13,7 @@
       />
 
       <div
-        class="relative flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
+        class="relative flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
         role="dialog"
         aria-modal="true"
         :aria-label="copy.pricingModalTitle"
@@ -34,7 +34,7 @@
         </div>
 
         <div class="min-h-0 flex-1 overflow-y-auto">
-          <div class="relative border-b border-slate-200 bg-slate-50 px-4 py-4">
+          <div class="relative border-b border-slate-200 bg-slate-50">
             <div
               v-if="loadingPricing"
               class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-slate-50/90 text-sm text-slate-500"
@@ -360,11 +360,69 @@ watch(
   max-width: none;
 }
 </style>
-
 <style>
 #expenzey-pricing-mount .fs-upgrade-button-container,
-#expenzey-pricing-mount .fs-upgrade-button,
+#expenzey-pricing-mount .fs-upgrade-button, .fs-plugin-title-and-logo,
+#expenzey-pricing-mount .fs-free-plan, .fs-page-title, .fs-annual-discount,
 #expenzey-pricing-mount .fs-currencies {
   display: none !important;
+}
+.fs-section--billing-cycles {
+  margin-top: 0 !important;
+}
+.fs-packages-nav {
+  width: auto !important;
+}
+.fs-packages-nav ul.fs-packages {
+  width: 100% !important;
+}
+.fs-featured-plan {
+  float: none !important;
+  margin: auto !important;
+  width: 55% !important;
+}
+
+
+/* Chips */
+/* Keep everything on one line within the group */
+.fs-plan-features-with-value > li > .fs-feature-title {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  align-items: center;
+}
+
+/* Individual chips */
+.fs-plan-features-with-value > li > .fs-feature-title > span {
+  display: inline-flex !important;
+  width: auto !important;
+  margin: 0;
+  padding: 4px 10px;
+  border-radius: 50px;
+  background: #2171b1;
+  font-size: 10px;
+  white-space: nowrap;
+  color: #ffffff;
+}
+
+.fs-plan-features-with-value > li > span.fs-tooltip {
+  display: none !important;
+}
+
+/* Cancel bold from <strong> */
+.fs-plan-features-with-value strong {
+  font-weight: inherit !important;
+}
+
+/* Optional: keep tooltip inline too */
+.fs-plan-features-with-value li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.fs-section--faq .fs-section--faq-items .fs-section--faq-item h3 {
+  background: #2171b1 !important;
 }
 </style>

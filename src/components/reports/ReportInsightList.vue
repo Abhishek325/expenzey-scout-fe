@@ -1,5 +1,5 @@
 <template>
-  <ReportSectionCard fill-height>
+  <ReportSectionCard fill-height scrollable>
     <template #header>
       <div class="flex items-center gap-2">
         <span

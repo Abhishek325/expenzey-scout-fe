@@ -40,7 +40,7 @@ const props = withDefaults(
 
 const bodyClasses = computed(() => {
   if (props.fillHeight && props.scrollable) {
-    return ["min-h-0 flex-1 overflow-y-auto", props.bodyClass];
+    return ["min-h-0 flex-1 max-h-[24rem] overflow-y-auto", props.bodyClass];
   }
   if (props.fillHeight) {
     return ["min-h-0 flex-1", props.bodyClass];

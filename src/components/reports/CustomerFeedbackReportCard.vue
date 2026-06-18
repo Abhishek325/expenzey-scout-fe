@@ -1,5 +1,5 @@
 <template>
-  <ReportSectionCard :title="title" fill-height>
+  <ReportSectionCard :title="title" fill-height scrollable>
     <template #actions>
       <span
         v-if="hasData"

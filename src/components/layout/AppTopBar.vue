@@ -47,7 +47,7 @@
         <FaIcon icon="fa-crown" size="sm" />
         Pro
       </span>
-      <button
+      <!-- <button
         type="button"
         class="relative rounded-lg p-2 text-slate-500 transition hover:bg-slate-100"
         :aria-label="copy.notifications"
@@ -71,7 +71,7 @@
           class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"
           aria-hidden="true"
         />
-      </button>
+      </button> -->
     </div>
   </header>
 </template>

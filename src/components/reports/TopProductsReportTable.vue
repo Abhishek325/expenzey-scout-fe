@@ -1,5 +1,5 @@
 <template>
-  <ReportSectionCard fill-height>
+  <ReportSectionCard fill-height scrollable>
     <template #header>
       <h2 class="text-xs font-bold uppercase tracking-wide text-slate-500">{{ title }}</h2>
     </template>

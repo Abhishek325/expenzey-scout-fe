@@ -1,5 +1,5 @@
 <template>
-  <ReportSectionCard :title="title" fill-height>
+  <ReportSectionCard :title="title" fill-height scrollable>
     <div v-if="opportunities.length" class="flex flex-col gap-3">
       <article
         v-for="(item, index) in opportunities"
