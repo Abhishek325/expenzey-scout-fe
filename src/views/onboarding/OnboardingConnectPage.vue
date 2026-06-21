@@ -112,7 +112,8 @@ const consentItems = computed(() => [
 ]);
 
 const installationId = computed(() => appStore.installationId);
-const privacyPolicyUrl = computed(() => getWpConfig()?.privacyPolicyUrl ?? "");
+// const privacyPolicyUrl = computed(() => getWpConfig()?.privacyPolicyUrl ?? "");
+const privacyPolicyUrl = "https://expenzey.com/scout-privacy-policy/";
 
 let pollTimer: ReturnType<typeof setInterval> | undefined;
 
