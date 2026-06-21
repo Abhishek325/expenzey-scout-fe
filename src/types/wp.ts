@@ -24,6 +24,10 @@ export interface ExpenzeyAiConfig {
     paidPlanId?: string | null;
     paidPricingId?: string | null;
     pricingConfig?: Record<string, unknown> | null;
+    pricingAssets?: {
+      scripts: string[];
+      styles: string[];
+    } | null;
   };
 }
 

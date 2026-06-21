@@ -142,6 +142,10 @@ import { getWpConfig } from "@/services/wp/applyWpBootstrap";
 import { STRING_SERVICE_KEY, type IStringService } from "@/services/stringService";
 import { wpRestFetch } from "@/services/wp/wpRestClient";
 import { resolveFreemiusCheckoutUrl } from "@/utils/freemiusCheckout";
+import {
+  loadFreemiusPricingAssets,
+  type FreemiusPricingAssets,
+} from "@/utils/loadFreemiusPricingAssets";
 
 interface ComparisonFeature {
   id: string;
@@ -220,19 +224,27 @@ function waitForFreemiusPricing(timeoutMs = 10000): Promise<boolean> {
   });
 }
 
-async function loadPricingConfig(): Promise<Record<string, unknown> | null> {
-  const bootstrapConfig = getWpConfig()?.licensing?.pricingConfig;
+async function loadLicensingBootstrap(): Promise<{
+  config: Record<string, unknown> | null;
+  assets: FreemiusPricingAssets | null;
+}> {
+  const bootstrapConfig = getWpConfig()?.licensing?.pricingConfig ?? null;
+  const bootstrapAssets = getWpConfig()?.licensing?.pricingAssets ?? null;
   if (bootstrapConfig) {
-    return bootstrapConfig;
+    return { config: bootstrapConfig, assets: bootstrapAssets };
   }
 
   try {
     const response = await wpRestFetch<{
       pricingConfig?: Record<string, unknown> | null;
+      pricingAssets?: FreemiusPricingAssets | null;
     }>("/licensing/urls", { cacheTtlMs: 0 });
-    return response.pricingConfig ?? null;
+    return {
+      config: response.pricingConfig ?? null,
+      assets: response.pricingAssets ?? null,
+    };
   } catch {
-    return null;
+    return { config: null, assets: null };
   }
 }
 
@@ -266,10 +278,18 @@ function waitForPricingMount(timeoutMs = 10000): Promise<boolean> {
 }
 
 async function mountFreemiusPricing() {
-  const [config, freemiusReady] = await Promise.all([
-    loadPricingConfig(),
-    waitForFreemiusPricing(),
-  ]);
+  const bootstrap = await loadLicensingBootstrap();
+
+  try {
+    await loadFreemiusPricingAssets(bootstrap.assets);
+  } catch {
+    hasFreemiusPricing.value = false;
+    loadingPricing.value = false;
+    return;
+  }
+
+  const freemiusReady = await waitForFreemiusPricing();
+  const config = bootstrap.config;
 
   if (!config || !freemiusReady || !window.Freemius?.pricing?.new) {
     hasFreemiusPricing.value = false;
